@@ -89,6 +89,7 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
     var __bottom: State<CGFloat> { _bottom }
     var __centerX: State<CGFloat> { _centerX }
     var __centerY: State<CGFloat> { _centerY }
+    private var nestedStackViews: [WeakBox<UStackView>] = []
     
     open override var tag: Int {
         get { properties.tag }
@@ -175,6 +176,9 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
     @discardableResult
     public func alignment(_ alignment: UIStackView.Alignment) -> Self {
         self.alignment = alignment
+        for view in nestedStackViews {
+            view.underlying?.alignment = alignment
+        }
         return self
     }
     #endif
@@ -184,14 +188,21 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
     @discardableResult
     public func distribution(_ distribution: _STV.Distribution) -> Self {
         self.distribution = distribution
+
+        for view in nestedStackViews {
+            view.underlying?.distribution = distribution
+        }
         return self
     }
-    
+
     // Mask: Spacing
     
     @discardableResult
     public func spacing(_ spacing: CGFloat) -> Self {
         self.spacing = spacing
+        for view in nestedStackViews {
+            view.underlying?.spacing = spacing
+        }
         return self
     }
     
@@ -216,9 +227,7 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
                 #else
                 let stack = UStackView().axis(fr.axis ?? axis)
                 #endif
-                stack.distribution(distribution)
-                    .alignment(alignment)
-                    .spacing(spacing)
+                nestedStackViews.append(WeakBox(stack))
                 fr.allItems().forEach {
                     #if os(macOS)
                     stack.addArrangedSubview([$0].flatten(fr.orientation ?? orientation))
