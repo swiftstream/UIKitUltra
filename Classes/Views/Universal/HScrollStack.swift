@@ -7,70 +7,71 @@ import AppKit
 @available(*, deprecated, renamed: "UHScrollStack")
 public typealias HScrollStack = UHScrollStack
 
-open class UHScrollStack: UScrollView {
+open class UHScrollStack: UScrollView, StackWrapperView {
     lazy var stack = UHStack().edgesToSuperview().heightToSuperview()
-    
+    var _stack: _StackView { stack }
+    private var _didAttachInnerStack = false
+
     #if os(macOS)
     fileprivate lazy var _docView = UView()
         .leadingToSuperview()
         .edgesToSuperview(v: 0)
     #endif
-    
+
     #if os(macOS)
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
-        hasHorizontalScroller = true
-        borderType = .noBorder
-        documentView(_docView)
-        _docView.body {
-            stack.subviews(block: block)
-        }
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
+        _addBodyItemToInnerStack(block())
         _setup()
     }
     #else
     public override init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
-        body {
-            stack.subviews(block: block)
-        }
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
+        _addBodyItemToInnerStack(block())
         _setup()
     }
     #endif
-    
+
     public override init() {
         super.init(frame: .zero)
-        #if !os(macOS)
-        body {
-            stack
-        }
-        #else
-        hasHorizontalScroller = true
-        borderType = .noBorder
-        documentView(_docView)
-        _docView.body {
-            stack
-        }
-        #endif
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
         _setup()
     }
-    
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        #if !os(macOS)
-        body {
-            stack
-        }
-        #else
-        hasHorizontalScroller = true
-        borderType = .noBorder
-        documentView(_docView)
-        _docView.body {
-            stack
-        }
-        #endif
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
         _setup()
     }
-    
+
+    private func _configurePlatformScrollBehavior() {
+        #if os(macOS)
+        hasHorizontalScroller = true
+        borderType = .noBorder
+        #endif
+    }
+
+    private func _attachInnerStack() {
+        guard !_didAttachInnerStack else { return }
+        #if os(macOS)
+        documentView(_docView)
+        _docView.addSubview(stack)
+        #else
+        addSubview(stack)
+        #endif
+        _didAttachInnerStack = true
+    }
+
+    private func _addBodyItemToInnerStack(_ item: BodyBuilderItemable) {
+        stack.add(item: item)
+    }
+
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

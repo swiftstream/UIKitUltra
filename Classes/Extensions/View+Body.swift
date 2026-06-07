@@ -4,10 +4,18 @@ import AppKit
 import UIKit
 #endif
 
+protocol StackWrapperView: AnyObject {
+    var _stack: _StackView { get }
+}
+
 extension BaseView {
     @discardableResult
     open func body(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
-        addItem(block())
+        if let wrapper = self as? StackWrapperView {
+            wrapper._stack.add(item: block())
+        } else {
+            addItem(block())
+        }
         return self
     }
     

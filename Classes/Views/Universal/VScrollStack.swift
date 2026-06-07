@@ -7,65 +7,68 @@ import AppKit
 @available(*, deprecated, renamed: "UVScrollStack")
 public typealias VScrollStack = UVScrollStack
 
-open class UVScrollStack: UScrollView {
+open class UVScrollStack: UScrollView, StackWrapperView {
     lazy var stack = UVStack().edgesToSuperview().widthToSuperview()
-    
+    var _stack: _StackView { stack }
+    private var _didAttachInnerStack = false
+
     #if os(macOS)
     fileprivate lazy var _docView = UView()
         .topToSuperview()
         .edgesToSuperview(h: 0)
         .flipped(true)
     #endif
-    
+
     #if os(macOS)
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
-        hasVerticalScroller = true
-        borderType = .noBorder
-        documentView(_docView)
-        _docView.body {
-            stack.subviews(block: block)
-        }
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
+        _addBodyItemToInnerStack(block())
     }
     #else
     public override init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
-        body {
-            stack.subviews(block: block)
-        }
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
+        _addBodyItemToInnerStack(block())
     }
     #endif
-    
+
     public override init() {
         super.init(frame: .zero)
-        #if !os(macOS)
-        body {
-            stack
-        }
-        #else
-        hasVerticalScroller = true
-        borderType = .noBorder
-        documentView(_docView.body {
-            stack
-        })
-        #endif
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
     }
-    
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        #if !os(macOS)
-        body {
-            stack
-        }
-        #else
+        _configurePlatformScrollBehavior()
+        _attachInnerStack()
+    }
+
+    private func _configurePlatformScrollBehavior() {
+        #if os(macOS)
         hasVerticalScroller = true
         borderType = .noBorder
-        documentView(_docView.body {
-            stack
-        })
         #endif
     }
-    
+
+    private func _attachInnerStack() {
+        guard !_didAttachInnerStack else { return }
+        #if os(macOS)
+        documentView(_docView)
+        _docView.addSubview(stack)
+        #else
+        addSubview(stack)
+        #endif
+        _didAttachInnerStack = true
+    }
+
+    private func _addBodyItemToInnerStack(_ item: BodyBuilderItemable) {
+        stack.add(item: item)
+    }
+
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
