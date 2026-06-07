@@ -273,7 +273,7 @@ extension BaseApp {
                 return handler()
             case .main: return screens[type]?()
             case .onboarding: return screens[type]?() ?? screens[.main]?()
-            default: return nil
+            default: return screens[type]?()
             }
         }
     }
