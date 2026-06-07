@@ -15,6 +15,6 @@ let package = Package(
     dependencies: [],
     targets: [
         .target(name: "UIKitPlus", dependencies: [], path: "Classes"),
-//        .testTarget(name: "UIKitPlusTests", dependencies: ["UIKitPlus"]),
+        .testTarget(name: "UIKitPlusTests", dependencies: ["UIKitPlus"]),
         ]
 )
