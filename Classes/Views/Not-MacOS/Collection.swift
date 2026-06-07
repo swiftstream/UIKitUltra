@@ -200,6 +200,12 @@ public class UCollection: UView, UICollectionViewDataSource {
         return self
     }
     
+    @discardableResult
+    public func scrolling(_ enabled: Bool) -> Self {
+        collectionView.isScrollEnabled = enabled
+        return self
+    }
+
     // MARK: Delegate
     
     @discardableResult
