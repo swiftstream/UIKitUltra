@@ -15,31 +15,41 @@ extension DeclarativeProtocol {
         _setShadow(x: x, y: y)
         _setShadow(opacity: opacity)
         _setShadow(radius: radius)
-        _setShadow(color: .init(wrappedValue: color))
+        _applyShadowColor(color)
         return self
     }
-    
-    private func _setShadow(color: State<UColor>) {
+
+    @discardableResult
+    public func shadow(_ state: State<UColor>, opacity: Float = 1, x: CGFloat = 0, y: CGFloat = 0, radius: CGFloat = 10) -> Self {
+        _setShadow(x: x, y: y)
+        _setShadow(opacity: opacity)
+        _setShadow(radius: radius)
+        _setShadow(color: state)
+        return self
+    }
+
+    private func _applyShadowColor(_ color: UColor) {
         #if os(macOS)
         properties.shadowColor.changeHandler = nil
-        properties.shadowColor = color.wrappedValue
-        declarativeView.layer?.shadowColor = color.wrappedValue.current.cgColor
+        properties.shadowColor = color
+        declarativeView.layer?.shadowColor = color.current.cgColor
         properties.shadowColor.onChange { [weak self] new in
             self?.declarativeView.layer?.shadowColor = new.cgColor
         }
         #else
-        properties.shadowColor = color.wrappedValue
-        declarativeView.layer.shadowColor = color.wrappedValue.cgColor
-        func update(_ c: UIColor) {
-            properties.traitCollectionDidChangeHandlers[.shadowColor] = { [weak self] trait in
-                self?.declarativeView.layer.shadowColor = c.cgColor
-            }
+        properties.shadowColor = color
+        declarativeView.layer.shadowColor = color.cgColor
+        properties.traitCollectionDidChangeHandlers[.shadowColor] = { [weak self] _ in
+            self?.declarativeView.layer.shadowColor = color.cgColor
         }
-        color.listen { _, newColor in
-            update(newColor)
-        }
-        update(color.wrappedValue)
         #endif
+    }
+
+    private func _setShadow(color: State<UColor>) {
+        _applyShadowColor(color.wrappedValue)
+        color.listen { [weak self] _, newColor in
+            self?._applyShadowColor(newColor)
+        }
     }
     
     private func _setShadow(opacity: Float) {

@@ -18,46 +18,48 @@ extension DeclarativeProtocol {
         #endif
     }
     
-    private func _setBorderColor(_ color: State<UColor>) {
+    private func _applyBorderColor(_ color: UColor) {
         #if os(macOS)
         properties.borderColor.changeHandler = nil
-        properties.borderColor = color.wrappedValue
-        declarativeView.layer?.borderColor = color.wrappedValue.current.cgColor
+        properties.borderColor = color
+        declarativeView.layer?.borderColor = color.current.cgColor
         properties.borderColor.onChange { [weak self] new in
             self?.declarativeView.layer?.borderColor = new.cgColor
         }
         #else
-        properties.borderColor = color.wrappedValue
-        declarativeView.layer.borderColor = color.wrappedValue.cgColor
-        func update(_ c: UIColor) {
-            properties.traitCollectionDidChangeHandlers[.borderColor] = { [weak self] trait in
-                self?.declarativeView.layer.borderColor = c.cgColor
-            }
+        properties.borderColor = color
+        declarativeView.layer.borderColor = color.cgColor
+        properties.traitCollectionDidChangeHandlers[.borderColor] = { [weak self] _ in
+            self?.declarativeView.layer.borderColor = color.cgColor
         }
-        color.listen { _, newColor in
-            update(newColor)
-        }
-        update(color.wrappedValue)
         #endif
     }
-    
+
+    private func _setBorderColor(_ color: State<UColor>) {
+        _applyBorderColor(color.wrappedValue)
+        color.listen { [weak self] _, newColor in
+            self?._applyBorderColor(newColor)
+        }
+    }
+
     @discardableResult
     public func border(_ width: CGFloat, _ colorNumber: Int) -> Self {
         border(width, colorNumber.color)
     }
-    
+
     @discardableResult
     public func border(_ width: CGFloat, _ color: UColor) -> Self {
         _setBorderWidth(width)
-        _setBorderColor(.init(wrappedValue: color))
+        _applyBorderColor(color)
         return self
     }
-    
-//    @discardableResult
-//    public func border(_ width: CGFloat, _ state: State<UColor>) -> Self {
-//        // TODO: implement
-//        return self
-//    }
+
+    @discardableResult
+    public func border(_ width: CGFloat, _ state: State<UColor>) -> Self {
+        _setBorderWidth(width)
+        _setBorderColor(state)
+        return self
+    }
     
     @discardableResult
     public func border(_ side: Borders.Side, _ width: CGFloat, _ color: UColor) -> Self {
