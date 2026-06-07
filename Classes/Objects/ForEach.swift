@@ -7,13 +7,36 @@ import UIKit
 public protocol AnyForEach {
     #if os(macOS)
     var orientation: NSUserInterfaceLayoutOrientation? { get }
+    var alignment: NSLayoutConstraint.Attribute? { get }
     #else
     var axis: NSLayoutConstraint.Axis? { get }
+    var alignment: UIStackView.Alignment? { get }
     #endif
+
+    var distribution: _STV.Distribution? { get }
+    var spacing: CGFloat? { get }
+
     var count: Int { get }
+
     func allItems() -> [BodyBuilder.Result]
     func items(at index: Int) -> BodyBuilder.Result
-    func subscribeToChanges(_ begin: @escaping () -> Void, _ handler: @escaping ([Int], [Int], [Int]) -> Void, _ end: @escaping () -> Void)
+
+    func subscribeToChanges(
+        _ begin: @escaping () -> Void,
+        _ handler: @escaping ([Int], [Int], [Int]) -> Void,
+        _ end: @escaping () -> Void
+    )
+}
+
+public extension AnyForEach {
+    #if os(macOS)
+    var alignment: NSLayoutConstraint.Attribute? { nil }
+    #else
+    var alignment: UIStackView.Alignment? { nil }
+    #endif
+
+    var distribution: _STV.Distribution? { nil }
+    var spacing: CGFloat? { nil }
 }
 
 public typealias UForEach = ForEach
@@ -27,9 +50,13 @@ public class ForEach<Item> where Item: Hashable {
     
     #if os(macOS)
     public var orientation: NSUserInterfaceLayoutOrientation? { nil }
+    public var alignment: NSLayoutConstraint.Attribute?
     #else
     public var axis: NSLayoutConstraint.Axis? { nil }
+    public var alignment: UIStackView.Alignment?
     #endif
+    public var distribution: _STV.Distribution?
+    public var spacing: CGFloat?
     
     public init (_ items: [Item], @BodyBuilder block: @escaping BuildViewHandler) {
         self.items = State(wrappedValue: items)
@@ -67,6 +94,38 @@ public class ForEach<Item> where Item: Hashable {
         self.block = { _,_ in
             block()
         }
+    }
+
+    // Mask: Alignment
+
+    #if os(macOS)
+    @discardableResult
+    public func alignment(_ alignment: NSLayoutConstraint.Attribute) -> Self {
+        self.alignment = alignment
+        return self
+    }
+    #else
+    @discardableResult
+    public func alignment(_ alignment: UIStackView.Alignment) -> Self {
+        self.alignment = alignment
+        return self
+    }
+    #endif
+
+    // Mask: Distribution
+
+    @discardableResult
+    public func distribution(_ distribution: _STV.Distribution) -> Self {
+        self.distribution = distribution
+        return self
+    }
+
+    // Mask: Spacing
+
+    @discardableResult
+    public func spacing(_ spacing: CGFloat) -> Self {
+        self.spacing = spacing
+        return self
     }
 }
 

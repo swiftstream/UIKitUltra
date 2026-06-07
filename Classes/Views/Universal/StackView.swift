@@ -216,9 +216,10 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
                 #else
                 let stack = UStackView().axis(fr.axis ?? axis)
                 #endif
-                stack.distribution(distribution)
-                    .alignment(alignment)
-                    .spacing(spacing)
+                stack
+                    .distribution(fr.distribution ?? distribution)
+                    .alignment(fr.alignment ?? alignment)
+                    .spacing(fr.spacing ?? spacing)
                 fr.allItems().forEach {
                     #if os(macOS)
                     stack.addArrangedSubview([$0].flatten(fr.orientation ?? orientation))
