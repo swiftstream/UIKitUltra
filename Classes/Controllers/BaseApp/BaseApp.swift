@@ -326,7 +326,6 @@ open class BaseApp: UIApplication, UIApplicationDelegate {
         let config = UISceneConfiguration(name: nil, sessionRole: UISceneSession.Role.windowApplication)
         config.delegateClass = UIKitPlus._SceneDelegate.self
         config.sceneClass = UIKitPlus._Scene.self
-        print("config: \(config)")
         return config
     }
     
