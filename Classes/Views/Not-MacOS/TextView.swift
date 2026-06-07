@@ -140,6 +140,11 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     }
     
     @discardableResult
+    public func textInsets(_ all: CGFloat) -> Self {
+        textInsets(.init(top: all, left: all, bottom: all, right: all))
+    }
+
+    @discardableResult
     public func textInsets(top: CGFloat = 0, left: CGFloat = 0, right: CGFloat = 0, bottom: CGFloat = 0) -> Self {
         textInsets(.init(top: top, left: left, bottom: bottom, right: right))
     }
