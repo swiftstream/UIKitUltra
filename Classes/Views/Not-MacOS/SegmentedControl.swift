@@ -44,6 +44,7 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
             case .image(let image): insertSegment(with: image, at: offset, animated: false)
             }
         }
+        setup()
     }
     
     public convenience init(_ items: SegmentControlable...) {
