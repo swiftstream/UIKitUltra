@@ -8,7 +8,9 @@
 #if os(macOS)
 import Cocoa
 
+#if !SWIFT_PACKAGE
 @NSApplicationMain
+#endif
 open class App: NSApplication, NSApplicationDelegate {
     public static override var shared: App { super.shared as! App }
     
