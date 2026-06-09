@@ -3,6 +3,12 @@ import AppKit
 
 public class Color {
     let light, dark: NSColor
+
+    private let _themeBindingHolder = TempStatesHolder()
+
+    var themeBindingHolder: TempStatesHolder {
+        _themeBindingHolder
+    }
     
     typealias ChangeHandler = (NSColor) -> Void
     var changeHandler: ChangeHandler?
@@ -55,6 +61,7 @@ public class Color {
                 self.changeHandler?(self.light)
             }
         }
+        .hold(in: themeBindingHolder)
     }
     
     public var current: NSColor {
