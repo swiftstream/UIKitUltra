@@ -59,6 +59,12 @@ extension String: AnyString, BodyBuilderItemable {
 }
 
 open class AttributedString: AnyString, BodyBuilderItemable {
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     public var bodyBuilderItem: BodyBuilderItem { .single(UText(self)) }
     
     public func onUpdate(_ handler: @escaping (NSAttributedString) -> Void) {
@@ -126,6 +132,7 @@ open class AttributedString: AnyString, BodyBuilderItemable {
         state.listen { [weak self] new in
             self?.background(new, at: range)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -148,6 +155,7 @@ open class AttributedString: AnyString, BodyBuilderItemable {
         state.listen { [weak self] new in
             self?.foreground(new, at: range)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
