@@ -74,36 +74,74 @@ open class State<Value>: Stateable, StatesHolder {
         let value = expression()
         _originalValue = value
         _wrappedValue = value
-        stateA.listen {
-            self.wrappedValue = expression()
-        }
-        stateB.listen {
-            self.wrappedValue = expression()
-        }
+
+        stateA.listen { [weak self] in
+            self?.wrappedValue = expression()
+        }.hold(in: self)
+
+        stateB.listen { [weak self] in
+            self?.wrappedValue = expression()
+        }.hold(in: self)
     }
 
-    init <A, B>(_ stateA: State<A>, _ stateB: State<B>, _ expression: @escaping (A, B) -> Value) {
-        let value = expression(stateA.wrappedValue, stateB.wrappedValue)
+    init <A, B>(
+        _ stateA: State<A>,
+        _ stateB: State<B>,
+        _ expression: @escaping (A, B) -> Value
+    ) {
+        let valueExpression: () -> Value? = { [weak stateA, weak stateB] in
+            guard let stateA = stateA, let stateB = stateB else { return nil }
+
+            return expression(
+                stateA.wrappedValue,
+                stateB.wrappedValue
+            )
+        }
+
+        let value = valueExpression()!
+
         _originalValue = value
         _wrappedValue = value
-        stateA.listen {
-            self.wrappedValue = expression(stateA.wrappedValue, stateB.wrappedValue)
+
+        let listener: () -> Void = { [weak self] in
+            guard let value = valueExpression() else { return }
+
+            self?.wrappedValue = value
         }
-        stateB.listen {
-            self.wrappedValue = expression(stateA.wrappedValue, stateB.wrappedValue)
-        }
+
+        stateA.listen(listener).hold(in: self)
+        stateB.listen(listener).hold(in: self)
     }
 
-    init <A, B>(_ stateA: State<A>, _ stateB: State<B>, _ expression: @escaping (CombinedDeprecatedResult<A, B>) -> Value) {
-        let value = expression(.init(left: stateA.wrappedValue, right: stateB.wrappedValue))
+    init <A, B>(
+        _ stateA: State<A>,
+        _ stateB: State<B>,
+        _ expression: @escaping (CombinedDeprecatedResult<A, B>) -> Value
+    ) {
+        let valueExpression: () -> Value? = { [weak stateA, weak stateB] in
+            guard let stateA = stateA, let stateB = stateB else { return nil }
+
+            return expression(
+                .init(
+                    left: stateA.wrappedValue,
+                    right: stateB.wrappedValue
+                )
+            )
+        }
+
+        let value = valueExpression()!
+
         _originalValue = value
         _wrappedValue = value
-        stateA.listen {
-            self.wrappedValue = expression(.init(left: stateA.wrappedValue, right: stateB.wrappedValue))
+
+        let listener: () -> Void = { [weak self] in
+            guard let value = valueExpression() else { return }
+
+            self?.wrappedValue = value
         }
-        stateB.listen {
-            self.wrappedValue = expression(.init(left: stateA.wrappedValue, right: stateB.wrappedValue))
-        }
+
+        stateA.listen(listener).hold(in: self)
+        stateB.listen(listener).hold(in: self)
     }
 
     public init(wrappedValue value: Value) {
@@ -115,18 +153,26 @@ open class State<Value>: Stateable, StatesHolder {
         let value = expression()
         _originalValue = value
         _wrappedValue = value
-        stateA.listen {
-            self.wrappedValue = expression()
-        }
+
+        stateA.listen { [weak self] in
+            self?.wrappedValue = expression()
+        }.hold(in: self)
     }
 
-    public init <A>(_ stateA: State<A>, _ expression: @escaping (A) -> Value) {
+    public init <A>(
+        _ stateA: State<A>,
+        _ expression: @escaping (A) -> Value
+    ) {
         let value = expression(stateA.wrappedValue)
+
         _originalValue = value
         _wrappedValue = value
-        stateA.listen {
-            self.wrappedValue = expression(stateA.wrappedValue)
-        }
+
+        stateA.listen { [weak self, weak stateA] in
+            guard let stateA = stateA else { return }
+
+            self?.wrappedValue = expression(stateA.wrappedValue)
+        }.hold(in: self)
     }
 
     public func reset() {

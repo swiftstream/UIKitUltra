@@ -213,9 +213,9 @@ final class StateRuntimeTests: XCTestCase {
         XCTAssertEqual(mapped.wrappedValue, 9)
     }
 
-    // MARK: - Test 13: Characterize broken [AnyState].map propagation [ST3]
+    // MARK: - Test 13: [AnyState].map propagation from every source [ST3][ST5]
 
-    func testAnyStateArrayMapCharacterizesMissingPropagation() {
+    func testAnyStateArrayMapPropagatesFromEverySource() {
         let left = State(wrappedValue: 1)
         let right = State(wrappedValue: 2)
 
@@ -224,32 +224,47 @@ final class StateRuntimeTests: XCTestCase {
         }
 
         XCTAssertEqual(mapped.wrappedValue, 3)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
 
         left.wrappedValue = 10
-        right.wrappedValue = 20
+        XCTAssertEqual(mapped.wrappedValue, 12)
 
-        // Characterizes the current bug: the temporary `AnyStates` owner is not retained,
-        // so source mutations do not propagate after the initial value is computed.
-        XCTAssertEqual(mapped.wrappedValue, 3)
+        right.wrappedValue = 20
+        XCTAssertEqual(mapped.wrappedValue, 30)
     }
 
-    // MARK: - Test 14: Characterize current derived-state retention cycle [ST3]
+    // MARK: - Test 14: Derived map releases mapped state when it leaves scope [ST3][ST6][FC7]
 
-    func testDerivedMapCharacterizesCurrentRetentionCycle() {
+    func testDerivedMapReleasesMappedStateWhenMappedStateLeavesScope() {
         let source = State(wrappedValue: 1)
+        var evaluationCount = 0
+
         weak var weakMapped: State<Int>?
 
         do {
-            let mapped = source.map { $0 * 2 }
+            let mapped = source.map { value in
+                evaluationCount += 1
+                return value * 2
+            }
+
             weakMapped = mapped
+
             XCTAssertNotNil(weakMapped)
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 1)
+            XCTAssertEqual(mapped.wrappedValue, 2)
+            XCTAssertEqual(evaluationCount, 1)
+
+            source.wrappedValue = 2
+
+            XCTAssertEqual(mapped.wrappedValue, 4)
+            XCTAssertEqual(evaluationCount, 2)
         }
 
-        // Characterizes the current bug: the source listener strongly retains the mapped state.
-        XCTAssertNotNil(weakMapped)
-
-        source.removeAllListeners()
         XCTAssertNil(weakMapped)
+
+        source.wrappedValue = 3
+
+        XCTAssertEqual(evaluationCount, 2)
     }
 
     // MARK: - Test 15: Characterize ForEach subscriptions outliving owner [RT5]
@@ -292,6 +307,247 @@ final class StateRuntimeTests: XCTestCase {
         )
 
         items.removeAllListeners()
+    }
+
+    // MARK: - SLICE 2A — Derived-state ownership repair
+
+    // MARK: Test 16: Single-source no-argument lifecycle [ST3][ST6][FC7]
+
+    func testSingleSourceNoArgumentMapReleasesMappedStateAndStopsUpdates() {
+        let source = State(wrappedValue: 1)
+        var evaluationCount = 0
+
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = State<Int>(source as AnyState) {
+                evaluationCount += 1
+                return source.wrappedValue * 3
+            }
+
+            weakMapped = mapped
+
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 1)
+            XCTAssertEqual(mapped.wrappedValue, 3)
+            XCTAssertEqual(evaluationCount, 1)
+
+            source.wrappedValue = 2
+
+            XCTAssertEqual(mapped.wrappedValue, 6)
+            XCTAssertEqual(evaluationCount, 2)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        source.wrappedValue = 3
+
+        XCTAssertEqual(evaluationCount, 2)
+    }
+
+    // MARK: Test 17: Typed two-source lifecycle [ST3][ST5][ST6][FC7]
+
+    func testCombinedTypedMapReleasesMappedStateAndStopsUpdatesFromBothSources() {
+        let left = State(wrappedValue: 1)
+        let right = State(wrappedValue: 2)
+        var evaluationCount = 0
+
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = State<Int>(left, right) { left, right in
+                evaluationCount += 1
+                return left + right
+            }
+
+            weakMapped = mapped
+
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+            XCTAssertEqual(mapped.wrappedValue, 3)
+            XCTAssertEqual(evaluationCount, 1)
+
+            left.wrappedValue = 10
+
+            XCTAssertEqual(mapped.wrappedValue, 12)
+            XCTAssertEqual(evaluationCount, 2)
+
+            right.wrappedValue = 20
+
+            XCTAssertEqual(mapped.wrappedValue, 30)
+            XCTAssertEqual(evaluationCount, 3)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        left.wrappedValue = 100
+        right.wrappedValue = 200
+
+        XCTAssertEqual(evaluationCount, 3)
+    }
+
+    // MARK: Test 18: Two-source no-argument lifecycle [ST3][ST5][ST6][FC7]
+
+    func testCombinedNoArgumentMapReleasesMappedStateAndStopsUpdatesFromBothSources() {
+        let left = State(wrappedValue: 1)
+        let right = State(wrappedValue: 2)
+        var evaluationCount = 0
+
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = State<Int>(left as AnyState, right as AnyState) {
+                evaluationCount += 1
+                return left.wrappedValue + right.wrappedValue
+            }
+
+            weakMapped = mapped
+
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+            XCTAssertEqual(mapped.wrappedValue, 3)
+            XCTAssertEqual(evaluationCount, 1)
+
+            left.wrappedValue = 10
+
+            XCTAssertEqual(mapped.wrappedValue, 12)
+            XCTAssertEqual(evaluationCount, 2)
+
+            right.wrappedValue = 20
+
+            XCTAssertEqual(mapped.wrappedValue, 30)
+            XCTAssertEqual(evaluationCount, 3)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        left.wrappedValue = 100
+        right.wrappedValue = 200
+
+        XCTAssertEqual(evaluationCount, 3)
+    }
+
+    // MARK: Test 19: Deprecated combined-result lifecycle [ST3][ST5][ST6][FC7]
+
+    func testDeprecatedCombinedMapReleasesMappedStateAndStopsUpdatesFromBothSources() {
+        let left = State(wrappedValue: 1)
+        let right = State(wrappedValue: 2)
+        var evaluationCount = 0
+
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = State<Int>(left, right) {
+                (values: CombinedDeprecatedResult<Int, Int>) in
+
+                evaluationCount += 1
+                return values.left + values.right
+            }
+
+            weakMapped = mapped
+
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+            XCTAssertEqual(mapped.wrappedValue, 3)
+            XCTAssertEqual(evaluationCount, 1)
+
+            left.wrappedValue = 10
+
+            XCTAssertEqual(mapped.wrappedValue, 12)
+            XCTAssertEqual(evaluationCount, 2)
+
+            right.wrappedValue = 20
+
+            XCTAssertEqual(mapped.wrappedValue, 30)
+            XCTAssertEqual(evaluationCount, 3)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        left.wrappedValue = 100
+        right.wrappedValue = 200
+
+        XCTAssertEqual(evaluationCount, 3)
+    }
+
+    // MARK: Test 20: [AnyState].map teardown [ST3][ST5][ST6][FC7]
+
+    func testAnyStateArrayMapReleasesMappedStateAndStopsUpdatesFromAllSources() {
+        let left = State(wrappedValue: 1)
+        let right = State(wrappedValue: 2)
+        var evaluationCount = 0
+
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = ([left, right] as [AnyState]).map {
+                evaluationCount += 1
+                return left.wrappedValue + right.wrappedValue
+            }
+
+            weakMapped = mapped
+
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+            XCTAssertEqual(mapped.wrappedValue, 3)
+            XCTAssertEqual(evaluationCount, 1)
+
+            left.wrappedValue = 10
+
+            XCTAssertEqual(mapped.wrappedValue, 12)
+            XCTAssertEqual(evaluationCount, 2)
+
+            right.wrappedValue = 20
+
+            XCTAssertEqual(mapped.wrappedValue, 30)
+            XCTAssertEqual(evaluationCount, 3)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        left.wrappedValue = 100
+        right.wrappedValue = 200
+
+        XCTAssertEqual(evaluationCount, 3)
+    }
+
+    // MARK: Test 21: Typed one-source upstream retention [ST3][ST6][FC7]
+
+    func testSingleSourceTypedMapDoesNotRetainUpstreamState() {
+        var source: State<Int>? = State(wrappedValue: 2)
+
+        weak var weakSource = source
+
+        let mapped = source!.map { value in
+            value * 3
+        }
+
+        XCTAssertEqual(mapped.wrappedValue, 6)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 1)
+
+        source = nil
+
+        XCTAssertNil(weakSource)
+        XCTAssertEqual(mapped.wrappedValue, 6)
+    }
+
+    // MARK: Test 22: Typed two-source upstream retention [ST3][ST5][ST6][FC7]
+
+    func testCombinedTypedMapDoesNotRetainUpstreamStates() {
+        var left: State<Int>? = State(wrappedValue: 1)
+        var right: State<Int>? = State(wrappedValue: 2)
+
+        weak var weakLeft = left
+        weak var weakRight = right
+
+        let mapped = left!.and(right!).map { left, right in
+            left + right
+        }
+
+        XCTAssertEqual(mapped.wrappedValue, 3)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+
+        left = nil
+        right = nil
+
+        XCTAssertNil(weakLeft)
+        XCTAssertNil(weakRight)
+        XCTAssertEqual(mapped.wrappedValue, 3)
     }
 
     // MARK: - GROUP A — Targeted cancellation
