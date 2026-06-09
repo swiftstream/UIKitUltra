@@ -17,7 +17,13 @@ protocol ParagraphStyleDelegate: AnyObject {
 
 public class ParagraphStyle: NSMutableParagraphStyle {
     weak var delegate: ParagraphStyleDelegate?
-    
+
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     init (_ delegate: ParagraphStyleDelegate) {
         super.init()
         self.delegate = delegate
@@ -69,25 +75,29 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     }
     
     func mergeWithParagraphStyle(_ v: ParagraphStyle) {
-        lineSpacingState.merge(with: v.lineSpacingState)
-        minimumLineHeightState.merge(with: v.minimumLineHeightState)
-        maximumLineHeightState.merge(with: v.maximumLineHeightState)
-        lineHeightMultipleState.merge(with: v.lineHeightMultipleState)
-        defaultTabIntervalState.merge(with: v.defaultTabIntervalState)
-        paragraphSpacingBeforeState.merge(with: v.paragraphSpacingBeforeState)
-        hyphenationFactorState.merge(with: v.hyphenationFactorState)
+        lineSpacingState.merge(with: v.lineSpacingState).hold(in: stateBindingHolder)
+        paragraphSpacingState.merge(with: v.paragraphSpacingState).hold(in: stateBindingHolder)
+        firstLineHeadIndentState.merge(with: v.firstLineHeadIndentState).hold(in: stateBindingHolder)
+        headIndentState.merge(with: v.headIndentState).hold(in: stateBindingHolder)
+        tailIndentState.merge(with: v.tailIndentState).hold(in: stateBindingHolder)
+        minimumLineHeightState.merge(with: v.minimumLineHeightState).hold(in: stateBindingHolder)
+        maximumLineHeightState.merge(with: v.maximumLineHeightState).hold(in: stateBindingHolder)
+        lineHeightMultipleState.merge(with: v.lineHeightMultipleState).hold(in: stateBindingHolder)
+        defaultTabIntervalState.merge(with: v.defaultTabIntervalState).hold(in: stateBindingHolder)
+        paragraphSpacingBeforeState.merge(with: v.paragraphSpacingBeforeState).hold(in: stateBindingHolder)
+        hyphenationFactorState.merge(with: v.hyphenationFactorState).hold(in: stateBindingHolder)
         #if os(macOS)
-        tighteningFactorForTruncationState.merge(with: v.tighteningFactorForTruncationState)
-        headerLevelState.merge(with: v.headerLevelState)
-        allowsDefaultTighteningForTruncationState.merge(with: v.allowsDefaultTighteningForTruncationState)
+        tighteningFactorForTruncationState.merge(with: v.tighteningFactorForTruncationState).hold(in: stateBindingHolder)
+        headerLevelState.merge(with: v.headerLevelState).hold(in: stateBindingHolder)
+        allowsDefaultTighteningForTruncationState.merge(with: v.allowsDefaultTighteningForTruncationState).hold(in: stateBindingHolder)
         #endif
-        alignmentState.merge(with: v.alignmentState)
-        lineBreakModeState.merge(with: v.lineBreakModeState)
-        baseWritingDirectionState.merge(with: v.baseWritingDirectionState)
-        tabStopsState.merge(with: v.tabStopsState)
+        alignmentState.merge(with: v.alignmentState).hold(in: stateBindingHolder)
+        lineBreakModeState.merge(with: v.lineBreakModeState).hold(in: stateBindingHolder)
+        baseWritingDirectionState.merge(with: v.baseWritingDirectionState).hold(in: stateBindingHolder)
+        tabStopsState.merge(with: v.tabStopsState).hold(in: stateBindingHolder)
         #if os(macOS)
-        textBlocksState.merge(with: v.textBlocksState)
-        textListsState.merge(with: v.textListsState)
+        textBlocksState.merge(with: v.textBlocksState).hold(in: stateBindingHolder)
+        textListsState.merge(with: v.textListsState).hold(in: stateBindingHolder)
         #endif
     }
     
@@ -118,7 +128,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func lineSpacing(_ state: State<CGFloat>) -> Self {
-        lineSpacingState.merge(with: state)
+        lineSpacingState.merge(with: state).hold(in: stateBindingHolder)
         return lineSpacing(state.wrappedValue)
     }
     
@@ -149,7 +159,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func paragraphSpacing(_ state: State<CGFloat>) -> Self {
-        paragraphSpacingState.merge(with: state)
+        paragraphSpacingState.merge(with: state).hold(in: stateBindingHolder)
         return paragraphSpacing(state.wrappedValue)
     }
     
@@ -180,7 +190,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func firstLineHeadIndent(_ state: State<CGFloat>) -> Self {
-        firstLineHeadIndentState.merge(with: state)
+        firstLineHeadIndentState.merge(with: state).hold(in: stateBindingHolder)
         return firstLineHeadIndent(state.wrappedValue)
     }
     
@@ -211,7 +221,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func headIndent(_ state: State<CGFloat>) -> Self {
-        headIndentState.merge(with: state)
+        headIndentState.merge(with: state).hold(in: stateBindingHolder)
         return headIndent(state.wrappedValue)
     }
     
@@ -242,7 +252,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func tailIndent(_ state: State<CGFloat>) -> Self {
-        tailIndentState.merge(with: state)
+        tailIndentState.merge(with: state).hold(in: stateBindingHolder)
         return tailIndent(state.wrappedValue)
     }
     
@@ -273,7 +283,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func minimumLineHeight(_ state: State<CGFloat>) -> Self {
-        minimumLineHeightState.merge(with: state)
+        minimumLineHeightState.merge(with: state).hold(in: stateBindingHolder)
         return minimumLineHeight(state.wrappedValue)
     }
     
@@ -304,7 +314,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func maximumLineHeight(_ state: State<CGFloat>) -> Self {
-        maximumLineHeightState.merge(with: state)
+        maximumLineHeightState.merge(with: state).hold(in: stateBindingHolder)
         return maximumLineHeight(state.wrappedValue)
     }
     
@@ -335,7 +345,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func lineHeightMultiple(_ state: State<CGFloat>) -> Self {
-        lineHeightMultipleState.merge(with: state)
+        lineHeightMultipleState.merge(with: state).hold(in: stateBindingHolder)
         return lineHeightMultiple(state.wrappedValue)
     }
     
@@ -366,7 +376,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func defaultTabInterval(_ state: State<CGFloat>) -> Self {
-        defaultTabIntervalState.merge(with: state)
+        defaultTabIntervalState.merge(with: state).hold(in: stateBindingHolder)
         return defaultTabInterval(state.wrappedValue)
     }
     
@@ -397,7 +407,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func paragraphSpacingBefore(_ state: State<CGFloat>) -> Self {
-        paragraphSpacingBeforeState.merge(with: state)
+        paragraphSpacingBeforeState.merge(with: state).hold(in: stateBindingHolder)
         return paragraphSpacingBefore(state.wrappedValue)
     }
     
@@ -428,7 +438,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func hyphenationFactor(_ state: State<Float>) -> Self {
-        hyphenationFactorState.merge(with: state)
+        hyphenationFactorState.merge(with: state).hold(in: stateBindingHolder)
         return hyphenationFactor(state.wrappedValue)
     }
     
@@ -460,7 +470,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func tighteningFactorForTruncation(_ state: State<Float>) -> Self {
-        tighteningFactorForTruncationState.merge(with: state)
+        tighteningFactorForTruncationState.merge(with: state).hold(in: stateBindingHolder)
         return tighteningFactorForTruncation(state.wrappedValue)
     }
     
@@ -491,7 +501,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func headerLevel(_ state: State<Int>) -> Self {
-        headerLevelState.merge(with: state)
+        headerLevelState.merge(with: state).hold(in: stateBindingHolder)
         return headerLevel(state.wrappedValue)
     }
     
@@ -522,7 +532,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func allowsDefaultTighteningForTruncation(_ state: State<Bool>) -> Self {
-        allowsDefaultTighteningForTruncationState.merge(with: state)
+        allowsDefaultTighteningForTruncationState.merge(with: state).hold(in: stateBindingHolder)
         return allowsDefaultTighteningForTruncation(state.wrappedValue)
     }
     #endif
@@ -554,7 +564,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func alignment(_ state: State<NSTextAlignment>) -> Self {
-        alignmentState.merge(with: state)
+        alignmentState.merge(with: state).hold(in: stateBindingHolder)
         return alignment(state.wrappedValue)
     }
     
@@ -585,7 +595,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func lineBreakMode(_ state: State<NSLineBreakMode>) -> Self {
-        lineBreakModeState.merge(with: state)
+        lineBreakModeState.merge(with: state).hold(in: stateBindingHolder)
         return lineBreakMode(state.wrappedValue)
     }
     
@@ -616,7 +626,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func baseWritingDirection(_ state: State<NSWritingDirection>) -> Self {
-        baseWritingDirectionState.merge(with: state)
+        baseWritingDirectionState.merge(with: state).hold(in: stateBindingHolder)
         return baseWritingDirection(state.wrappedValue)
     }
     
@@ -647,7 +657,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func tabStops(_ state: State<[NSTextTab]>) -> Self {
-        tabStopsState.merge(with: state)
+        tabStopsState.merge(with: state).hold(in: stateBindingHolder)
         return tabStops(state.wrappedValue)
     }
     
@@ -679,7 +689,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func textBlocks(_ state: State<[NSTextBlock]>) -> Self {
-        textBlocksState.merge(with: state)
+        textBlocksState.merge(with: state).hold(in: stateBindingHolder)
         return textBlocks(state.wrappedValue)
     }
     
@@ -710,7 +720,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     
     @discardableResult
     public func textLists(_ state: State<[NSTextList]>) -> Self {
-        textListsState.merge(with: state)
+        textListsState.merge(with: state).hold(in: stateBindingHolder)
         return textLists(state.wrappedValue)
     }
     #endif
