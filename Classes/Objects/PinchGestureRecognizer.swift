@@ -25,6 +25,7 @@ final public class PinchGestureRecognizer: UIPinchGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.scale = $0
         }
+        .hold(in: _tracker)
         return self
     }
     

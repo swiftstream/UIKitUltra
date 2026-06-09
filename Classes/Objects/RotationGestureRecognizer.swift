@@ -34,6 +34,7 @@ final public class RotationGestureRecognizer: NSRotationGestureRecognizer, _Gest
         state.listen { [weak self] in
             self?.rotation = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -48,6 +49,7 @@ final public class RotationGestureRecognizer: NSRotationGestureRecognizer, _Gest
         state.listen { [weak self] in
             self?.rotationInDegrees = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -84,6 +86,7 @@ final public class RotationGestureRecognizer: UIRotationGestureRecognizer, _Gest
         state.listen { [weak self] in
             self?.rotation = $0
         }
+        .hold(in: _tracker)
         return self
     }
     

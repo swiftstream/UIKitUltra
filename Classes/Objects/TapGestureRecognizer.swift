@@ -25,6 +25,7 @@ final public class TapGestureRecognizer: UITapGestureRecognizer, _GestureTrackab
         state.listen { [weak self] in
             self?.numberOfTapsRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     #if !os(tvOS)
@@ -39,6 +40,7 @@ final public class TapGestureRecognizer: UITapGestureRecognizer, _GestureTrackab
         state.listen { [weak self] in
             self?.numberOfTouchesRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     #endif

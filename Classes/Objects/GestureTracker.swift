@@ -4,7 +4,9 @@ import AppKit
 import UIKit
 #endif
 
-class _GestureTracker {
+class _GestureTracker: StatesHolder {
+    let statesValues = StatesHolderValuesBox()
+
     var change: ((UGestureRecognizer.State) -> Void)?
     var possible: (() -> Void)?
     var began: (() -> Void)?
@@ -12,11 +14,15 @@ class _GestureTracker {
     var ended: (() -> Void)?
     var cancelled: (() -> Void)?
     var failed: (() -> Void)?
-    
+
     weak var outerDelegate: UGestureRecognizerDelegate?
-    
+
     init () {}
-    
+
+    deinit {
+        invalidateStates()
+    }
+
     #if os(macOS)
     @objc func handle(_ gesture: NSGestureRecognizer) {
         change?(gesture.state)

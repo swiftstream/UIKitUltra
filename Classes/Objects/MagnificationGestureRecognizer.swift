@@ -30,6 +30,7 @@ final public class MagnificationGestureRecognizer: NSMagnificationGestureRecogni
         state.listen { [weak self] in
             self?.magnification = $0
         }
+        .hold(in: _tracker)
         return self
     }
     

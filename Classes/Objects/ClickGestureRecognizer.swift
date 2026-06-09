@@ -28,6 +28,7 @@ final public class ClickGestureRecognizer: NSClickGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.numberOfClicksRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -42,6 +43,7 @@ final public class ClickGestureRecognizer: NSClickGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.numberOfTouchesRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -56,6 +58,7 @@ final public class ClickGestureRecognizer: NSClickGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.buttonMask = $0
         }
+        .hold(in: _tracker)
         return self
     }
     

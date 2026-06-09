@@ -31,6 +31,7 @@ final public class PanGestureRecognizer: NSPanGestureRecognizer, _GestureTrackab
         state.listen { [weak self] in
             self?.numberOfTouchesRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -45,6 +46,7 @@ final public class PanGestureRecognizer: NSPanGestureRecognizer, _GestureTrackab
         state.listen { [weak self] in
             self?.buttonMask = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -86,6 +88,7 @@ final public class PanGestureRecognizer: UIPanGestureRecognizer, _GestureTrackab
         state.listen { [weak self] in
             self?.minimumNumberOfTouches = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -100,6 +103,7 @@ final public class PanGestureRecognizer: UIPanGestureRecognizer, _GestureTrackab
         state.listen { [weak self] in
             self?.maximumNumberOfTouches = $0
         }
+        .hold(in: _tracker)
         return self
     }
     #endif

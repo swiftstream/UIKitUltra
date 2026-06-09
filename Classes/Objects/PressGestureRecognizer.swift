@@ -39,6 +39,7 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.numberOfTouchesRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -53,6 +54,7 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.minimumPressDuration = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -67,6 +69,7 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.allowableMovement = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -81,6 +84,7 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
         state.listen { [weak self] in
             self?.buttonMask = $0
         }
+        .hold(in: _tracker)
         return self
     }
     

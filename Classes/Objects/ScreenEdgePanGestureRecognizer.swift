@@ -23,6 +23,7 @@ final public class ScreenEdgePanGestureRecognizer: UIScreenEdgePanGestureRecogni
         state.listen { [weak self] in
             self?.edges = $0
         }
+        .hold(in: _tracker)
         return self
     }
     

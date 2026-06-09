@@ -150,6 +150,7 @@ final public class SwipeGestureRecognizer: USwipeGestureRecognizer, _GestureTrac
         state.listen { [weak self] in
             self?.numberOfTouchesRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     #endif
@@ -164,6 +165,7 @@ final public class SwipeGestureRecognizer: USwipeGestureRecognizer, _GestureTrac
         state.listen { [weak self] in
             self?.direction = $0
         }
+        .hold(in: _tracker)
         return self
     }
     

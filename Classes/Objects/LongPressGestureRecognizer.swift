@@ -35,6 +35,7 @@ final public class LongPressGestureRecognizer: UILongPressGestureRecognizer, _Ge
         state.listen { [weak self] in
             self?.numberOfTapsRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -50,6 +51,7 @@ final public class LongPressGestureRecognizer: UILongPressGestureRecognizer, _Ge
         state.listen { [weak self] in
             self?.numberOfTouchesRequired = $0
         }
+        .hold(in: _tracker)
         return self
     }
     #endif
@@ -65,6 +67,7 @@ final public class LongPressGestureRecognizer: UILongPressGestureRecognizer, _Ge
         state.listen { [weak self] in
             self?.minimumPressDuration = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
@@ -79,6 +82,7 @@ final public class LongPressGestureRecognizer: UILongPressGestureRecognizer, _Ge
         state.listen { [weak self] in
             self?.allowableMovement = $0
         }
+        .hold(in: _tracker)
         return self
     }
     
