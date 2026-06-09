@@ -33,6 +33,7 @@ extension DeclarativeProtocol {
             #endif
             self?.properties.opacity = new
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
         return self
     }
 }

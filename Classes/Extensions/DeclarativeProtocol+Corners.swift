@@ -19,9 +19,10 @@ extension DeclarativeProtocol {
     @discardableResult
     public func corners(_ state: State<CGFloat>) -> Self {
         corners(state.wrappedValue)
-        state.listen { [weak self] old, new in
-            self?.corners(state.wrappedValue)
+        state.listen { [weak self] new in
+            self?.corners(new)
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
         return self
     }
 }
@@ -60,6 +61,7 @@ extension DeclarativeProtocol {
         state.listen { [weak self] new in
             self?.corners(new)
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
         return self
     }
 }

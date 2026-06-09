@@ -5,6 +5,8 @@ import UIKit
 #endif
 
 public class PropertiesInternal {
+    let stateBindingHolder = TempStatesHolder()
+
     var circleCorners: Bool = false
     #if !os(macOS)
     var customCorners: CustomCorners?

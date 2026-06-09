@@ -50,6 +50,7 @@ extension DeclarativeProtocol {
         color.listen { [weak self] _, newColor in
             self?._applyShadowColor(newColor)
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
     }
     
     private func _setShadow(opacity: Float) {

@@ -40,6 +40,7 @@ extension DeclarativeProtocol {
         color.listen { [weak self] _, newColor in
             self?._applyBorderColor(newColor)
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
     }
 
     @discardableResult

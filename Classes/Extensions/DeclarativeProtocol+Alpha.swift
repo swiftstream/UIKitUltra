@@ -21,9 +21,10 @@ extension DeclarativeProtocol {
     @discardableResult
     public func alpha(_ state: State<CGFloat>) -> Self {
         alpha(state.wrappedValue)
-        state.listen { [weak self] old, new in
+        state.listen { [weak self] new in
             self?.alpha(new)
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
         return self
     }
 }

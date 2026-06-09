@@ -19,6 +19,7 @@ extension DeclarativeProtocol {
             self?.declarativeView.isUserInteractionEnabled = new
             self?.properties.userInteraction = new
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
         return self
     }
 }

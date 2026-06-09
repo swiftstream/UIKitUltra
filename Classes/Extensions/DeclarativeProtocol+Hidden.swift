@@ -20,6 +20,7 @@ extension DeclarativeProtocol {
         state.listen { [weak self] new in
             self?.hidden(new)
         }
+        .hold(in: _declarativeView._properties.stateBindingHolder)
         return self
     }
 }
