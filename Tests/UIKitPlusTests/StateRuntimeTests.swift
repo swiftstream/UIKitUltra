@@ -6,6 +6,18 @@ private final class TestStatesHolder: StatesHolder {
     let statesValues = StatesHolderValuesBox()
 }
 
+private struct InnerStateTestValue {
+    var count: Int
+}
+
+private final class InnerStateReferenceTestValue {
+    var count: Int
+
+    init(count: Int) {
+        self.count = count
+    }
+}
+
 final class StateRuntimeTests: XCTestCase {
 
     // MARK: - Test 1: Wrapped-value lifecycle phase order [ST2][MU2]
@@ -1380,5 +1392,308 @@ final class StateRuntimeTests: XCTestCase {
 
         let decoded = try JSONDecoder().decode(CodableState<Int>.self, from: data)
         XCTAssertEqual(decoded.wrappedValue, 42)
+    }
+
+    // MARK: - SLICE 3 — InnerState lifecycle repair
+
+    // MARK: Test 62: Local write updates parent and notifies once [ST7][MU2]
+
+    func testInnerStateLocalWriteUpdatesParentAndNotifiesExactlyOnce() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var log: [String] = []
+
+        inner.listen { old, new in
+            log.append("\(old)->\(new)")
+        }
+
+        inner.wrappedValue = 2
+
+        XCTAssertEqual(parent.wrappedValue.count, 2)
+        XCTAssertEqual(inner.wrappedValue, 2)
+        XCTAssertEqual(inner.projectedValue.wrappedValue, 2)
+        XCTAssertEqual(log, [
+            "1->2",
+        ])
+    }
+
+    // MARK: Test 63: Parent write updates projected state and notifies once [ST7][MU2]
+
+    func testInnerStateParentWriteUpdatesProjectedStateAndNotifiesExactlyOnce() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var log: [String] = []
+
+        inner.listen { old, new in
+            log.append("\(old)->\(new)")
+        }
+
+        parent.wrappedValue = .init(count: 3)
+
+        XCTAssertEqual(parent.wrappedValue.count, 3)
+        XCTAssertEqual(inner.wrappedValue, 3)
+        XCTAssertEqual(inner.projectedValue.wrappedValue, 3)
+        XCTAssertEqual(log, [
+            "1->3",
+        ])
+    }
+
+    // MARK: Test 64: Projected write remains output-only [ST7]
+
+    func testInnerStateProjectedWriteNotifiesListenersWithoutMutatingParent() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var log: [String] = []
+
+        inner.listen { old, new in
+            log.append("\(old)->\(new)")
+        }
+
+        inner.projectedValue.wrappedValue = 5
+
+        XCTAssertEqual(parent.wrappedValue.count, 1)
+        XCTAssertEqual(inner.wrappedValue, 1)
+        XCTAssertEqual(inner.projectedValue.wrappedValue, 5)
+        XCTAssertEqual(log, [
+            "1->5",
+        ])
+    }
+
+    // MARK: Test 65: Parent write overwrites output-only projected value [ST7]
+
+    func testInnerStateParentWriteOverwritesProjectedOutputOnlyValue() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var log: [String] = []
+
+        inner.listen { old, new in
+            log.append("\(old)->\(new)")
+        }
+
+        inner.projectedValue.wrappedValue = 5
+        log.removeAll()
+
+        parent.wrappedValue = .init(count: 2)
+
+        XCTAssertEqual(parent.wrappedValue.count, 2)
+        XCTAssertEqual(inner.wrappedValue, 2)
+        XCTAssertEqual(inner.projectedValue.wrappedValue, 2)
+        XCTAssertEqual(log, [
+            "5->2",
+        ])
+    }
+
+    // MARK: Test 66: Listener token cancellation [ST6][FC7]
+
+    func testInnerStateListenerTokenCanCancel() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var count = 0
+
+        let token = inner.listen { _, _ in
+            count += 1
+        }
+
+        inner.wrappedValue = 2
+        XCTAssertEqual(count, 1)
+
+        token.cancel()
+
+        inner.wrappedValue = 3
+        XCTAssertEqual(count, 1)
+    }
+
+    // MARK: Test 67: Targeted listener removal forwarding [ST6][FC7]
+
+    func testInnerStateRemoveListenerForwardsToProjectedState() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var count = 0
+
+        let token = inner.listen { _, _ in
+            count += 1
+        }
+
+        inner.removeListener(id: token.id)
+
+        inner.wrappedValue = 2
+
+        XCTAssertEqual(count, 0)
+        XCTAssertEqual(inner.projectedValue.wrappedValue, 2)
+    }
+
+    // MARK: Test 68: Global projected-listener removal preserves parent sync [ST6][FC7][FC8]
+
+    func testInnerStateRemoveAllListenersForwardsWithoutCancellingParentSubscription() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var firstCount = 0
+        var secondCount = 0
+
+        inner.listen { _, _ in
+            firstCount += 1
+        }
+
+        inner.listen { _ in
+            secondCount += 1
+        }
+
+        inner.removeAllListeners()
+
+        parent.wrappedValue = .init(count: 2)
+
+        XCTAssertEqual(firstCount, 0)
+        XCTAssertEqual(secondCount, 0)
+        XCTAssertEqual(inner.wrappedValue, 2)
+        XCTAssertEqual(inner.projectedValue.wrappedValue, 2)
+        XCTAssertEqual(inner.statesValues.heldListeners.count, 1)
+    }
+
+    // MARK: Test 69: InnerState deinit releases parent subscription [ST6][FC7][FC8]
+
+    func testInnerStateDeinitReleasesParentSubscription() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+
+        var inner: InnerState<InnerStateTestValue, Int>? = .init(parent, \.count)
+        weak var weakInner = inner
+
+        let projected = inner!.projectedValue
+
+        XCTAssertEqual(inner!.statesValues.heldListeners.count, 1)
+        XCTAssertEqual(projected.wrappedValue, 1)
+
+        inner = nil
+
+        XCTAssertNil(weakInner)
+
+        parent.wrappedValue = .init(count: 2)
+
+        XCTAssertEqual(projected.wrappedValue, 1)
+    }
+
+    // MARK: Test 70: ID forwards projected state identity [ST7]
+
+    func testInnerStateIdForwardsProjectedState() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        XCTAssertEqual(
+            inner.id,
+            inner.projectedValue.id
+        )
+    }
+
+    // MARK: Test 71: InnerState participates as AnyState source [ST7]
+
+    func testInnerStateCanParticipateAsAnyStateSource() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+        let projected = inner.projectedValue
+
+        let mapped = ([inner as AnyState]).map {
+            projected.wrappedValue * 10
+        }
+
+        XCTAssertEqual(mapped.wrappedValue, 10)
+
+        parent.wrappedValue = .init(count: 3)
+
+        XCTAssertEqual(mapped.wrappedValue, 30)
+    }
+
+    // MARK: Test 72: Simple listener forwarding [ST7]
+
+    func testInnerStateSimpleListenerForwardsToProjectedState() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+
+        var values: [Int] = []
+
+        inner.listen { value in
+            values.append(value)
+        }
+
+        parent.wrappedValue = .init(count: 2)
+        inner.projectedValue.wrappedValue = 3
+
+        XCTAssertEqual(values, [
+            2,
+            3,
+        ])
+    }
+
+    // MARK: Test 73: Reference-type parent local write [ST7]
+
+    func testInnerStateLocalWriteSupportsReferenceTypeParent() {
+        let object = InnerStateReferenceTestValue(count: 1)
+        let parent = State(wrappedValue: object)
+        let inner = InnerState(parent, \.count)
+
+        var log: [String] = []
+
+        inner.listen { old, new in
+            log.append("\(old)->\(new)")
+        }
+
+        inner.wrappedValue = 2
+
+        XCTAssertTrue(parent.wrappedValue === object)
+        XCTAssertEqual(parent.wrappedValue.count, 2)
+        XCTAssertEqual(inner.wrappedValue, 2)
+        XCTAssertEqual(inner.projectedValue.wrappedValue, 2)
+        XCTAssertEqual(log, [
+            "1->2",
+        ])
+    }
+
+    // MARK: Test 74: Explicit holder release disconnects parent projection [ST6][FC8]
+
+    func testInnerStateReleaseStatesStopsParentProjectionUpdates() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+        let inner = InnerState(parent, \.count)
+        let projected = inner.projectedValue
+
+        XCTAssertEqual(inner.statesValues.heldListeners.count, 1)
+        XCTAssertEqual(projected.wrappedValue, 1)
+
+        inner.releaseStates()
+
+        XCTAssertEqual(inner.statesValues.heldListeners.count, 0)
+
+        parent.wrappedValue = .init(count: 2)
+
+        XCTAssertEqual(inner.wrappedValue, 2)
+        XCTAssertEqual(projected.wrappedValue, 1)
+    }
+
+    // MARK: Test 75: Retained projected State keeps its own listeners after InnerState deinit [ST6][ST7][FC8]
+
+    func testInnerStateDeinitPreservesListenersOwnedByRetainedProjectedState() {
+        let parent = State(wrappedValue: InnerStateTestValue(count: 1))
+
+        var inner: InnerState<InnerStateTestValue, Int>? = .init(parent, \.count)
+        let projected = inner!.projectedValue
+
+        var log: [String] = []
+
+        projected.listen { old, new in
+            log.append("\(old)->\(new)")
+        }
+
+        inner = nil
+
+        projected.wrappedValue = 5
+
+        XCTAssertEqual(projected.wrappedValue, 5)
+        XCTAssertEqual(log, [
+            "1->5",
+        ])
     }
 }

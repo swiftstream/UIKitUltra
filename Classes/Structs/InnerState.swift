@@ -1,44 +1,76 @@
+import Foundation
+
 @propertyWrapper
-public class InnerState<Value, InnerValue> {
-    private var _keyPath: WritableKeyPath<Value, InnerValue>
-    private var _wrappedValue: State<Value>
+public class InnerState<Value, InnerValue>: AnyState, StatesHolder {
+    private let _keyPath: WritableKeyPath<Value, InnerValue>
+    private let _wrappedValue: State<Value>
+
     public var wrappedValue: InnerValue {
-        get { _wrappedValue.wrappedValue[keyPath: _keyPath] }
+        get {
+            _wrappedValue.wrappedValue[keyPath: _keyPath]
+        }
         set {
-            let oldValue = _wrappedValue.wrappedValue[keyPath: _keyPath]
-            _wrappedValue.wrappedValue[keyPath: _keyPath] = newValue
-            listeners.forEach { $0(oldValue, newValue) }
+            var parentValue = _wrappedValue.wrappedValue
+            parentValue[keyPath: _keyPath] = newValue
+            _wrappedValue.wrappedValue = parentValue
         }
     }
-    
+
     @State
-    var innerState: InnerValue
+    private var innerState: InnerValue
 
-    public var projectedValue: State<InnerValue> { $innerState }
-
-    public init(_ value: State<Value>, _ keyPath: WritableKeyPath<Value, InnerValue>) {
-        _wrappedValue = value
-        _keyPath = keyPath
-        innerState = _wrappedValue.wrappedValue[keyPath: keyPath]
-        value.listen { [weak self, weak keyPath] newValue in
-            guard let keyPath = keyPath else { return }
-            self?.innerState = newValue[keyPath: keyPath]
-        }
-        $innerState.listen { [weak self] oldValue, newValue in
-            self?.listeners.forEach { $0(oldValue, newValue) }
-        }
+    public var projectedValue: State<InnerValue> {
+        $innerState
     }
+
+    public var id: UUID {
+        projectedValue.id
+    }
+
+    public let statesValues = StatesHolderValuesBox()
 
     public typealias Listener = (_ old: InnerValue, _ new: InnerValue) -> Void
     public typealias SimpleListener = (_ value: InnerValue) -> Void
 
-    private var listeners: [Listener] = []
+    public init(
+        _ value: State<Value>,
+        _ keyPath: WritableKeyPath<Value, InnerValue>
+    ) {
+        _wrappedValue = value
+        _keyPath = keyPath
+        innerState = value.wrappedValue[keyPath: keyPath]
 
-    public func listen(_ listener: @escaping Listener) {
-        listeners.append(listener)
+        value.listen { [weak self] newValue in
+            guard let self = self else { return }
+
+            self.innerState = newValue[keyPath: self._keyPath]
+        }.hold(in: self)
     }
-    
-    public func listen(_ listener: @escaping SimpleListener) {
-        listeners.append({ _, new in listener(new) })
+
+    deinit {
+        invalidateStates()
+    }
+
+    @discardableResult
+    public func listen(_ listener: @escaping Listener) -> StateListener {
+        projectedValue.listen(listener)
+    }
+
+    @discardableResult
+    public func listen(_ listener: @escaping SimpleListener) -> StateListener {
+        projectedValue.listen(listener)
+    }
+
+    @discardableResult
+    public func listen(_ listener: @escaping () -> Void) -> StateListener {
+        projectedValue.listen(listener)
+    }
+
+    public func removeListener(id: UUID) {
+        projectedValue.removeListener(id: id)
+    }
+
+    public func removeAllListeners() {
+        projectedValue.removeAllListeners()
     }
 }
