@@ -1,19 +1,33 @@
+import Foundation
+
 public protocol Stateable: AnyState {
     associatedtype Value
-    
+
     var wrappedValue: Value { get set }
-    
-    func beginTrigger(_ trigger: @escaping () -> Void)
-    func endTrigger(_ trigger: @escaping () -> Void)
-    func listen(_ listener: @escaping (_ old: Value, _ new: Value) -> Void)
-    func listen(_ listener: @escaping (_ value: Value) -> Void)
-    func listen(_ listener: @escaping () -> Void)
+
+    @discardableResult
+    func beginTrigger(_ trigger: @escaping () -> Void) -> StateListener
+
+    @discardableResult
+    func endTrigger(_ trigger: @escaping () -> Void) -> StateListener
+
+    @discardableResult
+    func listen(_ listener: @escaping (_ old: Value, _ new: Value) -> Void) -> StateListener
+
+    @discardableResult
+    func listen(_ listener: @escaping (_ value: Value) -> Void) -> StateListener
+
+    @discardableResult
+    func listen(_ listener: @escaping () -> Void) -> StateListener
 }
 
 public typealias UState = State
 
 @propertyWrapper
-open class State<Value>: Stateable {
+open class State<Value>: Stateable, StatesHolder {
+    public let id = UUID()
+    public let statesValues = StatesHolderValuesBox()
+
     private var _originalValue: Value
     private var _wrappedValue: Value
     public var wrappedValue: Value {
@@ -21,19 +35,40 @@ open class State<Value>: Stateable {
         set {
             let oldValue = _wrappedValue
             _wrappedValue = newValue
-            for trigger in beginTriggers {
+
+            let beginSnapshot = beginTriggers.snapshot
+            let listenerSnapshot = listeners.snapshot
+            let endSnapshot = endTriggers.snapshot
+
+            for trigger in beginSnapshot {
                 trigger()
             }
-            for listener in listeners {
+
+            for listener in listenerSnapshot {
                 listener(oldValue, newValue)
             }
-            for trigger in endTriggers {
+
+            for trigger in endSnapshot {
                 trigger()
             }
         }
     }
-    
+
     public var projectedValue: State<Value> { self }
+
+    public typealias Trigger = () -> Void
+    public typealias Listener = (_ old: Value, _ new: Value) -> Void
+    public typealias SimpleListener = (_ value: Value) -> Void
+
+    private var beginTriggers = OrderedRegistrations<Trigger>()
+    private var endTriggers = OrderedRegistrations<Trigger>()
+    private var listeners = OrderedRegistrations<Listener>()
+    private var listenerTokens: [UUID: StateListener] = [:]
+
+    deinit {
+        invalidateStates()
+        removeAllListeners()
+    }
 
     init (_ stateA: AnyState, _ stateB: AnyState, _ expression: @escaping () -> Value) {
         let value = expression()
@@ -46,7 +81,7 @@ open class State<Value>: Stateable {
             self.wrappedValue = expression()
         }
     }
-    
+
     init <A, B>(_ stateA: State<A>, _ stateB: State<B>, _ expression: @escaping (A, B) -> Value) {
         let value = expression(stateA.wrappedValue, stateB.wrappedValue)
         _originalValue = value
@@ -58,7 +93,7 @@ open class State<Value>: Stateable {
             self.wrappedValue = expression(stateA.wrappedValue, stateB.wrappedValue)
         }
     }
-    
+
     init <A, B>(_ stateA: State<A>, _ stateB: State<B>, _ expression: @escaping (CombinedDeprecatedResult<A, B>) -> Value) {
         let value = expression(.init(left: stateA.wrappedValue, right: stateB.wrappedValue))
         _originalValue = value
@@ -70,12 +105,12 @@ open class State<Value>: Stateable {
             self.wrappedValue = expression(.init(left: stateA.wrappedValue, right: stateB.wrappedValue))
         }
     }
-    
+
     public init(wrappedValue value: Value) {
         _originalValue = value
         _wrappedValue = value
     }
-    
+
     public init (_ stateA: AnyState, _ expression: @escaping () -> Value) {
         let value = expression()
         _originalValue = value
@@ -84,7 +119,7 @@ open class State<Value>: Stateable {
             self.wrappedValue = expression()
         }
     }
-    
+
     public init <A>(_ stateA: State<A>, _ expression: @escaping (A) -> Value) {
         let value = expression(stateA.wrappedValue)
         _originalValue = value
@@ -93,73 +128,128 @@ open class State<Value>: Stateable {
             self.wrappedValue = expression(stateA.wrappedValue)
         }
     }
-    
+
     public func reset() {
         let oldValue = _wrappedValue
         _wrappedValue = _originalValue
-        for trigger in beginTriggers {
+
+        let beginSnapshot = beginTriggers.snapshot
+        let listenerSnapshot = listeners.snapshot
+        let endSnapshot = endTriggers.snapshot
+
+        for trigger in beginSnapshot {
             trigger()
         }
-        for listener in listeners {
+
+        for listener in listenerSnapshot {
             listener(oldValue, _wrappedValue)
         }
-        for trigger in endTriggers {
+
+        for trigger in endSnapshot {
             trigger()
         }
     }
-    
+
+    public func removeListener(id: UUID) {
+        beginTriggers.remove(id: id)
+        listeners.remove(id: id)
+        endTriggers.remove(id: id)
+
+        let token = listenerTokens.removeValue(forKey: id)
+        token?.sourceDidRemove()
+    }
+
     public func removeAllListeners() {
         beginTriggers.removeAll()
-        endTriggers.removeAll()
         listeners.removeAll()
+        endTriggers.removeAll()
+
+        let tokens = Array(listenerTokens.values)
+        listenerTokens.removeAll()
+
+        tokens.forEach { $0.sourceDidRemove() }
     }
-    
-    public typealias Trigger = () -> Void
-    public typealias Listener = (_ old: Value, _ new: Value) -> Void
-    public typealias SimpleListener = (_ value: Value) -> Void
-    
-    private var beginTriggers: [Trigger] = []
-    private var endTriggers: [Trigger] = []
-    private var listeners: [Listener] = []
-    
-    public func beginTrigger(_ trigger: @escaping Trigger) {
-        beginTriggers.append(trigger)
+
+    @discardableResult
+    public func beginTrigger(_ trigger: @escaping Trigger) -> StateListener {
+        let id = UUID()
+        beginTriggers.append(id: id, handler: trigger)
+
+        let token = StateListener(id: id, state: self)
+        listenerTokens[id] = token
+
+        return token
     }
-    
-    public func endTrigger(_ trigger: @escaping Trigger) {
-        endTriggers.append(trigger)
+
+    @discardableResult
+    public func endTrigger(_ trigger: @escaping Trigger) -> StateListener {
+        let id = UUID()
+        endTriggers.append(id: id, handler: trigger)
+
+        let token = StateListener(id: id, state: self)
+        listenerTokens[id] = token
+
+        return token
     }
-    
-    public func listen(_ listener: @escaping Listener) {
-        listeners.append(listener)
+
+    @discardableResult
+    public func listen(_ listener: @escaping Listener) -> StateListener {
+        let id = UUID()
+        listeners.append(id: id, handler: listener)
+
+        let token = StateListener(id: id, state: self)
+        listenerTokens[id] = token
+
+        return token
     }
-    
-    public func listen(_ listener: @escaping SimpleListener) {
-        listeners.append({ _, new in listener(new) })
+
+    @discardableResult
+    public func listen(_ listener: @escaping SimpleListener) -> StateListener {
+        listen { _, newValue in
+            listener(newValue)
+        }
     }
-    
-    public func listen(_ listener: @escaping () -> Void) {
-        listeners.append({ _,_ in listener() })
+
+    @discardableResult
+    public func listen(_ listener: @escaping () -> Void) -> StateListener {
+        listen { _, _ in
+            listener()
+        }
     }
-    
-    public func merge(with state: State<Value>) {
-        self.wrappedValue = state.wrappedValue
+
+    @discardableResult
+    public func merge(with state: State<Value>) -> [StateListener] {
+        guard self !== state else { return [] }
+
+        wrappedValue = state.wrappedValue
+
         var justSetExternal = false
         var justSetInternal = false
-        state.listen { [weak self] new in
+
+        let externalListener = state.listen { [weak self] newValue in
             guard !justSetInternal else { return }
+
             justSetExternal = true
-            self?.wrappedValue = new
-            justSetExternal = false
+            defer { justSetExternal = false }
+
+            self?.wrappedValue = newValue
         }
-        self.listen { [weak state] new in
+
+        let internalListener = listen { [weak state] newValue in
             guard !justSetExternal else { return }
+
             justSetInternal = true
-            state?.wrappedValue = new
-            justSetInternal = false
+            defer { justSetInternal = false }
+
+            state?.wrappedValue = newValue
         }
+
+        return [
+            externalListener,
+            internalListener,
+        ]
     }
-    
+
     public func and<V>(_ state: State<V>) -> CombinedState<Value, V> {
         CombinedState(left: projectedValue, right: state)
     }
@@ -170,20 +260,20 @@ public class CombinedState<A, B> {
     let _right: State<B>
     public var left: A { _left.wrappedValue }
     public var right: B { _right.wrappedValue }
-    
+
     init (left: State<A>, right: State<B>) {
         self._left = left
         self._right = right
     }
-    
+
     public func map<Result>(_ expression: @escaping () -> Result) -> State<Result> {
         .init(_left, _right, expression)
     }
-    
+
     public func map<Result>(_ expression: @escaping (A, B) -> Result) -> State<Result> {
         .init(_left, _right, expression)
     }
-    
+
     @available(*, deprecated, message: "🧨 This method will be removed soon. Please switch to `.map { left, right in }`.")
     public func map<Result>(_ expression: @escaping (CombinedDeprecatedResult<A, B>) -> Result) -> State<Result> {
         .init(_left, _right, expression)

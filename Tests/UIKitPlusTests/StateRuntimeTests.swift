@@ -1,5 +1,10 @@
 import XCTest
+import Foundation
 @testable import UIKitPlus
+
+private final class TestStatesHolder: StatesHolder {
+    let statesValues = StatesHolderValuesBox()
+}
 
 final class StateRuntimeTests: XCTestCase {
 
@@ -287,5 +292,534 @@ final class StateRuntimeTests: XCTestCase {
         )
 
         items.removeAllListeners()
+    }
+
+    // MARK: - GROUP A — Targeted cancellation
+
+    func testListenerCancellationStopsFutureCallbacks() {
+        let state = State(wrappedValue: 0)
+        var count = 0
+
+        let token = state.listen { _, _ in count += 1 }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 1)
+
+        token.cancel()
+
+        state.wrappedValue = 2
+        XCTAssertEqual(count, 1)
+    }
+
+    func testListenerCancellationIsIdempotent() {
+        let state = State(wrappedValue: 0)
+        var count = 0
+
+        let token = state.listen { _, _ in count += 1 }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 1)
+
+        token.cancel()
+        token.cancel()
+
+        state.wrappedValue = 2
+        XCTAssertEqual(count, 1)
+    }
+
+    func testRemoveListenerOnlyRemovesSelectedRegistration() {
+        let state = State(wrappedValue: 0)
+        var log: [String] = []
+
+        let tokenA = state.listen { _, _ in log.append("A") }
+        state.listen { _, _ in log.append("B") }
+
+        state.removeListener(id: tokenA.id)
+
+        state.wrappedValue = 1
+
+        XCTAssertEqual(log, ["B"])
+    }
+
+    func testRemoveAllListenersCleansAllHolderBookkeeping() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+
+        let tokenA = state.listen { _, _ in }
+        let tokenB = state.listen { _, _ in }
+
+        tokenA.hold(in: holder)
+        tokenB.hold(in: holder)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 2)
+
+        state.removeAllListeners()
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 1
+    }
+
+    func testDirectRemoveListenerCleansAllHolderBookkeeping() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+
+        let token = state.listen { _, _ in }
+        token.hold(in: holder)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+
+        state.removeListener(id: token.id)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+    }
+
+    func testIgnoredTokenRemainsActiveUntilExplicitSourceCleanup() {
+        let state = State(wrappedValue: 0)
+        var count = 0
+
+        state.listen { _, _ in count += 1 }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 1)
+
+        state.removeAllListeners()
+
+        state.wrappedValue = 2
+        XCTAssertEqual(count, 1)
+    }
+
+    // MARK: - GROUP B — Holder bookkeeping
+
+    func testManualCancellationCleansHolderBookkeeping() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+
+        let token = state.listen { _, _ in }
+        token.hold(in: holder)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+
+        token.cancel()
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+    }
+
+    func testRepeatedHoldInSameHolderDoesNotDuplicateBookkeeping() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+
+        let token = state.listen { _, _ in }
+        token.hold(in: holder)
+        token.hold(in: holder)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+    }
+
+    func testMultipleHolderPolicy() {
+        let state = State(wrappedValue: 0)
+        let holderA = TestStatesHolder()
+        let holderB = TestStatesHolder()
+        var count = 0
+
+        let token = state.listen { _, _ in count += 1 }
+        token.hold(in: holderA)
+        token.hold(in: holderB)
+
+        XCTAssertEqual(holderA.statesValues.heldListeners.count, 1)
+        XCTAssertEqual(holderB.statesValues.heldListeners.count, 1)
+
+        token.cancel()
+
+        XCTAssertEqual(holderA.statesValues.heldListeners.count, 0)
+        XCTAssertEqual(holderB.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 0)
+    }
+
+    func testHolderReleaseIsIdempotent() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+        var count = 0
+
+        state.listen { _, _ in count += 1 }.hold(in: holder)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+
+        holder.releaseStates()
+        holder.releaseStates()
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 0)
+    }
+
+    func testReleaseStateOnlyCancelsMatchingSourceRegistrations() {
+        let stateA = State(wrappedValue: 0)
+        let stateB = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+        var log: [String] = []
+
+        stateA.listen { _, _ in log.append("A") }.hold(in: holder)
+        stateB.listen { _, _ in log.append("B") }.hold(in: holder)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 2)
+
+        holder.releaseState(stateA)
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+
+        stateA.wrappedValue = 1
+        stateB.wrappedValue = 1
+
+        XCTAssertEqual(log, ["B"])
+    }
+
+    func testTempStatesHolderDeinitCancelsHeldToken() {
+        let state = State(wrappedValue: 0)
+        var count = 0
+
+        do {
+            let holder = TempStatesHolder()
+            state.listen { _, _ in count += 1 }.hold(in: holder)
+        }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 0)
+    }
+
+    // MARK: - GROUP C — Terminal invalidation
+
+    func testInvalidateStatesIsIdempotent() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+        var count = 0
+
+        state.listen { _, _ in count += 1 }.hold(in: holder)
+
+        holder.invalidateStates()
+        holder.invalidateStates()
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 0)
+    }
+
+    func testHoldIntoInvalidatedHolderCancelsIncomingToken() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+        var count = 0
+
+        holder.invalidateStates()
+
+        let token = state.listen { _, _ in count += 1 }
+        token.hold(in: holder)
+
+        state.wrappedValue = 1
+
+        XCTAssertEqual(count, 0)
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+    }
+
+    func testReleaseStatesRemainsReusable() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+        var count = 0
+
+        let tokenA = state.listen { _, _ in count += 1 }
+        tokenA.hold(in: holder)
+
+        holder.releaseStates()
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 0)
+
+        let tokenB = state.listen { _, _ in count += 1 }
+        tokenB.hold(in: holder)
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+
+        state.wrappedValue = 2
+        XCTAssertEqual(count, 1)
+
+        holder.releaseStates()
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 3
+        XCTAssertEqual(count, 1)
+    }
+
+    func testReleaseCallbackCanRegisterTokenForNextReusableRelease() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+        var count = 0
+
+        holder.awaitRelease {
+            state.listen { _, _ in count += 1 }.hold(in: holder)
+        }
+
+        holder.releaseStates()
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 1)
+
+        holder.releaseStates()
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 2
+        XCTAssertEqual(count, 1)
+    }
+
+    func testInvalidationCallbackCannotLeaveNewHeldTokenAlive() {
+        let state = State(wrappedValue: 0)
+        let holder = TestStatesHolder()
+        var count = 0
+
+        holder.awaitRelease {
+            state.listen { _, _ in count += 1 }.hold(in: holder)
+        }
+
+        holder.invalidateStates()
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 0)
+    }
+
+    func testAwaitReleaseAfterInvalidationInvokesImmediately() {
+        let holder = TestStatesHolder()
+        var called = false
+
+        holder.invalidateStates()
+
+        holder.awaitRelease {
+            called = true
+        }
+
+        XCTAssertTrue(called)
+    }
+
+    // MARK: - GROUP D — Source deinit
+
+    func testSourceStateDeinitInvalidatesHeldToken() {
+        let holder = TestStatesHolder()
+
+        do {
+            let state = State(wrappedValue: 0)
+            state.listen { _, _ in }.hold(in: holder)
+            XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+        }
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+    }
+
+    func testCancelAfterSourceStateDeinitIsSafe() {
+        let holder = TestStatesHolder()
+        var token: StateListener?
+
+        do {
+            let state = State(wrappedValue: 0)
+            token = state.listen { _, _ in }
+            token?.hold(in: holder)
+            XCTAssertEqual(holder.statesValues.heldListeners.count, 1)
+        }
+
+        XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
+
+        token?.cancel()
+        token?.cancel()
+    }
+
+    // MARK: - GROUP E — Snapshot dispatch
+
+    func testListenerCancelledDuringDispatchStillRunsInCurrentSnapshotOnly() {
+        let state = State(wrappedValue: 0)
+        var log: [String] = []
+
+        var tokenB: StateListener?
+
+        state.listen { _, _ in
+            log.append("A")
+            tokenB?.cancel()
+        }
+
+        tokenB = state.listen { _, _ in
+            log.append("B")
+        }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(log, ["A", "B"])
+
+        log.removeAll()
+
+        state.wrappedValue = 2
+        XCTAssertEqual(log, ["A"])
+    }
+
+    func testListenerAddedDuringDispatchRunsStartingWithNextMutation() {
+        let state = State(wrappedValue: 0)
+        var log: [String] = []
+
+        var addedOnce = false
+
+        state.listen { _, _ in
+            log.append("A")
+            if !addedOnce {
+                addedOnce = true
+                state.listen { _, _ in
+                    log.append("C")
+                }
+            }
+        }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(log, ["A"])
+
+        log.removeAll()
+
+        state.wrappedValue = 2
+        XCTAssertEqual(log, ["A", "C"])
+    }
+
+    func testRemoveAllListenersDuringDispatchAffectsNextMutationOnly() {
+        let state = State(wrappedValue: 0)
+        var log: [String] = []
+
+        state.listen { _, _ in
+            log.append("A")
+            state.removeAllListeners()
+        }
+
+        state.listen { _, _ in
+            log.append("B")
+        }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(log, ["A", "B"])
+
+        log.removeAll()
+
+        state.wrappedValue = 2
+        XCTAssertTrue(log.isEmpty)
+    }
+
+    func testNestedMutationRunsSynchronouslyWithDocumentedOrder() {
+        let state = State(wrappedValue: 0)
+        var log: [String] = []
+
+        state.listen { old, new in
+            log.append("A:\(old)->\(new):start")
+
+            if new == 1 {
+                state.wrappedValue = 2
+            }
+
+            log.append("A:\(old)->\(new):end")
+        }
+
+        state.listen { old, new in
+            log.append("B:\(old)->\(new)")
+        }
+
+        state.wrappedValue = 1
+
+        XCTAssertEqual(log, [
+            "A:0->1:start",
+            "A:1->2:start",
+            "A:1->2:end",
+            "B:1->2",
+            "A:0->1:end",
+            "B:0->1",
+        ])
+    }
+
+    // MARK: - GROUP F — Merge handles
+
+    func testMergeWithSelfIsNoOp() {
+        let state = State(wrappedValue: 0)
+        var count = 0
+
+        let handles = state.merge(with: state)
+
+        XCTAssertTrue(handles.isEmpty)
+
+        state.listen { _, _ in count += 1 }
+
+        state.wrappedValue = 1
+
+        XCTAssertEqual(count, 1)
+    }
+
+    func testMergeReturnsHandlesThatCancelSynchronization() {
+        let internalState = State(wrappedValue: 1)
+        let externalState = State(wrappedValue: 2)
+
+        let handles = internalState.merge(with: externalState)
+
+        XCTAssertEqual(handles.count, 2)
+
+        handles.forEach { $0.cancel() }
+
+        externalState.wrappedValue = 10
+        XCTAssertEqual(internalState.wrappedValue, 2)
+
+        internalState.wrappedValue = 20
+        XCTAssertEqual(externalState.wrappedValue, 10)
+    }
+
+    // MARK: - GROUP G — CodableState forwarding
+
+    func testCodableStateIdForwardsProjectedState() {
+        let state = CodableState(wrappedValue: 1)
+
+        XCTAssertEqual(
+            state.id,
+            state.projectedValue.id
+        )
+    }
+
+    func testCodableStateListenerTokenCanCancel() {
+        let state = CodableState(wrappedValue: 0)
+        var count = 0
+
+        let token = state.listen { _, _ in count += 1 }
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 1)
+
+        token.cancel()
+
+        state.wrappedValue = 2
+        XCTAssertEqual(count, 1)
+    }
+
+    func testCodableStateRemoveListenerForwardsToProjectedState() {
+        let state = CodableState(wrappedValue: 0)
+        var count = 0
+
+        let token = state.listen { _, _ in count += 1 }
+
+        state.removeListener(id: token.id)
+
+        state.wrappedValue = 1
+        XCTAssertEqual(count, 0)
+    }
+
+    func testCodableStateEncodingRemainsUnchanged() throws {
+        let state = CodableState(wrappedValue: 42)
+
+        let data = try JSONEncoder().encode(state)
+        let json = String(data: data, encoding: .utf8)
+
+        XCTAssertEqual(json, "42")
+
+        let decoded = try JSONDecoder().decode(CodableState<Int>.self, from: data)
+        XCTAssertEqual(decoded.wrappedValue, 42)
     }
 }

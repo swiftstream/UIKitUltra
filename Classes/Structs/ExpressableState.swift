@@ -1,3 +1,5 @@
+import Foundation
+
 extension State {
     public func map<Result>(_ expression: @escaping () -> Result) -> State<Result> {
         .init(self, expression)
@@ -11,7 +13,13 @@ extension State {
 // MARK: Any States to Expressable
 
 public protocol AnyState: AnyObject {
-    func listen(_ listener: @escaping () -> Void)
+    var id: UUID { get }
+
+    @discardableResult
+    func listen(_ listener: @escaping () -> Void) -> StateListener
+
+    func removeListener(id: UUID)
+    func removeAllListeners()
 }
 
 public class AnyStates {
