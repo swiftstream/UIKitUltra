@@ -8,6 +8,13 @@ extension State {
     public func map<Result>(_ expression: @escaping (Value) -> Result) -> State<Result> {
         .init(self, expression)
     }
+
+    public func map<Result>(
+        _ expressionTo: @escaping (Value) -> Result,
+        _ expressionFrom: @escaping (Result) -> Value
+    ) -> State<Result> {
+        .init(self, expressionTo, expressionFrom)
+    }
 }
 
 // MARK: Any States to Expressable

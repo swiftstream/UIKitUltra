@@ -175,6 +175,40 @@ open class State<Value>: Stateable, StatesHolder {
         }.hold(in: self)
     }
 
+    public init <A>(
+        _ stateA: State<A>,
+        _ expressionTo: @escaping (A) -> Value,
+        _ expressionFrom: @escaping (Value) -> A
+    ) {
+        let value = expressionTo(stateA.wrappedValue)
+
+        _originalValue = value
+        _wrappedValue = value
+
+        var updatingFromSource = false
+        var updatingFromMapped = false
+
+        stateA.listen { [weak self, weak stateA] in
+            guard !updatingFromMapped else { return }
+            guard let stateA = stateA else { return }
+
+            updatingFromSource = true
+            defer { updatingFromSource = false }
+
+            self?.wrappedValue = expressionTo(stateA.wrappedValue)
+        }.hold(in: self)
+
+        listen { [weak stateA] newValue in
+            guard !updatingFromSource else { return }
+            guard let stateA = stateA else { return }
+
+            updatingFromMapped = true
+            defer { updatingFromMapped = false }
+
+            stateA.wrappedValue = expressionFrom(newValue)
+        }.hold(in: self)
+    }
+
     public func reset() {
         let oldValue = _wrappedValue
         _wrappedValue = _originalValue

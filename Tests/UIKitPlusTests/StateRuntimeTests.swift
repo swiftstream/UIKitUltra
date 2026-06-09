@@ -550,6 +550,309 @@ final class StateRuntimeTests: XCTestCase {
         XCTAssertEqual(mapped.wrappedValue, 3)
     }
 
+    // MARK: - SLICE 2B — Corrected bidirectional State mapping
+
+    // MARK: Test 23: Initial forward conversion and token ownership [ST3][ST4][ST6][FC7]
+
+    func testBidirectionalMapInitialForwardConversionAndHoldsBothTokens() {
+        let source = State(wrappedValue: 2)
+
+        var toCount = 0
+        var fromCount = 0
+
+        let mapped = source.map(
+            { value in
+                toCount += 1
+                return value * 10
+            },
+            { value in
+                fromCount += 1
+                return value / 10
+            }
+        )
+
+        XCTAssertEqual(source.wrappedValue, 2)
+        XCTAssertEqual(mapped.wrappedValue, 20)
+        XCTAssertEqual(toCount, 1)
+        XCTAssertEqual(fromCount, 0)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+    }
+
+    // MARK: Test 24: Source update does not perform redundant reverse write [ST3][MU2][MU3]
+
+    func testBidirectionalMapSourceUpdatePropagatesExactlyOnceWithoutReverseWrite() {
+        let source = State(wrappedValue: 2)
+
+        var toCount = 0
+        var fromCount = 0
+        var sourceMutationCount = 0
+        var mappedMutationCount = 0
+
+        let mapped = source.map(
+            { value in
+                toCount += 1
+                return value * 10
+            },
+            { value in
+                fromCount += 1
+                return value / 10 + 1
+            }
+        )
+
+        source.listen { _, _ in
+            sourceMutationCount += 1
+        }
+
+        mapped.listen { _, _ in
+            mappedMutationCount += 1
+        }
+
+        source.wrappedValue = 3
+
+        XCTAssertEqual(source.wrappedValue, 3)
+        XCTAssertEqual(mapped.wrappedValue, 30)
+        XCTAssertEqual(toCount, 2)
+        XCTAssertEqual(fromCount, 0)
+        XCTAssertEqual(sourceMutationCount, 1)
+        XCTAssertEqual(mappedMutationCount, 1)
+    }
+
+    // MARK: Test 25: Mapped update does not perform redundant forward normalization [ST3][MU2][MU3]
+
+    func testBidirectionalMapMappedUpdatePropagatesExactlyOnceWithoutForwardNormalization() {
+        let source = State(wrappedValue: 2)
+
+        var toCount = 0
+        var fromCount = 0
+        var sourceMutationCount = 0
+        var mappedMutationCount = 0
+
+        let mapped = source.map(
+            { value in
+                toCount += 1
+                return value * 10
+            },
+            { value in
+                fromCount += 1
+                return value / 10 + 1
+            }
+        )
+
+        source.listen { _, _ in
+            sourceMutationCount += 1
+        }
+
+        mapped.listen { _, _ in
+            mappedMutationCount += 1
+        }
+
+        mapped.wrappedValue = 50
+
+        XCTAssertEqual(mapped.wrappedValue, 50)
+        XCTAssertEqual(source.wrappedValue, 6)
+        XCTAssertEqual(toCount, 1)
+        XCTAssertEqual(fromCount, 1)
+        XCTAssertEqual(sourceMutationCount, 1)
+        XCTAssertEqual(mappedMutationCount, 1)
+    }
+
+    // MARK: Test 26: Alternating directions do not ping-pong [ST4][MU3]
+
+    func testBidirectionalMapAlternatingDirectionsDoNotPingPong() {
+        let source = State(wrappedValue: 2)
+
+        var sourceMutationCount = 0
+        var mappedMutationCount = 0
+
+        let mapped = source.map(
+            { $0 * 10 },
+            { $0 / 10 }
+        )
+
+        source.listen { _, _ in
+            sourceMutationCount += 1
+        }
+
+        mapped.listen { _, _ in
+            mappedMutationCount += 1
+        }
+
+        source.wrappedValue = 3
+
+        XCTAssertEqual(source.wrappedValue, 3)
+        XCTAssertEqual(mapped.wrappedValue, 30)
+
+        mapped.wrappedValue = 50
+
+        XCTAssertEqual(source.wrappedValue, 5)
+        XCTAssertEqual(mapped.wrappedValue, 50)
+
+        source.wrappedValue = 7
+
+        XCTAssertEqual(source.wrappedValue, 7)
+        XCTAssertEqual(mapped.wrappedValue, 70)
+
+        XCTAssertEqual(sourceMutationCount, 3)
+        XCTAssertEqual(mappedMutationCount, 3)
+    }
+
+    // MARK: Test 27: Mapped-state deinit cancels source registration [ST6][FC7][FC8]
+
+    func testBidirectionalMapMappedStateDeinitCancelsSourceRegistration() {
+        let source = State(wrappedValue: 2)
+
+        var toCount = 0
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = source.map(
+                { value in
+                    toCount += 1
+                    return value * 10
+                },
+                { value in
+                    value / 10
+                }
+            )
+
+            weakMapped = mapped
+
+            XCTAssertNotNil(weakMapped)
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+            XCTAssertEqual(mapped.wrappedValue, 20)
+            XCTAssertEqual(toCount, 1)
+
+            source.wrappedValue = 3
+
+            XCTAssertEqual(mapped.wrappedValue, 30)
+            XCTAssertEqual(toCount, 2)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        source.wrappedValue = 4
+
+        XCTAssertEqual(toCount, 2)
+    }
+
+    // MARK: Test 28: Mapped state does not retain upstream source [ST1][ST6][FC7]
+
+    func testBidirectionalMapDoesNotRetainUpstreamState() {
+        var source: State<Int>? = State(wrappedValue: 2)
+
+        weak var weakSource = source
+
+        let mapped = source!.map(
+            { $0 * 10 },
+            { $0 / 10 }
+        )
+
+        XCTAssertEqual(mapped.wrappedValue, 20)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+
+        source = nil
+
+        XCTAssertNil(weakSource)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 1)
+
+        mapped.wrappedValue = 50
+
+        XCTAssertEqual(mapped.wrappedValue, 50)
+    }
+
+    // MARK: Test 29: Reusable holder release cancels both directions [RT6][FC7][FC8]
+
+    func testBidirectionalMapReleaseStatesCancelsBothDirections() {
+        let source = State(wrappedValue: 2)
+
+        let mapped = source.map(
+            { $0 * 10 },
+            { $0 / 10 }
+        )
+
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 2)
+
+        mapped.releaseStates()
+
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 0)
+
+        source.wrappedValue = 3
+
+        XCTAssertEqual(mapped.wrappedValue, 20)
+
+        mapped.wrappedValue = 50
+
+        XCTAssertEqual(source.wrappedValue, 3)
+    }
+
+    // MARK: Test 30: Mapped reset writes original mapped value back to source once [ST2][MU2]
+
+    func testBidirectionalMapResetWritesOriginalValueBackToSourceExactlyOnce() {
+        let source = State(wrappedValue: 2)
+
+        var toCount = 0
+        var fromCount = 0
+
+        let mapped = source.map(
+            { value in
+                toCount += 1
+                return value * 10
+            },
+            { value in
+                fromCount += 1
+                return value / 10
+            }
+        )
+
+        mapped.wrappedValue = 50
+
+        XCTAssertEqual(mapped.wrappedValue, 50)
+        XCTAssertEqual(source.wrappedValue, 5)
+        XCTAssertEqual(toCount, 1)
+        XCTAssertEqual(fromCount, 1)
+
+        mapped.reset()
+
+        XCTAssertEqual(mapped.wrappedValue, 20)
+        XCTAssertEqual(source.wrappedValue, 2)
+        XCTAssertEqual(toCount, 1)
+        XCTAssertEqual(fromCount, 2)
+    }
+
+    // MARK: Test 31: Source reset propagates forward once [ST2][MU2]
+
+    func testBidirectionalMapSourceResetPropagatesForwardExactlyOnce() {
+        let source = State(wrappedValue: 2)
+
+        var toCount = 0
+        var fromCount = 0
+
+        let mapped = source.map(
+            { value in
+                toCount += 1
+                return value * 10
+            },
+            { value in
+                fromCount += 1
+                return value / 10
+            }
+        )
+
+        source.wrappedValue = 3
+
+        XCTAssertEqual(source.wrappedValue, 3)
+        XCTAssertEqual(mapped.wrappedValue, 30)
+        XCTAssertEqual(toCount, 2)
+        XCTAssertEqual(fromCount, 0)
+
+        source.reset()
+
+        XCTAssertEqual(source.wrappedValue, 2)
+        XCTAssertEqual(mapped.wrappedValue, 20)
+        XCTAssertEqual(toCount, 3)
+        XCTAssertEqual(fromCount, 0)
+    }
+
     // MARK: - GROUP A — Targeted cancellation
 
     func testListenerCancellationStopsFutureCallbacks() {
