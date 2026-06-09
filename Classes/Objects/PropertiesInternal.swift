@@ -36,6 +36,10 @@ public class PropertiesInternal {
     var typingInterval: TimeInterval = 0.5
     var typingTimer: Timer?
     
+    // MARK: - Rendered ForEach Bindings
+
+    var renderedForEachBindings: [RenderedForEachBinding] = []
+
     // MARK: - Internal Constraints
     
     var notAppliedPreConstraintsSuper: [PreConstraint] = []

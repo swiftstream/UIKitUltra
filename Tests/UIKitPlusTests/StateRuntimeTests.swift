@@ -279,46 +279,297 @@ final class StateRuntimeTests: XCTestCase {
         XCTAssertEqual(evaluationCount, 2)
     }
 
-    // MARK: - Test 15: Characterize ForEach subscriptions outliving owner [RT5]
+    // MARK: - SLICE 4 — ForEach scoped subscriptions
 
-    func testForEachCharacterizesSubscriptionsOutlivingOwner() {
+    func testForEachDeinitCancelsScopedSubscriptions() {
         let items = State(wrappedValue: [1])
-        var log: [String] = []
+        var scopedLog: [String] = []
+        var unrelatedLog: [String] = []
 
-        var owner: ForEach<Int>? = ForEach(items) { _, _ in
+        items.listen { _, _ in
+            unrelatedLog.append("unrelated")
         }
 
+        var owner: ForEach<Int>? = ForEach(items) { _, _ in }
         weak var weakOwner = owner
 
         owner?.subscribeToChanges(
-            {
-                log.append("begin")
-            },
-            { _, _, _ in
-                log.append("change")
-            },
-            {
-                log.append("end")
-            }
+            { scopedLog.append("begin") },
+            { _, _, _ in scopedLog.append("change") },
+            { scopedLog.append("end") }
         )
 
+        XCTAssertEqual(owner?.statesValues.heldListeners.count, 3)
+
         owner = nil
+
         XCTAssertNil(weakOwner)
 
         items.wrappedValue = [1, 2]
 
-        // Characterizes the current bug: the source state retains subscriptions
-        // after the `ForEach` owner has been released.
-        XCTAssertEqual(
-            log,
-            [
-                "begin",
-                "change",
-                "end",
-            ]
+        XCTAssertTrue(scopedLog.isEmpty)
+        XCTAssertEqual(unrelatedLog, [
+            "unrelated",
+        ])
+    }
+
+    func testForEachSubscribeToChangesHoldsThreeTokensAndRunsInPhaseOrder() {
+        let items = State(wrappedValue: [1])
+        let owner = ForEach(items) { _, _ in }
+        var log: [String] = []
+
+        owner.subscribeToChanges(
+            { log.append("begin") },
+            { _, _, _ in log.append("change") },
+            { log.append("end") }
         )
 
-        items.removeAllListeners()
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 3)
+
+        items.wrappedValue = [1, 2]
+
+        XCTAssertEqual(log, ["begin", "change", "end"])
+    }
+
+    func testForEachRepeatedSubscribeToChangesIsAdditiveAndDeterministic() {
+        let items = State(wrappedValue: [1])
+        let owner = ForEach(items) { _, _ in }
+        var log: [String] = []
+
+        owner.subscribeToChanges(
+            { log.append("begin:A") },
+            { _, _, _ in log.append("change:A") },
+            { log.append("end:A") }
+        )
+
+        owner.subscribeToChanges(
+            { log.append("begin:B") },
+            { _, _, _ in log.append("change:B") },
+            { log.append("end:B") }
+        )
+
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 6)
+
+        items.wrappedValue = [1, 2]
+
+        XCTAssertEqual(log, [
+            "begin:A", "begin:B",
+            "change:A", "change:B",
+            "end:A", "end:B",
+        ])
+    }
+
+    func testForEachReleaseStatesCancelsCurrentSubscriptionsAndAllowsResubscribe() {
+        let items = State(wrappedValue: [1])
+        let owner = ForEach(items) { _, _ in }
+        var log: [String] = []
+
+        owner.subscribeToChanges(
+            { log.append("begin:A") },
+            { _, _, _ in log.append("change:A") },
+            { log.append("end:A") }
+        )
+
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 3)
+
+        owner.releaseStates()
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 0)
+
+        items.wrappedValue = [1, 2]
+        XCTAssertTrue(log.isEmpty)
+
+        owner.subscribeToChanges(
+            { log.append("begin:B") },
+            { _, _, _ in log.append("change:B") },
+            { log.append("end:B") }
+        )
+
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 3)
+
+        items.wrappedValue = [1, 2, 3]
+
+        XCTAssertEqual(log, ["begin:B", "change:B", "end:B"])
+    }
+
+    func testForEachInvalidateStatesIsTerminalForSubscriptions() {
+        let items = State(wrappedValue: [1])
+        let owner = ForEach(items) { _, _ in }
+        var log: [String] = []
+
+        owner.subscribeToChanges(
+            { log.append("begin:A") },
+            { _, _, _ in log.append("change:A") },
+            { log.append("end:A") }
+        )
+
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 3)
+
+        owner.invalidateStates()
+        owner.invalidateStates()
+
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 0)
+
+        owner.subscribeToChanges(
+            { log.append("begin:B") },
+            { _, _, _ in log.append("change:B") },
+            { log.append("end:B") }
+        )
+
+        XCTAssertEqual(owner.statesValues.heldListeners.count, 0)
+
+        items.wrappedValue = [1, 2]
+
+        XCTAssertTrue(log.isEmpty)
+    }
+
+    func testForEachDeinitCancelsOnlyItsOwnSubscriptionTriplet() {
+        let items = State(wrappedValue: [1])
+        var scopedLog: [String] = []
+        var sourceLog: [String] = []
+
+        items.listen { _, _ in sourceLog.append("source") }
+
+        var owner: ForEach<Int>? = ForEach(items) { _, _ in }
+        weak var weakOwner = owner
+
+        owner?.subscribeToChanges(
+            { scopedLog.append("begin") },
+            { _, _, _ in scopedLog.append("change") },
+            { scopedLog.append("end") }
+        )
+
+        owner = nil
+
+        XCTAssertNil(weakOwner)
+
+        items.wrappedValue = [1, 2]
+
+        XCTAssertTrue(scopedLog.isEmpty)
+        XCTAssertEqual(sourceLog, ["source"])
+    }
+
+    func testForEachEqualArrayRunsBeginAndEndWithoutDiffHandler() {
+        let items = State(wrappedValue: [1])
+        let owner = ForEach(items) { _, _ in }
+        var log: [String] = []
+
+        owner.subscribeToChanges(
+            { log.append("begin") },
+            { _, _, _ in log.append("change") },
+            { log.append("end") }
+        )
+
+        items.wrappedValue = [1]
+
+        XCTAssertEqual(log, ["begin", "end"])
+    }
+
+    func testForEachViewBodyRenderedContainerRetainsBindingUntilTeardown() {
+        let items = State(wrappedValue: [1])
+        var buildCount = 0
+
+        weak var weakOwner: ForEach<Int>?
+        weak var weakRenderedSubview: UView?
+
+        autoreleasepool {
+            var host: UView? = UView()
+            var owner: ForEach<Int>? = ForEach(items) { _, _ in
+                buildCount += 1
+                return UView()
+            }
+
+            weakOwner = owner
+
+            host?.body {
+                owner!
+            }
+
+            do {
+                let renderedSubview = host?.subviews.first as? UView
+                weakRenderedSubview = renderedSubview
+
+                XCTAssertNotNil(renderedSubview)
+                XCTAssertEqual(renderedSubview?.subviews.count, 1)
+            }
+
+            owner = nil
+
+            XCTAssertNotNil(weakOwner)
+
+            items.wrappedValue = [1, 2]
+
+            do {
+                let renderedSubview = weakRenderedSubview
+                XCTAssertEqual(renderedSubview?.subviews.count, 2)
+            }
+
+            XCTAssertEqual(buildCount, 2)
+
+            host = nil
+        }
+
+        XCTAssertNil(weakRenderedSubview)
+        XCTAssertNil(weakOwner)
+
+        let finalBuildCount = buildCount
+
+        items.wrappedValue = [1, 2, 3]
+
+        XCTAssertEqual(buildCount, finalBuildCount)
+    }
+
+    func testForEachStackViewRenderedContainerRetainsBindingUntilTeardown() {
+        let items = State(wrappedValue: [1])
+        var buildCount = 0
+
+        weak var weakOwner: ForEach<Int>?
+        weak var weakNestedStack: UStackView?
+
+        autoreleasepool {
+            var host: UStackView? = UStackView()
+            var owner: ForEach<Int>? = ForEach(items) { _, _ in
+                buildCount += 1
+                return UView()
+            }
+
+            weakOwner = owner
+
+            host?.subviews {
+                owner!
+            }
+
+            do {
+                let nestedStack = host?.arrangedSubviews.first as? UStackView
+                weakNestedStack = nestedStack
+
+                XCTAssertNotNil(nestedStack)
+                XCTAssertEqual(nestedStack?.arrangedSubviews.count, 1)
+            }
+
+            owner = nil
+
+            XCTAssertNotNil(weakOwner)
+
+            items.wrappedValue = [1, 2]
+
+            do {
+                let nestedStack = weakNestedStack
+                XCTAssertEqual(nestedStack?.arrangedSubviews.count, 2)
+            }
+
+            XCTAssertEqual(buildCount, 2)
+
+            host = nil
+        }
+
+        XCTAssertNil(weakNestedStack)
+        XCTAssertNil(weakOwner)
+
+        let finalBuildCount = buildCount
+
+        items.wrappedValue = [1, 2, 3]
+
+        XCTAssertEqual(buildCount, finalBuildCount)
     }
 
     // MARK: - SLICE 2A — Derived-state ownership repair

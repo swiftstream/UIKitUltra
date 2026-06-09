@@ -40,11 +40,13 @@ public extension AnyForEach {
 }
 
 public typealias UForEach = ForEach
-public class ForEach<Item> where Item: Hashable {
+public class ForEach<Item>: StatesHolder where Item: Hashable {
     public typealias BuildViewHandler = (Int, Item) -> BodyBuilder.Result
     public typealias BuildViewHandlerValue = (Item) -> BodyBuilder.Result
     public typealias BuildViewHandlerSimple = () -> BodyBuilder.Result
-    
+
+    public let statesValues = StatesHolderValuesBox()
+
     let items: State<[Item]>
     let block: BuildViewHandler
     
@@ -127,6 +129,10 @@ public class ForEach<Item> where Item: Hashable {
         self.spacing = spacing
         return self
     }
+
+    deinit {
+        invalidateStates()
+    }
 }
 
 extension ForEach: AnyForEach {
@@ -144,16 +150,24 @@ extension ForEach: AnyForEach {
     }
     
     public func subscribeToChanges(_ begin: @escaping () -> Void, _ handler: @escaping ([Int], [Int], [Int]) -> Void, _ end: @escaping () -> Void) {
-        items.beginTrigger(begin)
+        items.beginTrigger(begin).hold(in: self)
+
         items.listen { old, new in
             let diff = old.difference(new)
             let deletions = diff.removed.compactMap { $0.index }
             let insertions = diff.inserted.compactMap { $0.index }
             let modifications = diff.modified.compactMap { $0.index }
-            guard deletions.count > 0 || insertions.count > 0 || modifications.count > 0 else { return }
+
+            guard deletions.count > 0 ||
+                  insertions.count > 0 ||
+                  modifications.count > 0 else {
+                return
+            }
+
             handler(deletions, insertions, modifications)
-        }
-        items.endTrigger(end)
+        }.hold(in: self)
+
+        items.endTrigger(end).hold(in: self)
     }
 }
 

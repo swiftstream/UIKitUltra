@@ -31,16 +31,25 @@ extension BaseView {
             add(views: views, at: index)
         case .forEach(let fr):
             let subview = UView().edgesToSuperview()
+            let binding = RenderedForEachBinding(fr)
+            subview.retainRenderedForEachBinding(binding)
+
             fr.allItems().forEach {
                 subview.addItem($0)
             }
+
             add(views: [subview], at: index)
-            fr.subscribeToChanges({}, { deletions, insertions, _ in
+
+            fr.subscribeToChanges({}, { [weak subview, weak binding] deletions, insertions, _ in
+                guard let subview = subview, let fr = binding?.forEach else { return }
+
                 subview.subviews.removeFromSuperview(at: deletions)
+
                 insertions.forEach {
                     subview.addItem(fr.items(at: $0), at: $0)
                 }
             }) {}
+
             break
         case .nested(let items):
             items.forEach { addItem($0, at: index) }

@@ -212,30 +212,43 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
                 views.forEach { addArrangedSubview($0) }
             case .forEach(let fr):
                 #if os(macOS)
-                let stack = UStackView().orientation(fr.orientation ?? orientation)
+                let initialOrientation = fr.orientation ?? orientation
+                let stack = UStackView().orientation(initialOrientation)
                 #else
-                let stack = UStackView().axis(fr.axis ?? axis)
+                let initialAxis = fr.axis ?? axis
+                let stack = UStackView().axis(initialAxis)
                 #endif
+
                 stack
                     .distribution(fr.distribution ?? distribution)
                     .alignment(fr.alignment ?? alignment)
                     .spacing(fr.spacing ?? spacing)
+
+                let binding = RenderedForEachBinding(fr)
+                stack.retainRenderedForEachBinding(binding)
+
                 fr.allItems().forEach {
                     #if os(macOS)
-                    stack.addArrangedSubview([$0].flatten(fr.orientation ?? orientation))
+                    stack.addArrangedSubview([$0].flatten(initialOrientation))
                     #else
-                    stack.addArrangedSubview([$0].flatten(fr.axis ?? axis))
+                    stack.addArrangedSubview([$0].flatten(initialAxis))
                     #endif
                 }
+
                 addArrangedSubview(stack)
-                fr.subscribeToChanges({}, { [weak self] deletions, insertions, _ in
-                    guard let self = self else { return }
+
+                fr.subscribeToChanges({}, { [weak self, weak stack, weak binding] deletions, insertions, _ in
+                    guard let stack = stack, let fr = binding?.forEach else { return }
+
                     stack.arrangedSubviews.removeFromSuperview(at: deletions)
+
                     insertions.forEach {
                         #if os(macOS)
-                        stack.add(arrangedView: [fr.items(at: $0)].flatten(fr.orientation ?? self.orientation), at: $0)
+                        let orientation = fr.orientation ?? self?.orientation ?? stack.orientation
+                        stack.add(arrangedView: [fr.items(at: $0)].flatten(orientation), at: $0)
                         #else
-                        stack.add(arrangedView: [fr.items(at: $0)].flatten(fr.axis ?? self.axis), at: $0)
+                        let axis = fr.axis ?? self?.axis ?? stack.axis
+                        stack.add(arrangedView: [fr.items(at: $0)].flatten(axis), at: $0)
                         #endif
                     }
                 }) {}
