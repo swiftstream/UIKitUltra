@@ -19,6 +19,7 @@ extension FocusRingTypeable {
         binding.listen { [weak self] in
             self?.focusRingType($0)
         }
+        .holdIfOwned(by: self)
         return focusRingType(binding.wrappedValue)
     }
 }

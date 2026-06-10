@@ -32,6 +32,7 @@ extension MultiClickIgnorable {
         binding.listen { [weak self] in
             self?.ignoreMultiClick($0)
         }
+        .holdIfOwned(by: self)
         return ignoreMultiClick(binding.wrappedValue)
     }
 }

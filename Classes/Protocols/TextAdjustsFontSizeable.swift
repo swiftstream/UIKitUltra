@@ -30,6 +30,7 @@ extension TextAdjustsFontSizeable {
         binding.listen { [weak self] in
             self?.adjustsFontSizeToFitWidth($0)
         }
+        .holdIfOwned(by: self)
         return adjustsFontSizeToFitWidth(binding.wrappedValue)
     }
 }

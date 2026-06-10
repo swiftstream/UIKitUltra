@@ -34,6 +34,7 @@ extension KeyMaskable {
         state.listen { [weak self] in
             self?.keyMask($0)
         }
+        .holdIfOwned(by: self)
         return self
     }
 }

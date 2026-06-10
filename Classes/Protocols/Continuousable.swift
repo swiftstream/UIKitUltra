@@ -32,6 +32,7 @@ extension Continuousable {
         binding.listen { [weak self] in
             self?.continuous($0)
         }
+        .holdIfOwned(by: self)
         return continuous(binding.wrappedValue)
     }
 }

@@ -30,6 +30,7 @@ extension Bezeledable {
         binding.listen { [weak self] in
             self?.bezeled($0)
         }
+        .holdIfOwned(by: self)
         return bezeled(binding.wrappedValue)
     }
 }

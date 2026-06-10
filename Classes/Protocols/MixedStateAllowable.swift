@@ -32,6 +32,7 @@ extension MixedStateAllowable {
         binding.listen { [weak self] in
             self?.allowMixedState($0)
         }
+        .holdIfOwned(by: self)
         return allowMixedState(binding.wrappedValue)
     }
 }

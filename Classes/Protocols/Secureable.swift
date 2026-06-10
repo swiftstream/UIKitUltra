@@ -30,6 +30,7 @@ extension Secureable {
         binding.listen { [weak self] in
             self?.secure($0)
         }
+        .holdIfOwned(by: self)
         return secure(binding.wrappedValue)
     }
 }
