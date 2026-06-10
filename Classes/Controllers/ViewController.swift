@@ -20,6 +20,12 @@ extension ViewController: _Menuable {
 #endif
 
 open class ViewController: BaseViewController {
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     #if !os(macOS)
     #if !os(tvOS)
     open override var preferredStatusBarStyle: UIStatusBarStyle { statusBarStyle.rawValue }
@@ -333,6 +339,8 @@ open class ViewController: BaseViewController {
     }
     #endif
 }
+
+extension ViewController: _StateBindingOwner {}
 
 // MARK: Lifecycle
 

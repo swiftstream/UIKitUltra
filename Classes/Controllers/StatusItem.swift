@@ -13,6 +13,12 @@ public class StatusItem: AppBuilderContent {
     
     lazy var _tintState: State<UColor> = .init(wrappedValue: .init(item.button?.contentTintColor ?? .cyan))
     lazy var _hiddenState: State<Bool> = .init(wrappedValue: !item.isVisible)
+
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
     
     let item: NSStatusItem
     
@@ -227,6 +233,8 @@ public class StatusItem: AppBuilderContent {
         return self
     }
 }
+
+extension StatusItem: _StateBindingOwner {}
 
 extension StatusItem: _Tintable, Tintable {
     func _setTint(_ v: NSColor?) {

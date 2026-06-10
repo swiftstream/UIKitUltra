@@ -26,6 +26,12 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     private var viewController: T? { return viewControllers.first as? T }
     
     public var isSwipeBackEnabled = true
+
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
     
     public init() {
         let viewController = T(nibName: nil, bundle: nil)
@@ -147,6 +153,8 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     //        modalPresentationStyle = .fullScreen
     //    }
 }
+
+extension NavigationController: _StateBindingOwner {}
 
 extension NavigationController: _Fontable {
     func _setFont(_ v: UIFont?) {

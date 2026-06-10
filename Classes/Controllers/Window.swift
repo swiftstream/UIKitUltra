@@ -15,6 +15,12 @@ public class Window: AppBuilderContent {
     
     public let window: NSWindow
     
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     lazy var _backgroundColorState: State<UColor> = .init(wrappedValue: UColor.init(window.backgroundColor))
     
 //    public init (_ viewController: () -> ViewController?) {
@@ -445,6 +451,8 @@ public class Window: AppBuilderContent {
         return self
     }
 }
+
+extension Window: _StateBindingOwner {}
 
 extension Window: _BackgroundColorable {
     func _setBackgroundColor(_ v: NSColor?) {

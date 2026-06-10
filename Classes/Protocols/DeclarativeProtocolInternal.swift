@@ -4,7 +4,7 @@ import AppKit
 import UIKit
 #endif
 
-internal protocol DeclarativeProtocolInternal {
+internal protocol DeclarativeProtocolInternal: _StateBindingOwner {
     var _properties: PropertiesInternal { get set }
     
     var __height: State<CGFloat> { get }
@@ -17,4 +17,10 @@ internal protocol DeclarativeProtocolInternal {
     var __bottom: State<CGFloat> { get }
     var __centerX: State<CGFloat> { get }
     var __centerY: State<CGFloat> { get }
+}
+
+extension DeclarativeProtocolInternal {
+    var stateBindingHolder: TempStatesHolder {
+        _properties.stateBindingHolder
+    }
 }

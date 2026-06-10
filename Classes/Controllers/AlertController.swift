@@ -33,12 +33,24 @@ extension UIAlertController: _Messageable, _UIAlertViewControllerable {
 }
 
 open class ActionSheet: UIAlertController {
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     public convenience init() {
         self.init(title: nil, message: nil, preferredStyle: .actionSheet)
     }
 }
 
 open class AlertController: UIAlertController {
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     public convenience init(_ style: UIAlertController.Style) {
         self.init(title: nil, message: nil, preferredStyle: style)
     }
@@ -51,6 +63,10 @@ open class AlertController: UIAlertController {
 }
 
 public typealias AlertAction = UIAlertAction
+
+extension ActionSheet: _StateBindingOwner {}
+
+extension AlertController: _StateBindingOwner {}
 
 extension UIAlertAction: _Enableable {
     func _setEnabled(_ v: Bool) {

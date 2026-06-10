@@ -326,6 +326,8 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     }
 }
 
+extension AttributedString: _StateBindingOwner {}
+
 // MARK: ParagraphStyleDelegate
 
 extension AttributedString: ParagraphStyleDelegate {
