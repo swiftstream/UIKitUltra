@@ -78,10 +78,16 @@ extension Textable {
     @discardableResult
     public func text<A: AnyString>(_ state: State<A>) -> Self {
         text(state.wrappedValue)
-        state.listen {
-            if $0.attributedString.string == (self as? _Textable)?._currentText { return }
-            self.text($0)
+        state.listen { [weak self] newValue in
+            guard let self = self else { return }
+
+            if newValue.attributedString.string == (self as? _Textable)?._currentText {
+                return
+            }
+
+            self.text(newValue)
         }
+        .holdIfOwned(by: self)
         (self as? TextBindable)?.bind(state)
         return self
     }

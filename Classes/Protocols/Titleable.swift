@@ -80,6 +80,7 @@ extension Titleable {
         state.listen { [weak self] in
             self?.title($0)
         }
+        .holdIfOwned(by: self)
         return self
     }
 }

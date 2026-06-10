@@ -27,6 +27,7 @@ extension Fontable {
         binding.listen { [weak self] in
             self?.font(v: $0)
         }
+        .holdIfOwned(by: self)
         return font(v: binding.wrappedValue)
     }
 }

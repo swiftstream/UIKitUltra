@@ -36,6 +36,7 @@ extension Colorable {
         state.listen { [weak self] in
             self?.color($0)
         }
+        .holdIfOwned(by: self)
         return color(state.wrappedValue)
     }
 }
