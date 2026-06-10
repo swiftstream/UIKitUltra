@@ -27,7 +27,14 @@ extension BulletsEchoable {
     
     @discardableResult
     public func echosBullets(_ binding: UIKitPlus.State<Bool>) -> Self {
-        binding.listen { self.echosBullets($0) }
+        if let owner = self as? _StateBindingOwner {
+            binding.listen { [weak owner] in
+                (owner as? Self)?.echosBullets($0)
+            }
+            .hold(in: owner.stateBindingHolder)
+        } else {
+            binding.listen { self.echosBullets($0) }
+        }
         return echosBullets(binding.wrappedValue)
     }
 }

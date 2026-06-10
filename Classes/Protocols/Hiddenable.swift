@@ -29,7 +29,14 @@ extension Hiddenable {
     
     @discardableResult
     public func hidden(_ binding: UIKitPlus.State<Bool>) -> Self {
-        binding.listen { self.hidden($0) }
+        if let owner = self as? _StateBindingOwner {
+            binding.listen { [weak owner] in
+                (owner as? Self)?.hidden($0)
+            }
+            .hold(in: owner.stateBindingHolder)
+        } else {
+            binding.listen { self.hidden($0) }
+        }
         return hidden(binding.wrappedValue)
     }
 }
