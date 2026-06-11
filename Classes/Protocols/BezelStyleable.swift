@@ -19,10 +19,13 @@ protocol _BezelStyleable: BezelStyleable {
 extension BezelStyleable {
     @discardableResult
     public func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self {
-        guard var s = self as? _BezelStyleable else { return self }
+        guard let s = self as? _BezelStyleable else { return self }
         s._bezelStyleState = binding
         s._setBezelStyle(binding.wrappedValue)
-        binding.listen { s._setBezelStyle($0) }
+        binding.listen { [weak s] in
+            s?._setBezelStyle($0)
+        }
+        .holdIfOwned(by: self)
         return self
     }
     
@@ -44,6 +47,7 @@ extension _BezelStyleable {
         binding.listen { [weak self] in
             self?._setBezelStyle($0)
         }
+        .holdIfOwned(by: self)
         return self
     }
     

@@ -19,12 +19,13 @@ protocol _ControlStateable: ControlStateable {
 extension ControlStateable {
     @discardableResult
     public func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self {
-        guard var s = self as? _ControlStateable else { return self }
+        guard let s = self as? _ControlStateable else { return self }
         s._stateState = binding
         s._setState(binding.wrappedValue)
         binding.listen { [weak s] in
             s?._setState($0)
         }
+        .holdIfOwned(by: self)
         return self
     }
     
@@ -46,6 +47,7 @@ extension _ControlStateable {
         binding.listen { [weak self] in
             self?._setState($0)
         }
+        .holdIfOwned(by: self)
         return self
     }
     
