@@ -265,6 +265,12 @@ open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public func type(_ state: State<NSButton.ButtonType>) -> Self {
         _buttonTypeState = state
         setButtonType(state.wrappedValue)
+
+        state.listen { [weak self] in
+            self?.setButtonType($0)
+        }
+        .holdIfOwned(by: self)
+
         return self
     }
     
