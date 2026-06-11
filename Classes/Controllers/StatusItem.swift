@@ -83,9 +83,10 @@ public class StatusItem: AppBuilderContent {
     
     public func title(_ state: UState<String>) -> Self {
         title(state.wrappedValue)
-        state.listen {
-            self.title($0)
+        state.listen { [weak self] in
+            self?.title($0)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -96,9 +97,10 @@ public class StatusItem: AppBuilderContent {
     
     public func attributedTitle(_ state: UState<NSAttributedString>) -> Self {
         self.attributedTitle(state.wrappedValue)
-        state.listen {
-            self.attributedTitle($0)
+        state.listen { [weak self] in
+            self?.attributedTitle($0)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -109,9 +111,10 @@ public class StatusItem: AppBuilderContent {
     
     public func image(_ state: UState<NSImage?>) -> Self {
         image(state.wrappedValue)
-        state.listen {
-            self.image($0)
+        state.listen { [weak self] in
+            self?.image($0)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -122,9 +125,10 @@ public class StatusItem: AppBuilderContent {
     
     public func alternateImage(_ state: UState<NSImage?>) -> Self {
         alternateImage(state.wrappedValue)
-        state.listen {
-            self.alternateImage($0)
+        state.listen { [weak self] in
+            self?.alternateImage($0)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -135,9 +139,10 @@ public class StatusItem: AppBuilderContent {
     
     public func enabled(_ state: UState<Bool>) -> Self {
         self.enabled(state.wrappedValue)
-        state.listen {
-            self.enabled($0)
+        state.listen { [weak self] in
+            self?.enabled($0)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -148,9 +153,10 @@ public class StatusItem: AppBuilderContent {
     
     public func visible(_ state: UState<Bool>) -> Self {
         self.visible(state.wrappedValue)
-        state.listen {
-            self.visible($0)
+        state.listen { [weak self] in
+            self?.visible($0)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -166,9 +172,10 @@ public class StatusItem: AppBuilderContent {
     
     public func toolTip(_ state: UState<String>) -> Self {
         toolTip(state.wrappedValue)
-        state.listen {
-            self.toolTip($0)
+        state.listen { [weak self] in
+            self?.toolTip($0)
         }
+        .hold(in: stateBindingHolder)
         return self
     }
     
