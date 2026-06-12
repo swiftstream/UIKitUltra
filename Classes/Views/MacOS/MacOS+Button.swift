@@ -91,15 +91,23 @@ open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         bezelStyle = .regularSquare
         isBordered = false
         action = #selector(pushHandler)
-        isHoveredByMouse.listen { [weak self] old, new in
-            guard old != new else { return }
-            guard let self = self else { return }
-            if new {
-                self._mouseEnteredHandler(self)
-            } else {
-                self._mouseExitedHandler(self)
+
+        if !_isHoverListenerRegistered {
+            _isHoverListenerRegistered = true
+
+            isHoveredByMouse.listen { [weak self] old, new in
+                guard old != new else { return }
+                guard let self = self else { return }
+
+                if new {
+                    self._mouseEnteredHandler(self)
+                } else {
+                    self._mouseExitedHandler(self)
+                }
             }
+            .hold(in: _properties.stateBindingHolder)
         }
+
         updateTrackingAreas()
     }
     
@@ -197,6 +205,7 @@ open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         addTrackingArea(area)
     }
     
+    private var _isHoverListenerRegistered = false
     lazy var isHoveredByMouse = UState<Bool>(wrappedValue: false)
     var _mouseEnteredHandler: (UButton) -> Void = { _ in }
     var _mouseExitedHandler: (UButton) -> Void = { _ in }
