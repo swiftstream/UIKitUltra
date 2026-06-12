@@ -232,6 +232,8 @@ open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         isHoveredByMouse.listen { [weak state] in
             state?.wrappedValue = $0
         }
+        .hold(in: _properties.stateBindingHolder)
+
         return self
     }
     
