@@ -105,7 +105,8 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     
     @discardableResult
     public func mode(_ binding: UIKitPlus.State<UIDatePicker.Mode>) -> Self {
-        binding.listen { self.mode($0) }
+        binding.listen { [weak self] in self?.mode($0) }
+            .holdIfOwned(by: self)
         return mode(binding.wrappedValue)
     }
     
