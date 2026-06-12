@@ -10,6 +10,12 @@ extension UIRefreshControl {
 public typealias RefreshControl = URefreshControl
 
 open class URefreshControl: UIRefreshControl {
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     override init() {
         super.init()
         setup()
@@ -87,6 +93,7 @@ open class URefreshControl: UIRefreshControl {
             self?.tintColor = new
             self?.tint = new
         }
+        .holdIfOwned(by: self)
         return self
     }
     
@@ -97,5 +104,8 @@ open class URefreshControl: UIRefreshControl {
         return self
     }
 }
+
+extension URefreshControl: _StateBindingOwner {}
+
 #endif
 #endif
