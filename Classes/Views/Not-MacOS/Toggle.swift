@@ -41,9 +41,10 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         super.init(frame: .zero)
         setup()
         isOn = state.wrappedValue
-        binding?.listen { [weak self] new in
+        state.listen { [weak self] new in
             self?.setOn(new, animated: true)
         }
+        .holdIfOwned(by: self)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -111,12 +112,16 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func onTint(_ binding: UIKitPlus.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.onTint($0) }
+            .holdIfOwned(by: self)
+
         return onTint(binding.wrappedValue)
     }
     
     @discardableResult
     public func onTint(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.onTint($0) }
+            .holdIfOwned(by: self)
+
         return onTint(binding.wrappedValue)
     }
     
@@ -135,12 +140,16 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func thumbTint(_ binding: UIKitPlus.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.thumbTint($0) }
+            .holdIfOwned(by: self)
+
         return thumbTint(binding.wrappedValue)
     }
     
     @discardableResult
     public func thumbTint(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.thumbTint($0) }
+            .holdIfOwned(by: self)
+
         return thumbTint(binding.wrappedValue)
     }
     
@@ -153,6 +162,8 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func onImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.onImage($0) }
+            .holdIfOwned(by: self)
+
         return onImage(binding.wrappedValue)
     }
     
@@ -165,6 +176,8 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func offImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.offImage($0) }
+            .holdIfOwned(by: self)
+
         return offImage(binding.wrappedValue)
     }
 }
