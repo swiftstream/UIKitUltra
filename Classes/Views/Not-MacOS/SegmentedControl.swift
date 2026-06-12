@@ -104,6 +104,8 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
     public func select(_ binding: UIKitPlus.State<Int>) -> Self {
         selectBinding = binding
         binding.listen { [weak self] in self?.selectedSegmentIndex = $0 }
+            .holdIfOwned(by: self)
+
         return select(binding.wrappedValue)
     }
     
