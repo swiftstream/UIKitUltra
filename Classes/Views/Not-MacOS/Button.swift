@@ -221,6 +221,8 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
             st?.wrappedValue = new.attributedString
             self?.setAttributedTitle(new.attributedString, for: state)
         }
+        .holdIfOwned(by: self)
+
         return self
     }
     
@@ -247,6 +249,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         binding.listen { [weak self] in
             self?.color($0, state)
         }
+        .holdIfOwned(by: self)
         return color(binding.wrappedValue, state)
     }
     
@@ -255,6 +258,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         binding.listen { [weak self] in
             self?.color($0, state)
         }
+        .holdIfOwned(by: self)
         return color(binding.wrappedValue, state)
     }
     
@@ -276,6 +280,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         binding.listen { [weak self] in
             self?.image($0, state)
         }
+        .holdIfOwned(by: self)
         return image(binding.wrappedValue, state)
     }
     
