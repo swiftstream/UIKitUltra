@@ -205,6 +205,129 @@ final class ImageURLLoaderBindingRoutingTests: XCTestCase {
             1
         )
     }
+
+    func testUIImageURLStateConvenienceInitializerRoutesDirectTokenAndRecordsInitialAndLiveURLLoads() {
+        let initial = URL(
+            string: "https://example.invalid/initial-url.png"
+        )!
+        let updated = URL(
+            string: "https://example.invalid/updated-url.png"
+        )!
+        let source = State<URL?>(wrappedValue: initial)
+        let loader = RecordingImageLoader()
+        let defaultImage = UIImage()
+        let owner = UImage(
+            url: source,
+            defaultImage: defaultImage,
+            loader: loader
+        )
+        let ownerID = ObjectIdentifier(owner)
+        let defaultImageID = ObjectIdentifier(defaultImage)
+
+        XCTAssertEqual(heldListenerCount(of: owner), 1)
+        XCTAssertEqual(heldListeners(of: owner).count, 1)
+        XCTAssertTrue(owner.image === defaultImage)
+        XCTAssertEqual(
+            loader.records,
+            [
+                .init(
+                    input: .url(initial),
+                    imageViewID: ownerID,
+                    defaultImageID: defaultImageID
+                ),
+            ]
+        )
+        XCTAssertEqual(loader.cancelCallCount, 0)
+
+        source.wrappedValue = updated
+
+        XCTAssertEqual(
+            loader.records,
+            [
+                .init(
+                    input: .url(initial),
+                    imageViewID: ownerID,
+                    defaultImageID: defaultImageID
+                ),
+                .init(
+                    input: .url(updated),
+                    imageViewID: ownerID,
+                    defaultImageID: defaultImageID
+                ),
+            ]
+        )
+        XCTAssertEqual(loader.cancelCallCount, 0)
+    }
+
+    func testUIImageURLStateConvenienceInitializerTeardownCancelsOwnedTokenAndPreservesUnrelatedListener() {
+        let unrelatedState = State<Int>(wrappedValue: 0)
+        let unrelatedHolder = TempStatesHolder()
+        var unrelatedCallCount = 0
+
+        unrelatedState.listen { _, _ in
+            unrelatedCallCount += 1
+        }
+        .hold(in: unrelatedHolder)
+
+        let source = State<URL?>(
+            wrappedValue: URL(
+                string: "https://example.invalid/initial-url.png"
+            )!
+        )
+        let loader = RecordingImageLoader()
+
+        weak var weakOwner: UImage?
+        var weakBox: WeakStateListenerBox?
+        var recordCountBeforeTeardown = 0
+
+        autoreleasepool {
+            var owner: UImage? = UImage(
+                url: source,
+                defaultImage: UIImage(),
+                loader: loader
+            )
+            weakOwner = owner
+
+            guard let liveOwner = owner else {
+                XCTFail("Expected live owner")
+                return
+            }
+
+            let listeners = heldListeners(of: liveOwner)
+
+            XCTAssertEqual(heldListenerCount(of: liveOwner), 1)
+            XCTAssertEqual(listeners.count, 1)
+
+            weakBox = WeakStateListenerBox(listeners[0])
+            recordCountBeforeTeardown = loader.records.count
+
+            XCTAssertEqual(recordCountBeforeTeardown, 1)
+            XCTAssertEqual(loader.cancelCallCount, 0)
+
+            owner = nil
+        }
+
+        XCTAssertNil(weakOwner)
+        XCTAssertNil(weakBox?.value)
+        XCTAssertEqual(loader.cancelCallCount, 1)
+
+        source.wrappedValue = URL(
+            string: "https://example.invalid/after-teardown-url.png"
+        )!
+
+        XCTAssertEqual(
+            loader.records.count,
+            recordCountBeforeTeardown
+        )
+
+        unrelatedState.wrappedValue = 1
+
+        XCTAssertEqual(unrelatedCallCount, 1)
+        XCTAssertEqual(
+            unrelatedHolder.statesValues.heldListeners.count,
+            1
+        )
+    }
 }
 
 #endif

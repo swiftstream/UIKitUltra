@@ -63,7 +63,18 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     public convenience init (url: State<URL?>, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
-        self.init(url: url.map { $0?.absoluteString }, defaultImage: defaultImage, loader: loader)
+        self.init(url: url.wrappedValue, defaultImage: defaultImage, loader: loader)
+
+        url.listen { [weak self] old, new in
+            guard let self = self else { return }
+
+            self._imageLoader.load(
+                new,
+                imageView: self,
+                defaultImage: defaultImage
+            )
+        }
+        .holdIfOwned(by: self)
     }
     
     public init (url: State<String?>, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
