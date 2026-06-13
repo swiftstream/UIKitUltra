@@ -30,6 +30,7 @@ public class UList: UView, UITableViewDataSource {
                 self?.tableView.reloadData()
             }
         }
+        .holdIfOwned(by: self)
         setup()
     }
     
@@ -45,6 +46,7 @@ public class UList: UView, UITableViewDataSource {
                 self?.tableView.reloadData()
             }
         }
+        .holdIfOwned(by: self)
         setup()
     }
     
