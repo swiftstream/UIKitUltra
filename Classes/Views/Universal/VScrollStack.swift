@@ -158,6 +158,7 @@ open class UVScrollStack: UScrollView, StackWrapperView {
         state.listen { [weak self] new in
             self?.stack.spacing = new
         }
+        .holdIfOwned(by: self)
         stack.spacing = state.wrappedValue
         return self
     }
