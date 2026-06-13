@@ -104,6 +104,7 @@ open class UActivityIndicator: NSProgressIndicator, AnyDeclarativeProtocol, Decl
     @discardableResult
     public func started(_ binding: State<Bool>) -> Self {
         binding.listen { [weak self] in self?.started($0) }
+            .holdIfOwned(by: self)
         return started(binding.wrappedValue)
     }
     
@@ -215,12 +216,14 @@ open class ActivityIndicator: UIActivityIndicatorView, AnyDeclarativeProtocol, D
     @discardableResult
     public func color(_ binding: State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.color($0) }
+            .holdIfOwned(by: self)
         return color(binding.wrappedValue)
     }
     
     @discardableResult
     public func color(_ binding: State<Int>) -> Self {
         binding.listen { [weak self] in self?.color($0) }
+            .holdIfOwned(by: self)
         return color(binding.wrappedValue)
     }
     
@@ -237,6 +240,7 @@ open class ActivityIndicator: UIActivityIndicatorView, AnyDeclarativeProtocol, D
     @discardableResult
     public func started(_ binding: State<Bool>) -> Self {
         binding.listen { [weak self] in self?.started($0) }
+            .holdIfOwned(by: self)
         return started(binding.wrappedValue)
     }
     
