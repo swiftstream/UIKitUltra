@@ -76,6 +76,7 @@ open class UImage: NSImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         image.listen { [weak self] old, new in
             self?.image = new
         }
+        .holdIfOwned(by: self)
     }
     
     public init (_ url: State<URL>, defaultImage: NSImage? = nil, loader: ImageLoader = .defaultRelease) {

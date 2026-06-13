@@ -43,6 +43,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         name.listen { [weak self] new in
             self?.image = UIImage(named: new)
         }
+        .holdIfOwned(by: self)
     }
     
     public init (_ image: UIImage?) {
@@ -58,6 +59,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         image.listen { [weak self] new in
             self?.image = new
         }
+        .holdIfOwned(by: self)
     }
     
     public convenience init (url: State<URL?>, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
