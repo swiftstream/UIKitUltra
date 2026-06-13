@@ -76,6 +76,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
             guard let self = self else { return }
             self._imageLoader.load(new, imageView: self, defaultImage: defaultImage)
         }
+        .holdIfOwned(by: self)
     }
     
     public init (url: URL?, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {

@@ -89,6 +89,7 @@ open class UImage: NSImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
             guard let self = self else { return }
             self._imageLoader.load(new, imageView: self, defaultImage: defaultImage)
         }
+        .holdIfOwned(by: self)
     }
     
     public init (_ url: State<String>, defaultImage: NSImage? = nil, loader: ImageLoader = .defaultRelease) {
@@ -101,6 +102,7 @@ open class UImage: NSImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
             guard let self = self else { return }
             self._imageLoader.load(new, imageView: self, defaultImage: defaultImage)
         }
+        .holdIfOwned(by: self)
     }
     
     public init (url: URL, defaultImage: NSImage? = nil, loader: ImageLoader = .defaultRelease) {
