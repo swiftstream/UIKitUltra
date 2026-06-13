@@ -5,6 +5,12 @@ import UIKit
 public typealias BarButtonItem = UBarButtonItem
 
 open class UBarButtonItem: UIBarButtonItem {
+    private let _stateBindingHolder = TempStatesHolder()
+
+    var stateBindingHolder: TempStatesHolder {
+        _stateBindingHolder
+    }
+
     public init(_ title: String?) {
         super.init()
         self.title = title
@@ -42,6 +48,7 @@ open class UBarButtonItem: UIBarButtonItem {
         self.image = image.wrappedValue
         setup()
         image.listen { [weak self] in self?.image = $0 }
+            .holdIfOwned(by: self)
     }
     
     public init(image imageName: String) {
@@ -112,6 +119,7 @@ open class UBarButtonItem: UIBarButtonItem {
     @discardableResult
     public func tint(_ binding: State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.tint($0) }
+            .holdIfOwned(by: self)
         return tint(binding.wrappedValue)
     }
     
@@ -119,7 +127,11 @@ open class UBarButtonItem: UIBarButtonItem {
     @discardableResult
     public func tint(_ binding: State<Int>) -> Self {
         binding.listen { [weak self] in self?.tint($0) }
+            .holdIfOwned(by: self)
         return tint(binding.wrappedValue)
     }
 }
+
+extension UBarButtonItem: _StateBindingOwner {}
+
 #endif
