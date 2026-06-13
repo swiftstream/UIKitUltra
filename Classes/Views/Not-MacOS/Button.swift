@@ -300,8 +300,10 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func backgroundImage(_ binding: UIKitPlus.State<UIImage>, _ state: UIControl.State = .normal) -> Self {
         binding.listen { [weak self] in
-            self?.image($0, state)
+            self?.backgroundImage($0, state)
         }
+        .holdIfOwned(by: self)
+
         return backgroundImage(binding.wrappedValue, state)
     }
     
