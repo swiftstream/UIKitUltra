@@ -451,6 +451,7 @@ extension UTextView: _Typeable {
             guard v.wrappedValue != $0 else { return }
             v.wrappedValue = $0
         }
+        .holdIfOwned(by: self)
         if v.wrappedValue != _properties.isTyping {
             v.wrappedValue = _properties.isTyping
         }
