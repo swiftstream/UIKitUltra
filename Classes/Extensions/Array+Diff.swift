@@ -23,54 +23,60 @@ extension Array {
     }
 
     public func difference<T1: Hashable, T2: Hashable>(_ first: [T1], _ second: [T2], withValues compare: (T1, T2) -> Bool) -> DiffResult<T1, T2> {
+        var matchedFirstIndexes: Set<Int> = []
         var matchedSecondIndexes: Set<Int> = []
         var commonPairs: [(old: T1, new: T2)] = []
 
-        for a in first {
-            if let bIndex = second.firstIndex(where: { b in compare(a, b) }), !matchedSecondIndexes.contains(bIndex) {
-                commonPairs.append((old: a, new: second[bIndex]))
-                matchedSecondIndexes.insert(bIndex)
+        for (oldIndex, oldValue) in first.enumerated() {
+            guard let match = second.enumerated().first(where: { newIndex, newValue in
+                !matchedSecondIndexes.contains(newIndex) && compare(oldValue, newValue)
+            }) else {
+                continue
             }
+            commonPairs.append((old: oldValue, new: match.element))
+            matchedFirstIndexes.insert(oldIndex)
+            matchedSecondIndexes.insert(match.offset)
         }
 
-        let commonSet = Set(commonPairs.map { $0.old })
         var removed: [DiffItem<T1>] = []
-        for (index, a) in first.enumerated() {
-            if !commonSet.contains(where: { common in common == a }) {
-                removed.append(DiffItem(index: index, value: a))
+        for (index, oldValue) in first.enumerated() {
+            if !matchedFirstIndexes.contains(index) {
+                removed.append(DiffItem(index: index, value: oldValue))
             }
         }
 
         var inserted: [DiffItem<T2>] = []
-        for (index, b) in second.enumerated() {
+        for (index, newValue) in second.enumerated() {
             if !matchedSecondIndexes.contains(index) {
-                inserted.append(DiffItem(index: index, value: b))
+                inserted.append(DiffItem(index: index, value: newValue))
             }
         }
 
         var modified: [DiffItem<T2>] = []
-        var removedIndexesToDrop: [Int] = []
-        var insertedIndexesToDrop: [Int] = []
+        var removedIndexesToDrop: Set<Int> = []
+        var insertedIndexesToDrop: Set<Int> = []
 
-        for (insIndex, ins) in inserted.enumerated() {
-            guard let _ins = ins.value as? AnyIdentable else { continue }
-            for (remIndex, rem) in removed.enumerated() {
-                if let _rem = rem.value as? AnyIdentable {
-                    if _rem.identValue() == _ins.identValue() {
-                        modified.append(ins)
-                        removedIndexesToDrop.append(remIndex)
-                        insertedIndexesToDrop.append(insIndex)
-                        break
-                    }
-                }
+        for (insertedIndex, insertedItem) in inserted.enumerated() {
+            guard let insertedIdentable = insertedItem.value as? AnyIdentable else { continue }
+
+            guard let removedMatch = removed.enumerated().first(where: { removedIndex, removedItem in
+                guard !removedIndexesToDrop.contains(removedIndex) else { return false }
+                guard let removedIdentable = removedItem.value as? AnyIdentable else { return false }
+                return removedIdentable.identValue() == insertedIdentable.identValue()
+            }) else {
+                continue
             }
+
+            modified.append(insertedItem)
+            removedIndexesToDrop.insert(removedMatch.offset)
+            insertedIndexesToDrop.insert(insertedIndex)
         }
 
-        for i in removedIndexesToDrop.sorted().reversed() {
-            removed.remove(at: i)
+        for index in removedIndexesToDrop.sorted(by: >) {
+            removed.remove(at: index)
         }
-        for i in insertedIndexesToDrop.sorted().reversed() {
-            inserted.remove(at: i)
+        for index in insertedIndexesToDrop.sorted(by: >) {
+            inserted.remove(at: index)
         }
 
         return DiffResult(common: commonPairs, removed: removed, inserted: inserted, modified: modified)

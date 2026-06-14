@@ -137,4 +137,58 @@ final class ArrayDiffIdentityTests: XCTestCase {
         XCTAssertEqual(diff.inserted.first?.index, 2)
         XCTAssertTrue(diff.modified.isEmpty)
     }
+
+    func testDuplicatePlainHashableValuesMatchOneToOne() {
+        let old = [
+            CollidingValue(id: 1),
+            CollidingValue(id: 1),
+        ]
+        let new = [
+            CollidingValue(id: 1),
+            CollidingValue(id: 1),
+        ]
+        let diff = old.difference(new)
+
+        XCTAssertEqual(diff.common.count, 2)
+        XCTAssertTrue(diff.removed.isEmpty)
+        XCTAssertTrue(diff.inserted.isEmpty)
+        XCTAssertTrue(diff.modified.isEmpty)
+    }
+
+    func testDuplicatePlainHashableValuesPreserveUnmatchedMultiplicity() {
+        let old = [
+            CollidingValue(id: 1),
+            CollidingValue(id: 1),
+            CollidingValue(id: 2),
+        ]
+        let new = [
+            CollidingValue(id: 1),
+        ]
+        let diff = old.difference(new)
+
+        XCTAssertEqual(diff.common.count, 1)
+        let removedIndexes = diff.removed.map { $0.index }.sorted()
+        XCTAssertEqual(removedIndexes, [1, 2])
+        XCTAssertTrue(diff.inserted.isEmpty)
+        XCTAssertTrue(diff.modified.isEmpty)
+    }
+
+    func testDuplicateIdentableModificationsMatchOneToOne() {
+        let old = [
+            IdentifiedItem(id: .init(rawValue: 1), title: "Old A"),
+            IdentifiedItem(id: .init(rawValue: 1), title: "Old B"),
+        ]
+        let new = [
+            IdentifiedItem(id: .init(rawValue: 1), title: "New A"),
+            IdentifiedItem(id: .init(rawValue: 1), title: "New B"),
+        ]
+        let diff = old.difference(new)
+
+        XCTAssertTrue(diff.common.isEmpty)
+        XCTAssertTrue(diff.removed.isEmpty)
+        XCTAssertTrue(diff.inserted.isEmpty)
+        XCTAssertEqual(diff.modified.count, 2)
+        let modifiedIndexes = diff.modified.map { $0.index }.sorted()
+        XCTAssertEqual(modifiedIndexes, [0, 1])
+    }
 }
