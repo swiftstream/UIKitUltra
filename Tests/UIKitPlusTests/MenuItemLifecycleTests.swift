@@ -24,7 +24,7 @@ final class MenuItemLifecycleTests: XCTestCase {
         )
     }
 
-    func testMenuItemTitleInitializerRetainsThroughItemRootCycle() {
+    func testMenuItemTitleInitializerDeallocatesAfterRemovingItemRootCycle() {
         weak var weakItem: MenuItem?
 
         autoreleasepool {
@@ -33,13 +33,13 @@ final class MenuItemLifecycleTests: XCTestCase {
             item = nil
         }
 
-        XCTAssertNotNil(
+        XCTAssertNil(
             weakItem,
-            "Current-source baseline: MenuItem(\"Test\") initializes lazy item and is retained by MenuItem -> _MenuItem.root -> MenuItem."
+            "MenuItem(\"Test\") should deallocate after removing _MenuItem.root because title init no longer creates a source-level retain cycle."
         )
     }
 
-    func testMenuItemExplicitItemAccessRetainsThroughItemRootCycle() {
+    func testMenuItemExplicitItemAccessDeallocatesAfterRemovingItemRootCycle() {
         weak var weakItem: MenuItem?
 
         autoreleasepool {
@@ -49,13 +49,13 @@ final class MenuItemLifecycleTests: XCTestCase {
             item = nil
         }
 
-        XCTAssertNotNil(
+        XCTAssertNil(
             weakItem,
-            "Current-source baseline: explicit .item access initializes _MenuItem(self) and creates the item/root cycle."
+            "Explicit .item access should no longer create a retain cycle after removing _MenuItem.root."
         )
     }
 
-    func testMenuItemVoidOnActionRetainsThroughItemAndHelperCycles() {
+    func testMenuItemVoidOnActionDeallocatesAfterRemovingItemAndHelperRootCycles() {
         weak var weakItem: MenuItem?
 
         autoreleasepool {
@@ -65,13 +65,13 @@ final class MenuItemLifecycleTests: XCTestCase {
             item = nil
         }
 
-        XCTAssertNotNil(
+        XCTAssertNil(
             weakItem,
-            "Current-source baseline: onAction { } initializes item and helper through item.target = helper, so paths 1+2 retain MenuItem without user-closure self capture."
+            "onAction { } initializes item/helper but no longer creates source-level cycles after root removal."
         )
     }
 
-    func testMenuItemArgumentOnActionAddsClosureSelfCaptureOnTopOfItemAndHelperCycles() {
+    func testMenuItemArgumentOnActionDeallocatesAfterWeakCaptureAndRootRemoval() {
         weak var weakItem: MenuItem?
 
         autoreleasepool {
@@ -83,9 +83,9 @@ final class MenuItemLifecycleTests: XCTestCase {
             item = nil
         }
 
-        XCTAssertNotNil(
+        XCTAssertNil(
             weakItem,
-            "Current-source baseline: MenuItem-argument onAction adds closure self-capture on top of item/helper cycles; this does not isolate path 3 independently."
+            "Weak self capture plus root removal prevents the closure cycle in MenuItem-argument onAction."
         )
     }
 
@@ -112,7 +112,7 @@ final class MenuItemLifecycleTests: XCTestCase {
         menuItem = nil
     }
 
-    func testMenuItemAfterNSMenuInsertionAndRemovalRemainsRetainedBySourceCycles() {
+    func testMenuItemAfterNSMenuInsertionAndRemovalDeallocatesAfterRootRemoval() {
         weak var weakItem: MenuItem?
 
         autoreleasepool {
@@ -128,9 +128,37 @@ final class MenuItemLifecycleTests: XCTestCase {
             item = nil
         }
 
+        XCTAssertNil(
+            weakItem,
+            "NSMenu removal should not prevent MenuItem deallocation after root removal."
+        )
+    }
+
+    func testMenuBuilderRetainsMenuItemThroughMenuItemsWhileMenuExists() {
+        weak var weakItem: MenuItem?
+        var menu: Menu?
+
+        autoreleasepool {
+            let item = MenuItem("Open").onAction { }
+            weakItem = item
+
+            menu = Menu {
+                item
+            }
+        }
+
         XCTAssertNotNil(
             weakItem,
-            "Current-source baseline: NSMenu removal does not break MenuItem's source-level item/root cycle."
+            "Normal DSL Menu usage should keep MenuItem alive through Menu.items while Menu exists."
+        )
+
+        XCTAssertEqual(menu?.items.count, 1)
+
+        menu = nil
+
+        XCTAssertNil(
+            weakItem,
+            "MenuItem should deallocate after Menu is released because Menu.items was the authoritative owner."
         )
     }
 }

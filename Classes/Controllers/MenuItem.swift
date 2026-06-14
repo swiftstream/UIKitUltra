@@ -9,10 +9,7 @@
 import Cocoa
 
 class _MenuItem: NSMenuItem {
-    let root: MenuItem
-    
-    init (_ root: MenuItem) {
-        self.root = root
+    init() {
         super.init(title: "", action: nil, keyEquivalent: "")
     }
     
@@ -22,10 +19,7 @@ class _MenuItem: NSMenuItem {
 }
 
 class MenuItemHelper: NSObject, NSMenuItemValidation {
-    let root: MenuItem
-    
-    init (_ root: MenuItem) {
-        self.root = root
+    override init() {
         super.init()
     }
     
@@ -43,8 +37,8 @@ class MenuItemHelper: NSObject, NSMenuItemValidation {
 }
 
 public class MenuItem {
-    private(set) lazy var item: NSMenuItem = _MenuItem(self)
-    private lazy var helper: MenuItemHelper = .init(self)
+    private(set) lazy var item: NSMenuItem = _MenuItem()
+    private lazy var helper: MenuItemHelper = .init()
     
     var _statedTitle: AnyStringBuilder.Handler?
     lazy var _stateState: State<NSControl.StateValue> = .init(wrappedValue: item.state)
@@ -143,7 +137,8 @@ public class MenuItem {
     public func onAction(_ handler: @escaping (MenuItem) -> Void) -> Self {
         item.target = helper
         item.action = #selector(MenuItemHelper.action)
-        helper._actionHandler = {
+        helper._actionHandler = { [weak self] in
+            guard let self else { return }
             handler(self)
         }
         return self
