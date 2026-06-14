@@ -90,6 +90,7 @@ class PreConstraint: Equatable {
     let toSafe: Bool
     var destinationView: PreConstraintViewable?
     var constraint: NSLayoutConstraint?
+    private(set) var valueListener: StateListener?
     
     init (value: State<CGFloat>,
           relation: NSLayoutConstraint.Relation,
@@ -114,7 +115,7 @@ class PreConstraint: Equatable {
         else {
             self.destinationView = destinationView
         }
-        value.listen { [weak self] constant in
+        valueListener = value.listen { [weak self] constant in
             self?.constraint?.constant = constant
             #if os(macOS)
             self?.fromView?.superview?.layoutSubtreeIfNeeded() // TODO: check
@@ -124,6 +125,10 @@ class PreConstraint: Equatable {
         }
     }
     
+    deinit {
+        valueListener?.cancel()
+    }
+
     func inverted() -> PreConstraint? {
         guard let attribute2 = attribute2, let destinationView = destinationView?.preConstraintView else { return nil }
         let unwrappedDestinationView: BaseView
