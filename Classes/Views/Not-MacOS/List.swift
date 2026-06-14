@@ -58,10 +58,8 @@ public class UList: UView, UITableViewDataSource {
         let item = item.bodyBuilderItem
         switch item {
         case .single(let view):
-            handleHiddency(view, at: sectionIndex)
             items.append(.init(item))
         case .multiple(let views):
-            views.forEach { handleHiddency($0, at: sectionIndex) }
             items.append(.init(item))
         case .forEach(let fr):
             let direction = fr.axis ?? .vertical
@@ -82,31 +80,6 @@ public class UList: UView, UITableViewDataSource {
             }
         case .none:
             break
-        }
-    }
-    
-    private func handleHiddency(_ view: UIView, at sectionIndex: Int) {
-        if let v = view as? _Hiddenable {
-            var isVisibleInList = !v._hiddenState.wrappedValue
-            v._hiddenState.beginTrigger { [weak self] in
-                self?.tableView.beginUpdates()
-            }
-            v._hiddenState.listen { [weak self] old, new in
-                guard old != new else { return }
-                switch new {
-                case true:
-                   guard isVisibleInList else { return }
-                   isVisibleInList = false
-                    self?.tableView.deleteRows(at: [0].map { IndexPath(row: $0, section: sectionIndex)}, with: .automatic)
-                case false:
-                   guard !isVisibleInList else { return }
-                   isVisibleInList = true
-                   self?.tableView.insertRows(at: [0].map { IndexPath(row: $0, section: sectionIndex) }, with: .automatic)
-                }
-            }
-            v._hiddenState.endTrigger { [weak self] in
-                self?.tableView.endUpdates()
-            }
         }
     }
     
