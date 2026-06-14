@@ -17,46 +17,69 @@ extension Array {
             self.modified = modified
         }
     }
+
     public func difference<T1: Hashable, T2: Hashable>(_ first: [T1], _ second: [T2], with compare: (Int,Int) -> Bool) -> DiffResult<T1, T2> {
-        let combinations = first.compactMap { a in (a, second.first { b in compare(a.hashValue, b.hashValue) }) }
-        let common = combinations.filter { $0.1 != nil }.compactMap { ($0.0, $0.1!) }
-        var removed: [DiffItem<T1>] = combinations.filter { $0.1 == nil }.compactMap { a,_ in
-            guard let index = first.firstIndex(where: { $0.hashValue == a.hashValue }) else { return nil }
-            return DiffItem(index: index, value: a)
+        difference(first, second, withValues: { compare($0.hashValue, $1.hashValue) })
+    }
+
+    public func difference<T1: Hashable, T2: Hashable>(_ first: [T1], _ second: [T2], withValues compare: (T1, T2) -> Bool) -> DiffResult<T1, T2> {
+        var matchedSecondIndexes: Set<Int> = []
+        var commonPairs: [(old: T1, new: T2)] = []
+
+        for a in first {
+            if let bIndex = second.firstIndex(where: { b in compare(a, b) }), !matchedSecondIndexes.contains(bIndex) {
+                commonPairs.append((old: a, new: second[bIndex]))
+                matchedSecondIndexes.insert(bIndex)
+            }
         }
-        var inserted: [DiffItem<T2>] = second.filter { b in
-            !common.contains { compare($0.0.hashValue, b.hashValue) }
-        }.compactMap { b in
-            guard let index = second.firstIndex(where: { $0.hashValue == b.hashValue }) else { return nil }
-            return DiffItem(index: index, value: b)
+
+        let commonSet = Set(commonPairs.map { $0.old })
+        var removed: [DiffItem<T1>] = []
+        for (index, a) in first.enumerated() {
+            if !commonSet.contains(where: { common in common == a }) {
+                removed.append(DiffItem(index: index, value: a))
+            }
         }
+
+        var inserted: [DiffItem<T2>] = []
+        for (index, b) in second.enumerated() {
+            if !matchedSecondIndexes.contains(index) {
+                inserted.append(DiffItem(index: index, value: b))
+            }
+        }
+
         var modified: [DiffItem<T2>] = []
-//        print("1 removed: \(removed.map { $0.value.hashValue }), inserted: \(inserted.map { $0.value.hashValue }), modified: \(modified)   a.count: \(first.count)  b.count: \(second.count)")
-        inserted.enumerated().forEach { ins in
-            guard let _ins = ins.element as? AnyIdentable else { return }
-            for rem in removed.enumerated() {
-                if let _rem = rem.element as? AnyIdentable {
-                    if _rem.identHash() == _ins.identHash() {
-                        removed.remove(at: rem.offset)
-                        inserted.remove(at: ins.offset)
-                        modified.append(ins.element)
+        var removedIndexesToDrop: [Int] = []
+        var insertedIndexesToDrop: [Int] = []
+
+        for (insIndex, ins) in inserted.enumerated() {
+            guard let _ins = ins.value as? AnyIdentable else { continue }
+            for (remIndex, rem) in removed.enumerated() {
+                if let _rem = rem.value as? AnyIdentable {
+                    if _rem.identValue() == _ins.identValue() {
+                        modified.append(ins)
+                        removedIndexesToDrop.append(remIndex)
+                        insertedIndexesToDrop.append(insIndex)
                         break
                     }
                 }
             }
         }
-//        print("2 modified: \(modified)")//removed: \(removed), inserted: \(inserted), modified: \(modified)")
-//        print("1 removed: \(removed), inserted: \(inserted), modified: \(modified)   a.count: \(first.count)  b.count: \(second.count)")
-//        if inserted.count > 0, first.count - removed.count == second.count {
-//            modified = inserted
-//            inserted = []
-//        }
-//        print("2 removed: \(removed), inserted: \(inserted), modified: \(modified)")
-        return DiffResult(common: common, removed: removed, inserted: inserted, modified: modified)
+
+        for i in removedIndexesToDrop.sorted().reversed() {
+            removed.remove(at: i)
+        }
+        for i in insertedIndexesToDrop.sorted().reversed() {
+            inserted.remove(at: i)
+        }
+
+        return DiffResult(common: commonPairs, removed: removed, inserted: inserted, modified: modified)
     }
 }
 extension Array where Element: Hashable {
     public func difference<T2: Hashable>(_ new: [T2]) -> DiffResult<Element, T2> {
-        difference(self, new, with: ==)
+        difference(self, new, withValues: {
+            AnyHashable($0) == AnyHashable($1)
+        })
     }
 }

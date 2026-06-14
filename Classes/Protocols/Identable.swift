@@ -1,5 +1,12 @@
 public protocol AnyIdentable {
     func identHash() -> Int
+    func identValue() -> AnyHashable
+}
+
+public extension AnyIdentable {
+    func identValue() -> AnyHashable {
+        AnyHashable(identHash())
+    }
 }
 
 public protocol Identable: Hashable, AnyIdentable {
@@ -16,6 +23,10 @@ extension Identable {
     }
     
     public func identHash() -> Int {
-        self[keyPath: Self.idKey].hashValue 
+        self[keyPath: Self.idKey].hashValue
+    }
+
+    public func identValue() -> AnyHashable {
+        AnyHashable(self[keyPath: Self.idKey])
     }
 }
