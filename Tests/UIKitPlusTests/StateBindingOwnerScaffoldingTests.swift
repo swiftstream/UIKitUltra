@@ -204,6 +204,7 @@ final class StateBindingOwnerScaffoldingTests: XCTestCase {
         assertStateBindingOwnerConformance(Window.self)
     }
 
+    @MainActor
     func testStatusItemAdoptsStateBindingOwner() {
         let source = State<Bool>(wrappedValue: false)
         let unrelatedHolder = TempStatesHolder()

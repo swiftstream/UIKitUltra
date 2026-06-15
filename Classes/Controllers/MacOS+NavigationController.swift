@@ -8,6 +8,7 @@
 #if os(macOS)
 import AppKit
 
+@MainActor
 public class NavigationController: ViewController {
     public private (set) var viewControllers: [ViewController] = []
     
@@ -53,6 +54,7 @@ public class NavigationController: ViewController {
     
     // MARK: - Touch Pan
     
+    @MainActor
     class TouchPanHandler {
         let beganPoint: CGPoint
         let nav: NavigationController

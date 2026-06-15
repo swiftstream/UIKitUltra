@@ -8,6 +8,7 @@
 #if os(macOS)
 import Cocoa
 
+@MainActor
 public class Window: AppBuilderContent {
     public var appBuilderContent: AppBuilderItem { .windows([self]) }
     

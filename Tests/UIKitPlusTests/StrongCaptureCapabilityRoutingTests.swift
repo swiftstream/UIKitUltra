@@ -344,6 +344,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
     }
 
     #if os(macOS)
+    @MainActor
     func testStatusItemHiddenBindingRoutesIntoOwnerHolder() {
         let source = State<Bool>(wrappedValue: false)
         let statusItem = StatusItem()

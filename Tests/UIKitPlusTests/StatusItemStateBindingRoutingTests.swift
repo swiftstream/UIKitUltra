@@ -7,6 +7,7 @@ import AppKit
 
 final class StatusItemStateBindingRoutingTests: XCTestCase {
 
+    @MainActor
     func testStatusItemTitleBindingRoutesIntoOwnerHolder() {
         let item = StatusItem()
         defer { NSStatusBar.system.removeStatusItem(item.item) }
@@ -23,6 +24,7 @@ final class StatusItemStateBindingRoutingTests: XCTestCase {
         XCTAssertEqual(item.item.button?.title, "Updated")
     }
 
+    @MainActor
     func testStatusItemAllSevenBindingsRouteIntoHolderAndRemainLive() {
         let item = StatusItem()
         defer { NSStatusBar.system.removeStatusItem(item.item) }
@@ -80,6 +82,7 @@ final class StatusItemStateBindingRoutingTests: XCTestCase {
         XCTAssertEqual(item.item.button?.toolTip, "Tip2")
     }
 
+    @MainActor
     func testStatusItemTeardownCancelsAllSevenTokensAndPreservesUnrelatedListener() {
         let unrelatedState = State<Int>(wrappedValue: 0)
         let unrelatedHolder = TempStatesHolder()
@@ -158,6 +161,7 @@ final class StatusItemStateBindingRoutingTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 
+    @MainActor
     func testStatusItemRepeatedTitleBindingsRemainAdditiveUntilTeardown() {
         let stateA = State<String>(wrappedValue: "A")
         let stateB = State<String>(wrappedValue: "B")
@@ -201,6 +205,7 @@ final class StatusItemStateBindingRoutingTests: XCTestCase {
         stateB.wrappedValue = "AfterB"
     }
 
+    @MainActor
     func testStatusItemScalarSettersRemainListenerFree() {
         let item = StatusItem()
         defer { NSStatusBar.system.removeStatusItem(item.item) }

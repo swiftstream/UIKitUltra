@@ -8,6 +8,7 @@
 #if os(macOS)
 import Cocoa
 
+@MainActor
 public class StatusItem: AppBuilderContent {
     public var appBuilderContent: AppBuilderItem { .statusItems([self]) }
     
