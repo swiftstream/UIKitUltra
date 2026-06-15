@@ -87,7 +87,7 @@ open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProto
     }
     #endif
     
-    @BodyBuilder open var body: BodyBuilder.Result { EmptyBodyBuilderItem() }
+    @MainActor @BodyBuilder open var body: BodyBuilder.Result { EmptyBodyBuilderItem() }
 
     #if os(macOS)
     open override func layout() {

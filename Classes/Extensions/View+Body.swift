@@ -10,7 +10,7 @@ protocol StackWrapperView: AnyObject {
 
 extension BaseView {
     @discardableResult
-    open func body(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
+    public func body(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         if let wrapper = self as? StackWrapperView {
             wrapper._stack.add(item: block())
         } else {

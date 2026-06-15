@@ -67,7 +67,7 @@ open class ViewController: BaseViewController {
         buildUI()
     }
     
-    @BodyBuilder open var body: BodyBuilder.Result { EmptyBodyBuilderItem() }
+    @MainActor @BodyBuilder open var body: BodyBuilder.Result { EmptyBodyBuilderItem() }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

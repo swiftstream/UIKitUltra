@@ -6,7 +6,7 @@ import UIKit
 
 extension BaseViewController {
     @discardableResult
-    open func body(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
+    public func body(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         view.body { block() }
         return self
     }
