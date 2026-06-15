@@ -15,6 +15,7 @@ public protocol Editableable: AnyObject {
     func editable(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _Editableable: Editableable {
     func _setEditable(_ v: Bool)
 }
@@ -36,6 +37,7 @@ extension Editableable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Editableable {
     @discardableResult
     public func editable(_ value: Bool) -> Self {
@@ -46,6 +48,7 @@ extension Editableable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Editableable {
     @discardableResult
     public func editable(_ value: Bool) -> Self {

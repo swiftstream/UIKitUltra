@@ -9,6 +9,7 @@ public protocol GestureRecognizerable: AnyObject {
     func delegate(_ v: UGestureRecognizerDelegate) -> Self
 }
 
+@MainActor
 protocol _GestureRecognizerable: GestureRecognizerable {
     func _setDelegate(_ v: UGestureRecognizerDelegate)
     func _setEnabled(_ v: Bool)
@@ -24,6 +25,7 @@ protocol _GestureRecognizerable: GestureRecognizerable {
     func _setRequireToFailOtherGestureRecognizer(_ v: UGestureRecognizer)
 }
 
+@MainActor
 private extension GestureRecognizerable {
     func _holdGestureBindingListenerIfPossible(_ listener: StateListener) {
         guard let tracker = (self as? _GestureTrackable)?._tracker else {
@@ -35,6 +37,7 @@ private extension GestureRecognizerable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension GestureRecognizerable {
     @discardableResult
     public func delegate(_ v: UGestureRecognizerDelegate) -> Self {

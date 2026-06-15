@@ -71,6 +71,7 @@ private struct ValueBulletsEchoableProbe: BulletsEchoable {
 
 final class StrongCaptureCapabilityRoutingTests: XCTestCase {
 
+    @MainActor
     func testOwnedHiddenableProbeRoutesIntoHolderAndReleasesOnTeardown() {
         let source = State<Bool>(wrappedValue: false)
         let unrelatedHolder = TempStatesHolder()
@@ -113,6 +114,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 
+    @MainActor
     func testOwnedHiddenableProbeRepeatedBindingsRemainAdditiveUntilTeardown() {
         let sourceA = State<Bool>(wrappedValue: false)
         let sourceB = State<Bool>(wrappedValue: true)
@@ -153,6 +155,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertNil(weakTokenB)
     }
 
+    @MainActor
     func testNonOwnedHiddenableProbePreservesHistoricalLiveUpdateFallback() {
         let source = State<Bool>(wrappedValue: false)
 
@@ -186,6 +189,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(retainedProbe.appliedHidden, false)
     }
 
+    @MainActor
     func testValueTypeHiddenableProbePreservesSourceCompatibility() {
         let recorder = StrongCaptureBoolRecorder()
         let probe = ValueHiddenableProbe(recorder: recorder)
@@ -198,6 +202,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(recorder.value, true)
     }
 
+    @MainActor
     func testOwnedHiddenableProbeScalarSetterRemainsListenerFree() {
         let probe = OwnedHiddenableProbe()
 
@@ -207,6 +212,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(probe.stateBindingHolder.statesValues.heldListeners.count, 0)
     }
 
+    @MainActor
     func testOwnedBulletsEchoableProbeRoutesIntoHolderAndReleasesOnTeardown() {
         let source = State<Bool>(wrappedValue: false)
         let unrelatedHolder = TempStatesHolder()
@@ -249,6 +255,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 
+    @MainActor
     func testOwnedBulletsEchoableProbeRepeatedBindingsRemainAdditiveUntilTeardown() {
         let sourceA = State<Bool>(wrappedValue: false)
         let sourceB = State<Bool>(wrappedValue: true)
@@ -289,6 +296,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertNil(weakTokenB)
     }
 
+    @MainActor
     func testNonOwnedBulletsEchoableProbePreservesHistoricalLiveUpdateFallback() {
         let source = State<Bool>(wrappedValue: false)
 
@@ -322,6 +330,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(retainedProbe.appliedEchosBullets, false)
     }
 
+    @MainActor
     func testValueTypeBulletsEchoableProbePreservesSourceCompatibility() {
         let recorder = StrongCaptureBoolRecorder()
         let probe = ValueBulletsEchoableProbe(recorder: recorder)
@@ -334,6 +343,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(recorder.value, true)
     }
 
+    @MainActor
     func testOwnedBulletsEchoableProbeScalarSetterRemainsListenerFree() {
         let probe = OwnedBulletsEchoableProbe()
 
@@ -368,6 +378,7 @@ final class StrongCaptureCapabilityRoutingTests: XCTestCase {
         NSStatusBar.system.removeStatusItem(statusItem.item)
     }
 
+    @MainActor
     func testMacOSUSecureTextFieldBulletsEchoBindingUsesOwnerHolder() {
         let source = State<Bool>(wrappedValue: false)
         let textField = USecureTextField()

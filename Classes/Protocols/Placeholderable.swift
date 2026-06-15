@@ -29,6 +29,7 @@ public protocol Placeholderable: AnyObject {
     func placeholder(@AnyStringBuilder stateString: @escaping AnyStringBuilder.Handler) -> Self
 }
 
+@MainActor
 protocol _Placeholderable: Placeholderable {
     var _statedPlaceholder: AnyStringBuilder.Handler? { get set }
     #if !os(macOS)
@@ -38,6 +39,7 @@ protocol _Placeholderable: Placeholderable {
     func _setPlaceholder(_ v: NSAttributedString?)
 }
 
+@MainActor
 extension _Placeholderable {
     func _changePlaceholder(to newValue: NSAttributedString) {
         #if os(macOS)
@@ -86,6 +88,7 @@ extension Placeholderable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Placeholderable {
     #if !os(macOS)
     @discardableResult
@@ -114,6 +117,7 @@ extension Placeholderable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Placeholderable {
     #if !os(macOS)
     @discardableResult

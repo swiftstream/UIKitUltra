@@ -9,11 +9,13 @@ public protocol TextLineBreakModeable {
     func lineBreakMode(_ mode: NSLineBreakMode) -> Self
 }
 
+@MainActor
 protocol _TextLineBreakModeable: TextLineBreakModeable {
     func _setLineBreakMode(_ v: NSLineBreakMode)
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension TextLineBreakModeable {
     @discardableResult
     public func lineBreakMode(_ mode: NSLineBreakMode) -> Self {
@@ -24,6 +26,7 @@ extension TextLineBreakModeable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _TextLineBreakModeable {
     @discardableResult
     public func lineBreakMode(_ mode: NSLineBreakMode) -> Self {

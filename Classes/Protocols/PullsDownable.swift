@@ -15,6 +15,7 @@ public protocol PullsDownable: AnyObject {
     func pullsDown(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _PullsDownable: PullsDownable {
     func _setPullsDown(_ v: Bool)
 }
@@ -36,6 +37,7 @@ extension PullsDownable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension PullsDownable {
     @discardableResult
     public func pullsDown(_ value: Bool) -> Self {
@@ -46,6 +48,7 @@ extension PullsDownable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _PullsDownable {
     @discardableResult
     public func pullsDown(_ value: Bool) -> Self {

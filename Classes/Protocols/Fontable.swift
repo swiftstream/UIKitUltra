@@ -12,6 +12,7 @@ public protocol Fontable: AnyObject {
     func font(_ identifier: FontIdentifier, _ size: CGFloat) -> Self
 }
 
+@MainActor
 protocol _Fontable: Fontable {
     func _setFont(_ v: UFont?)
 }
@@ -33,6 +34,7 @@ extension Fontable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Fontable {
     @discardableResult
     public func font(v: UFont?) -> Self {
@@ -43,6 +45,7 @@ extension Fontable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Fontable {
     @discardableResult
     public func font(v: UFont?) -> Self {
@@ -61,6 +64,7 @@ public protocol FontableAtRange {
     func font(_ identifier: FontIdentifier, _ size: CGFloat, at range: ClosedRange<Int>) -> Self
 }
 
+@MainActor
 protocol _FontableAtRange: _Fontable, FontableAtRange {}
 
 extension FontableAtRange {

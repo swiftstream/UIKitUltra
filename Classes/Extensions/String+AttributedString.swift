@@ -57,6 +57,7 @@ extension String {
     }
     
     @discardableResult
+    @MainActor
     public func font(v: UFont, at range: ClosedRange<Int>? = nil) -> AttributedString {
         guard let range = range else {
             return AttrStr(self).font(v: v)

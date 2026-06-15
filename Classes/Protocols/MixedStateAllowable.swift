@@ -15,6 +15,7 @@ public protocol MixedStateAllowable: AnyObject {
     func allowMixedState(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _MixedStateAllowable: MixedStateAllowable {
     var _allowMixedStateState: State<Bool> { get }
     
@@ -38,6 +39,7 @@ extension MixedStateAllowable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension MixedStateAllowable {
     @discardableResult
     public func allowMixedState(_ value: Bool) -> Self {
@@ -48,6 +50,7 @@ extension MixedStateAllowable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _MixedStateAllowable {
     @discardableResult
     public func allowMixedState(_ value: Bool) -> Self {

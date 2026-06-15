@@ -92,6 +92,7 @@ private final class NonOwnedMacOSCapabilityProbe: MacOSCapabilityProbe {}
 
 final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
 
+    @MainActor
     func testOwnedProbeRoutesAllTenCrossPlatformCapabilityListenersIntoHolder() {
         let probe = OwnedCapabilityProbe()
 
@@ -152,6 +153,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(probe.appliedAdjustsFontSizeToFitWidth, true)
     }
 
+    @MainActor
     func testNonOwnedProbePreservesLiveUpdatesForAllTenCrossPlatformCapabilities() {
         let probe = NonOwnedCapabilityProbe()
         XCTAssertFalse(probe is _StateBindingOwner)
@@ -201,6 +203,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(probe.appliedAdjustsFontSizeToFitWidth, true)
     }
 
+    @MainActor
     func testOwnedProbeTeardownCancelsCrossPlatformTokensAndReleasesReceiver() {
         let enabledSource = State<Bool>(wrappedValue: true)
         let borderedSource = State<Bool>(wrappedValue: false)
@@ -255,6 +258,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 
+    @MainActor
     func testOwnedProbeRepeatedCrossPlatformBindingsRemainAdditiveUntilTeardown() {
         let sourceA = State<Bool>(wrappedValue: true)
         let sourceB = State<Bool>(wrappedValue: false)
@@ -309,6 +313,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
     }
 
     #if !os(macOS)
+    @MainActor
     func testNonOwnedUIAlertActionEnabledBindingRemainsLiveWithoutOwner() {
         let source = State<Bool>(wrappedValue: true)
         let action = UIAlertAction(title: "Test", style: .default)
@@ -322,6 +327,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
     #endif
 
     #if os(macOS)
+    @MainActor
     func testMacOSOwnedProbeRoutesAllEightMacOSCapabilityListenersIntoHolder() {
         let probe = OwnedMacOSCapabilityProbe()
 
@@ -377,6 +383,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(probe.appliedKeyMask, .option)
     }
 
+    @MainActor
     func testMacOSNonOwnedProbePreservesLiveUpdatesForAllEightMacOSCapabilities() {
         let probe = NonOwnedMacOSCapabilityProbe()
         XCTAssertFalse(probe is _StateBindingOwner)
@@ -423,6 +430,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(probe.appliedKeyMask, .option)
     }
 
+    @MainActor
     func testMacOSMenuItemCapabilityBindingsRemainLiveWithoutOwner() {
         let enabledSource = State<Bool>(wrappedValue: true)
         let alternateSource = State<Bool>(wrappedValue: false)
@@ -453,6 +461,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(item.item.keyEquivalentModifierMask, .option)
     }
 
+    @MainActor
     func testMacOSUButtonCapabilityBindingsUseOwnerHolder() {
         let button = UButton("Test")
         let baselineCount = button
@@ -487,6 +496,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(button.keyEquivalentModifierMask, .option)
     }
 
+    @MainActor
     func testMacOSOwnedProbeScalarSettersRemainListenerFree() {
         let probe = OwnedMacOSCapabilityProbe()
 
@@ -506,6 +516,7 @@ final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
     }
     #endif
 
+    @MainActor
     func testOwnedProbeCrossPlatformScalarSettersRemainListenerFree() {
         let probe = OwnedCapabilityProbe()
 

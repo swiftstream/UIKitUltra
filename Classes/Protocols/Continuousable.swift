@@ -15,6 +15,7 @@ public protocol Continuousable: AnyObject {
     func continuous(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _Continuousable: Continuousable {
     var _continuousState: State<Bool> { get }
     
@@ -38,6 +39,7 @@ extension Continuousable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension Continuousable {
     @discardableResult
     public func continuous(_ value: Bool) -> Self {
@@ -48,6 +50,7 @@ extension Continuousable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Continuousable {
     @discardableResult
     public func continuous(_ value: Bool) -> Self {

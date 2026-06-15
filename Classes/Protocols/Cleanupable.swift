@@ -9,11 +9,13 @@ public protocol Cleanupable {
     func cleanup() -> Self
 }
 
+@MainActor
 protocol _Cleanupable: Cleanupable {
     func _cleanup()
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Cleanupable {
     @discardableResult
     public func cleanup() -> Self {
@@ -24,6 +26,7 @@ extension Cleanupable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Cleanupable {
     @discardableResult
     public func cleanup() -> Self {

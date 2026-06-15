@@ -29,6 +29,7 @@ public protocol Textable: AnyObject {
     func text(@AnyStringBuilder stateString: @escaping AnyStringBuilder.Handler) -> Self
 }
 
+@MainActor
 protocol _Textable: Textable {
     var _currentText: String { get }
     var _statedText: AnyStringBuilder.Handler? { get set }
@@ -39,6 +40,7 @@ protocol _Textable: Textable {
     func _setText(_ v: NSAttributedString?)
 }
 
+@MainActor
 extension _Textable {
     func _changeText(to newValue: NSAttributedString) {
         #if os(macOS)
@@ -59,6 +61,7 @@ extension _Textable {
     }
 }
 
+@MainActor
 extension Textable {
     @discardableResult
     public func text(_ value: LocalizedString...) -> Self {
@@ -94,6 +97,7 @@ extension Textable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Textable {
     #if !os(macOS)
     @discardableResult
@@ -122,6 +126,7 @@ extension Textable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Textable {
     #if !os(macOS)
     @discardableResult

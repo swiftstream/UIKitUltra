@@ -45,6 +45,7 @@ public protocol GestureTrackable: AnyObject {
     func onFailed(_ action: @escaping (Self) -> Void) -> Self
 }
 
+@MainActor
 protocol _GestureTrackable: GestureTrackable {
     var _tracker: _GestureTracker { get set }
 }
@@ -82,6 +83,7 @@ extension GestureTrackable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension GestureTrackable {
     @discardableResult
     public func trackState(_ action: @escaping (UGestureRecognizer.State) -> Void) -> Self {
@@ -188,6 +190,7 @@ extension GestureTrackable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _GestureTrackable {
     @discardableResult
     public func trackState(_ action: @escaping (UGestureRecognizer.State) -> Void) -> Self {

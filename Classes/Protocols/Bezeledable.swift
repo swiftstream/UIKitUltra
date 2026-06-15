@@ -15,6 +15,7 @@ public protocol Bezeledable: AnyObject {
     func bezeled(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _Bezeledable: Bezeledable {
     func _setBezeled(_ v: Bool)
 }
@@ -36,6 +37,7 @@ extension Bezeledable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension Bezeledable {
     @discardableResult
     public func bezeled(_ value: Bool) -> Self {
@@ -46,6 +48,7 @@ extension Bezeledable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Bezeledable {
     @discardableResult
     public func bezeled(_ value: Bool) -> Self {

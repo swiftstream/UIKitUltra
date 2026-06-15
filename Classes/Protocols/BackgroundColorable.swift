@@ -15,6 +15,7 @@ public protocol BackgroundColorable: AnyObject {
     func background(_ color: State<UColor>) -> Self
 }
 
+@MainActor
 protocol _BackgroundColorable: BackgroundColorable {
     var _backgroundColorState: State<UColor> { get }
     
@@ -42,6 +43,7 @@ extension BackgroundColorable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension BackgroundColorable {
     @discardableResult
     public func background(_ color: UColor) -> Self {
@@ -52,6 +54,7 @@ extension BackgroundColorable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _BackgroundColorable {
     @discardableResult
     public func background(_ color: UColor) -> Self {
@@ -60,6 +63,7 @@ extension _BackgroundColorable {
     }
 }
 
+@MainActor
 private func  _background(_ color: UColor, on s: _BackgroundColorable) {
     #if os(macOS)
     s._backgroundColorState.wrappedValue.changeHandler = nil

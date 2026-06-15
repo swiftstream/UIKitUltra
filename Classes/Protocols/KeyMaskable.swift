@@ -16,10 +16,12 @@ public protocol KeyMaskable: AnyObject {
     func keyMask(_ state: State<NSEvent.ModifierFlags>) -> Self
 }
 
+@MainActor
 protocol _KeyMaskable: KeyMaskable {
     func _setKeyMask(_ v: NSEvent.ModifierFlags)
 }
 
+@MainActor
 extension KeyMaskable {
     @discardableResult
     public func keyMask(_ mask: NSEvent.ModifierFlags) -> Self {

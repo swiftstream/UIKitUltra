@@ -12,12 +12,14 @@ public protocol Typeable {
     func typing(_ binding: State<Bool>, _ interval: TimeInterval) -> Self
 }
 
+@MainActor
 protocol _Typeable: Typeable {
     func _setTypingInterval(_ v: TimeInterval)
     func _observeTypingState(_ v: State<Bool>)
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Typeable {
     @discardableResult
     public func typing(_ binding: State<Bool>) -> Self {
@@ -35,6 +37,7 @@ extension Typeable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Typeable {
     @discardableResult
     public func typing(_ binding: State<Bool>) -> Self {

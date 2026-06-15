@@ -15,6 +15,7 @@ public protocol Borderedable: AnyObject {
     func bordered(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _Borderedable: Borderedable {
     var _borderedState: State<Bool> { get }
     
@@ -38,6 +39,7 @@ extension Borderedable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension Borderedable {
     @discardableResult
     public func bordered(_ value: Bool) -> Self {
@@ -48,6 +50,7 @@ extension Borderedable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Borderedable {
     @discardableResult
     public func bordered(_ value: Bool) -> Self {

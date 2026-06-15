@@ -9,6 +9,7 @@ public protocol Soundable: AnyObject {
     func sound(_ binding: UIKitPlus.State<NSSound?>) -> Self
 }
 
+@MainActor
 protocol _Soundable: Soundable {
     func _setSound(_ v: NSSound?)
 }
@@ -25,6 +26,7 @@ extension Soundable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension Soundable {
     @discardableResult
     public func sound(_ value: NSSound?) -> Self {
@@ -35,6 +37,7 @@ extension Soundable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Soundable {
     @discardableResult
     public func sound(_ value: NSSound?) -> Self {

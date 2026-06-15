@@ -15,6 +15,7 @@ public protocol TextAttributesEditingAllowable: AnyObject {
     func allowEditingTextAttributes(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _TextAttributesEditingAllowable: TextAttributesEditingAllowable {
     func _setAllowEditingTextAttributes(_ v: Bool)
 }
@@ -36,6 +37,7 @@ extension TextAttributesEditingAllowable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension TextAttributesEditingAllowable {
     @discardableResult
     public func allowEditingTextAttributes(_ value: Bool) -> Self {
@@ -46,6 +48,7 @@ extension TextAttributesEditingAllowable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _TextAttributesEditingAllowable {
     @discardableResult
     public func allowEditingTextAttributes(_ value: Bool) -> Self {

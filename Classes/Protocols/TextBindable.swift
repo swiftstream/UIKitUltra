@@ -9,11 +9,13 @@ public protocol TextBindable {
     func bind<A: AnyString>(_ to: UIKitPlus.State<A>) -> Self
 }
 
+@MainActor
 protocol _TextBindable: TextBindable {
     func _setTextBind<A: AnyString>(_ binding: State<A>?)
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension TextBindable {
     @discardableResult
     public func bind<A: AnyString>(_ to: State<A>) -> Self {
@@ -24,6 +26,7 @@ extension TextBindable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _TextBindable {
     @discardableResult
     public func bind<A: AnyString>(_ to: State<A>) -> Self {

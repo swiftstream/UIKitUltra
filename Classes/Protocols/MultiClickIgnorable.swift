@@ -15,6 +15,7 @@ public protocol MultiClickIgnorable: AnyObject {
     func ignoreMultiClick(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _MultiClickIgnorable: MultiClickIgnorable {
     var _ignoreMultiClickState: State<Bool> { get }
     
@@ -38,6 +39,7 @@ extension MultiClickIgnorable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension MultiClickIgnorable {
     @discardableResult
     public func ignoreMultiClick(_ value: Bool) -> Self {
@@ -48,6 +50,7 @@ extension MultiClickIgnorable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _MultiClickIgnorable {
     @discardableResult
     public func ignoreMultiClick(_ value: Bool) -> Self {

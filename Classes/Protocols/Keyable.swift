@@ -9,10 +9,12 @@ public protocol Keyable: AnyObject {
     func key(_ state: State<String>) -> Self
 }
 
+@MainActor
 protocol _Keyable: Keyable {
     func _setKey(_ v: String)
 }
 
+@MainActor
 extension Keyable {
     @discardableResult
     public func key(_ text: String) -> Self {

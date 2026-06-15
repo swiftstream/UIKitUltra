@@ -9,6 +9,7 @@ public protocol BezelStyleable: AnyObject {
     func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self
 }
 
+@MainActor
 protocol _BezelStyleable: BezelStyleable {
     var _bezelStyleState: State<NSButton.BezelStyle> { get set }
     
@@ -16,6 +17,7 @@ protocol _BezelStyleable: BezelStyleable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension BezelStyleable {
     @discardableResult
     public func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self {
@@ -39,6 +41,7 @@ extension BezelStyleable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _BezelStyleable {
     @discardableResult
     public func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self {

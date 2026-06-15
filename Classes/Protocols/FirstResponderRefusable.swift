@@ -15,6 +15,7 @@ public protocol FirstResponderRefusable: AnyObject {
     func refuseFirstResponder(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _FirstResponderRefusable: FirstResponderRefusable {
     var _refuseFirstResponderState: State<Bool> { get }
     
@@ -38,6 +39,7 @@ extension FirstResponderRefusable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension FirstResponderRefusable {
     @discardableResult
     public func refuseFirstResponder(_ value: Bool) -> Self {
@@ -48,6 +50,7 @@ extension FirstResponderRefusable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _FirstResponderRefusable {
     @discardableResult
     public func refuseFirstResponder(_ value: Bool) -> Self {

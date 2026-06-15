@@ -25,6 +25,7 @@ private func assertSwipeDirection(
 
 final class GestureOwnerAdoptionTests: XCTestCase {
 
+    @MainActor
     func testCustomSwipeDirectionBindingIsTrackerOwnedAndCancelsOnRecognizerTeardown() {
         let source = State<USwipeGestureRecognizer.Direction>(wrappedValue: .right)
         let unrelatedHolder = TempStatesHolder()
@@ -78,6 +79,7 @@ final class GestureOwnerAdoptionTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 
+    @MainActor
     func testCustomEnabledBindingIsTrackerOwnedAndPreservesInitialAndLiveUpdates() {
         let source = State<Bool>(wrappedValue: false)
 
@@ -121,6 +123,7 @@ final class GestureOwnerAdoptionTests: XCTestCase {
         XCTAssertNil(weakToken)
     }
 
+    @MainActor
     func testRepeatedCustomEnabledBindingsRemainAdditiveUntilRecognizerTeardown() {
         let sourceA = State<Bool>(wrappedValue: false)
         let sourceB = State<Bool>(wrappedValue: true)
@@ -172,6 +175,7 @@ final class GestureOwnerAdoptionTests: XCTestCase {
         XCTAssertNil(weakTokenB)
     }
 
+    @MainActor
     func testSystemEnabledBindingPreservesLiveUpdatesAndRemainsUnowned() {
         let source = State<Bool>(wrappedValue: false)
         let recognizer = UGestureRecognizer(target: nil, action: nil)
@@ -189,6 +193,7 @@ final class GestureOwnerAdoptionTests: XCTestCase {
     }
 
     #if os(iOS)
+    @MainActor
     func testUIKitSystemGesturePropertyBindingsPreserveLiveUpdatesAndRemainUnowned() {
         let recognizer = UGestureRecognizer(target: nil, action: nil)
 
@@ -229,6 +234,7 @@ final class GestureOwnerAdoptionTests: XCTestCase {
     }
     #endif
 
+    @MainActor
     func testGestureScalarSettersRemainListenerFree() {
         let customRecognizer = SwipeGestureRecognizer(direction: .right)
 
@@ -255,6 +261,7 @@ final class GestureOwnerAdoptionTests: XCTestCase {
         XCTAssertFalse(systemRecognizer.isEnabled)
     }
 
+    @MainActor
     func testGestureTrackerDeinitInvalidatesHeldListenersAndCleansSourceRegistry() {
         let source = State<Int>(wrappedValue: 0)
         let unrelatedHolder = TempStatesHolder()

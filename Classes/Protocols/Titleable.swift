@@ -29,6 +29,7 @@ public protocol Titleable: AnyObject {
     func title(@AnyStringBuilder stateString: @escaping AnyStringBuilder.Handler) -> Self
 }
 
+@MainActor
 protocol _Titleable: Titleable {
     var _statedTitle: AnyStringBuilder.Handler? { get set }
     #if !os(macOS)
@@ -38,6 +39,7 @@ protocol _Titleable: Titleable {
     func _setTitle(_ v: NSAttributedString?)
 }
 
+@MainActor
 extension _Titleable {
     func _changeTitle(to newValue: NSAttributedString) {
         #if os(macOS)
@@ -86,6 +88,7 @@ extension Titleable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Titleable {
     #if !os(macOS)
     @discardableResult
@@ -113,6 +116,7 @@ extension Titleable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Titleable {
     #if !os(macOS)
     @discardableResult

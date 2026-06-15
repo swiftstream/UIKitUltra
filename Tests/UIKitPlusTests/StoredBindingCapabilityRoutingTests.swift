@@ -139,6 +139,7 @@ private final class DispatchInternalSubclass:
 
 final class StoredBindingCapabilityRoutingTests: XCTestCase {
 
+    @MainActor
     func testDispatchCanaryForInheritedPublicWitnessSelectsPublicImplementation() {
         DispatchCanary.hits = []
 
@@ -162,6 +163,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testControlStateableRefinedPathRoutesIntoHolderAndPreservesStoredBindingOrdering() {
         let source = State<NSControl.StateValue>(wrappedValue: .off)
         var probe: OwnedControlStateableProbe!
@@ -206,6 +208,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         source.wrappedValue = .mixed
     }
 
+    @MainActor
     func testControlStateablePublicPathRoutesIntoHolderAndPreservesStoredBindingOrdering() {
         let source = State<NSControl.StateValue>(wrappedValue: .off)
         var probe: PublicWitnessOwnedControlStateableProbe!
@@ -250,6 +253,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         source.wrappedValue = .mixed
     }
 
+    @MainActor
     func testControlStateableRepeatedBindingsRemainAdditiveUntilTeardown() {
         let sourceA = State<NSControl.StateValue>(wrappedValue: .off)
         let sourceB = State<NSControl.StateValue>(wrappedValue: .on)
@@ -286,6 +290,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         XCTAssertNil(weakTokenB.value)
     }
 
+    @MainActor
     func testControlStateableScalarSetterRemainsListenerFree() {
         let probe = OwnedControlStateableProbe()
 
@@ -296,6 +301,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(probe.stateBindingHolder.statesValues.heldListeners.count, 0)
     }
 
+    @MainActor
     func testMenuItemControlStateBindingFallbackRemainsLiveWithoutOwner() {
         let item = MenuItem("Test")
         let source = State<NSControl.StateValue>(wrappedValue: .off)
@@ -311,6 +317,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(item.item.state, .on)
     }
 
+    @MainActor
     func testMacOSUButtonControlStateBindingUsesOwnerHolder() {
         let button = UButton("Test")
         let source = State<NSControl.StateValue>(wrappedValue: .off)
@@ -336,6 +343,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(button.state, .on)
     }
 
+    @MainActor
     func testBezelStyleableRefinedPathRoutesIntoHolderAndPreservesStoredBindingOrdering() {
         let source = State<NSButton.BezelStyle>(wrappedValue: .regularSquare)
         var probe: OwnedBezelStyleableProbe!
@@ -380,6 +388,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         source.wrappedValue = .regularSquare
     }
 
+    @MainActor
     func testBezelStyleablePublicPathRepairsStrongCaptureAndReleasesOnTeardown() {
         let source = State<NSButton.BezelStyle>(wrappedValue: .regularSquare)
         var probe: PublicWitnessOwnedBezelStyleableProbe!
@@ -424,6 +433,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         source.wrappedValue = .regularSquare
     }
 
+    @MainActor
     func testBezelStyleableRepeatedBindingsRemainAdditiveUntilTeardown() {
         let sourceA = State<NSButton.BezelStyle>(wrappedValue: .regularSquare)
         let sourceB = State<NSButton.BezelStyle>(wrappedValue: .rounded)
@@ -460,6 +470,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         XCTAssertNil(weakTokenB.value)
     }
 
+    @MainActor
     func testBezelStyleableScalarSetterRemainsListenerFree() {
         let probe = OwnedBezelStyleableProbe()
 
@@ -470,6 +481,7 @@ final class StoredBindingCapabilityRoutingTests: XCTestCase {
         XCTAssertEqual(probe.stateBindingHolder.statesValues.heldListeners.count, 0)
     }
 
+    @MainActor
     func testMacOSUButtonAndUPopUpButtonBezelStyleBindingsUseOwnerHolder() {
         do {
             let button = UButton("Test")

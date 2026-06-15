@@ -15,6 +15,7 @@ public protocol Enableable: AnyObject {
     func enabled(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _Enableable: Enableable {
     func _setEnabled(_ v: Bool)
 }
@@ -36,6 +37,7 @@ extension Enableable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Enableable {
     @discardableResult
     public func enabled(_ value: Bool) -> Self {
@@ -46,6 +48,7 @@ extension Enableable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Enableable {
     @discardableResult
     public func enabled(_ value: Bool) -> Self {

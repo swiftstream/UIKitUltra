@@ -9,6 +9,7 @@ public protocol ControlStateable: AnyObject {
     func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self
 }
 
+@MainActor
 protocol _ControlStateable: ControlStateable {
     var _stateState: State<NSControl.StateValue> { get set }
     
@@ -16,6 +17,7 @@ protocol _ControlStateable: ControlStateable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension ControlStateable {
     @discardableResult
     public func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self {
@@ -39,6 +41,7 @@ extension ControlStateable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _ControlStateable {
     @discardableResult
     public func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self {

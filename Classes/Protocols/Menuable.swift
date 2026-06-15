@@ -19,6 +19,7 @@ public protocol Menuable {
     func menu(@MenuBuilder content: @escaping (Menu) -> MenuBuilderContent) -> Self
 }
 
+@MainActor
 protocol _Menuable: Menuable {
     func _setMenu(_ v: Menu)
 }
@@ -37,6 +38,7 @@ extension Menuable {
     }
 }
 
+@MainActor
 extension Menuable {
     @discardableResult
     public func menu(_ value: Menu) -> Self {

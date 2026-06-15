@@ -12,11 +12,13 @@ public protocol TextLineable {
     func multiline() -> Self
 }
 
+@MainActor
 protocol _TextLineable: TextLineable {
     func _setNumbelOfLines(_ v: Int)
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension TextLineable {
     @discardableResult
     public func lines(_ number: Int) -> Self {
@@ -34,6 +36,7 @@ extension TextLineable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _TextLineable {
     @discardableResult
     public func lines(_ number: Int) -> Self {

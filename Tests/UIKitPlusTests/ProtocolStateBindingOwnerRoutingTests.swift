@@ -105,6 +105,7 @@ private final class NonOwnedProtocolProbe: ProtocolProbe {}
 
 final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
 
+    @MainActor
     func testOwnedProbeRoutesAllEightProtocolListenersIntoAuthoritativeHolder() {
         let probe = OwnedProtocolProbe()
 
@@ -158,6 +159,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         assertPlatformColor(probe.appliedTint, equals: .cyan)
     }
 
+    @MainActor
     func testOwnedProbeTeardownCancelsOwnedTextTokenAndRepairsTextableCapture() {
         let source = State<String>(wrappedValue: "Initial")
         let unrelatedHolder = TempStatesHolder()
@@ -200,6 +202,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 
+    @MainActor
     func testOwnedProbeRepeatedBackgroundBindingsRemainAdditiveUntilTeardown() {
         let sourceA = State<UColor>(wrappedValue: .red)
         let sourceB = State<UColor>(wrappedValue: .blue)
@@ -253,6 +256,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 2)
     }
 
+    @MainActor
     func testNonOwnedProbePreservesLiveUpdatesForAllEightProtocolFamilies() {
         let probe = NonOwnedProtocolProbe()
         XCTAssertFalse(probe is _StateBindingOwner)
@@ -298,6 +302,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         assertPlatformColor(probe.appliedTint, equals: .cyan)
     }
 
+    @MainActor
     func testPlainBaseViewControllerTitleBindingRemainsLiveWithoutOwner() {
         let source = State<String>(wrappedValue: "Initial")
         let controller = BaseViewController()
@@ -323,6 +328,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
     }
 
     #if !os(macOS)
+    @MainActor
     func testUIKitPlainBaseViewControllerBackgroundBindingRemainsLiveWithoutOwner() {
         let source = State<UColor>(wrappedValue: .red)
         let controller = BaseViewController()
@@ -334,6 +340,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(controller.view.backgroundColor, UColor.blue)
     }
 
+    @MainActor
     func testUIKitPlainUIAlertControllerMessageBindingRemainsLiveWithoutOwner() {
         let source = State<String>(wrappedValue: "Initial")
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
@@ -345,6 +352,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(alert.message, "Updated")
     }
 
+    @MainActor
     func testUIKitBaseAppShortcutTitleBindingRemainsLiveWithoutOwner() {
         let source = State<String>(wrappedValue: "Initial")
         let shortcut = BaseApp.Shortcut("com.example.uikitplus.tests")
@@ -356,6 +364,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(shortcut.item.localizedTitle, "Updated")
     }
 
+    @MainActor
     func testUIKitAlertControllerMessageBindingUsesOwnerHolder() {
         let source = State<String>(wrappedValue: "Initial")
         let alert = AlertController(.alert)
@@ -369,6 +378,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
     #endif
 
     #if os(macOS)
+    @MainActor
     func testMacOSMenuItemTitleBindingRemainsLiveWithoutOwner() {
         let source = State<String>(wrappedValue: "Initial")
         let item = MenuItem("Initial")

@@ -6,10 +6,12 @@ import UIKit
 
 public protocol GestureDelegatorable: AnyObject {}
 
+@MainActor
 protocol _GestureDelegatorable: GestureDelegatorable {
     var _delegator: _GestureDelegator { get set }
 }
 
+@MainActor
 extension GestureDelegatorable {
     @discardableResult
     public func delegate(_ object: UGestureRecognizerDelegate) -> Self {

@@ -4,12 +4,14 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 protocol EditableStackView: AnyObject {
     var arrangedSubviews: [BaseView] { get }
     func addArrangedSubview(_ view: BaseView)
     func add(arrangedView: BaseView, at index: Int)
 }
 
+@MainActor
 extension EditableStackView {
     func add(arrangedView: BaseView, at index: Int) {
         let nextViews = arrangedSubviews.dropFirst(index)

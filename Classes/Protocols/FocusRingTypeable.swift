@@ -9,6 +9,7 @@ public protocol FocusRingTypeable: AnyObject {
     func focusRingType(_ binding: UIKitPlus.State<NSFocusRingType>) -> Self
 }
 
+@MainActor
 protocol _FocusRingTypeable: FocusRingTypeable {
     func _setFocusRingType(_ v: NSFocusRingType)
 }
@@ -25,6 +26,7 @@ extension FocusRingTypeable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension FocusRingTypeable {
     @discardableResult
     public func focusRingType(_ value: NSFocusRingType) -> Self {
@@ -35,6 +37,7 @@ extension FocusRingTypeable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _FocusRingTypeable {
     @discardableResult
     public func focusRingType(_ value: NSFocusRingType) -> Self {

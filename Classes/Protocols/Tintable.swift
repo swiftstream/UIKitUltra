@@ -15,6 +15,7 @@ public protocol Tintable: AnyObject {
     func tint(_ color: State<UColor>) -> Self
 }
 
+@MainActor
 protocol _Tintable: Tintable {
     var _tintState: State<UColor> { get }
     
@@ -25,6 +26,7 @@ protocol _Tintable: Tintable {
     #endif
 }
 
+@MainActor
 extension Tintable {
     @discardableResult
     public func tint(_ number: Int) -> Self {
@@ -42,6 +44,7 @@ extension Tintable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Tintable {
     @discardableResult
     public func tint(_ color: UColor) -> Self {
@@ -52,6 +55,7 @@ extension Tintable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Tintable {
     @discardableResult
     public func tint(_ color: UColor) -> Self {
@@ -60,6 +64,7 @@ extension _Tintable {
     }
 }
 
+@MainActor
 private func  _tint(_ color: UColor, on s: _Tintable) {
     #if os(macOS)
     s._tintState.wrappedValue.changeHandler = nil

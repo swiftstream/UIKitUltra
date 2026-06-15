@@ -15,6 +15,7 @@ public protocol Colorable: AnyObject {
     func color(_ color: State<UColor>) -> Self
 }
 
+@MainActor
 protocol _Colorable: Colorable {
     var _colorState: State<UColor> { get }
     
@@ -25,6 +26,7 @@ protocol _Colorable: Colorable {
     #endif
 }
 
+@MainActor
 extension Colorable {
     @discardableResult
     public func color(_ number: Int) -> Self {
@@ -42,6 +44,7 @@ extension Colorable {
 }
 
 @available(iOS 13.0, *)
+@MainActor
 extension Colorable {
     @discardableResult
     public func color(_ color: UColor) -> Self {
@@ -52,6 +55,7 @@ extension Colorable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Colorable {
     @discardableResult
     public func color(_ color: UColor) -> Self {
@@ -60,6 +64,7 @@ extension _Colorable {
     }
 }
 
+@MainActor
 private func  _color(_ color: UColor, on s: _Colorable) {
     #if os(macOS)
     s._colorState.wrappedValue.changeHandler = nil

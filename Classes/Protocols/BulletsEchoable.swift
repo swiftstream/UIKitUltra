@@ -15,10 +15,12 @@ public protocol BulletsEchoable {
     func echosBullets(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _BulletsEchoable: BulletsEchoable {
     func _setEchosBullets(_ v: Bool)
 }
 
+@MainActor
 extension BulletsEchoable {
     @discardableResult
     public func echosBullets() -> Self {
@@ -40,6 +42,7 @@ extension BulletsEchoable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension BulletsEchoable {
     @discardableResult
     public func echosBullets(_ value: Bool) -> Self {
@@ -50,6 +53,7 @@ extension BulletsEchoable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _BulletsEchoable {
     @discardableResult
     public func echosBullets(_ value: Bool) -> Self {

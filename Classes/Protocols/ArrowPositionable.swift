@@ -9,6 +9,7 @@ public protocol ArrowPositionable: AnyObject {
     func arrowPosition(_ binding: UIKitPlus.State<NSPopUpButton.ArrowPosition>) -> Self
 }
 
+@MainActor
 protocol _ArrowPositionable: ArrowPositionable {
     func _setArrowPosition(_ v: NSPopUpButton.ArrowPosition)
 }
@@ -25,6 +26,7 @@ extension ArrowPositionable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension ArrowPositionable {
     @discardableResult
     public func arrowPosition(_ value: NSPopUpButton.ArrowPosition) -> Self {
@@ -35,6 +37,7 @@ extension ArrowPositionable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _ArrowPositionable {
     @discardableResult
     public func arrowPosition(_ value: NSPopUpButton.ArrowPosition) -> Self {

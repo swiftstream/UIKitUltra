@@ -15,6 +15,7 @@ public protocol Hiddenable {
     func hidden(_ binding: UIKitPlus.State<Bool>) -> Self
 }
 
+@MainActor
 protocol _Hiddenable: Hiddenable {
     var _hiddenState: State<Bool> { get }
     
@@ -42,6 +43,7 @@ extension Hiddenable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
+@MainActor
 extension Hiddenable {
     @discardableResult
     public func hidden(_ value: Bool) -> Self {
@@ -52,6 +54,7 @@ extension Hiddenable {
 }
 
 // for iOS lower than 13
+@MainActor
 extension _Hiddenable {
     @discardableResult
     public func hidden(_ value: Bool) -> Self {
