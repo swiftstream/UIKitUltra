@@ -2,6 +2,7 @@
 import Foundation
 import AppKit
 
+@MainActor
 open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UTextField { self }
     public typealias P = Properties<UTextField>

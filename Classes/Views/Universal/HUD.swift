@@ -7,6 +7,7 @@ import UIKit
 @available(*, deprecated, renamed: "UHUD")
 public typealias HUD = UHUD
 
+@MainActor
 open class UHUD: UView {
     override public var declarativeView: HUD { return self }
     

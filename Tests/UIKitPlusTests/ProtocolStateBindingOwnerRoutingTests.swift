@@ -380,6 +380,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(item.title, "Updated")
     }
 
+    @MainActor
     func testMacOSTextFieldTintBindingUsesOwnerHolder() {
         let source = State<UColor>(wrappedValue: .red)
         let textField = UTextField()

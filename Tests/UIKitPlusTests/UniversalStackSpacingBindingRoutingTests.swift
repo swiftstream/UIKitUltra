@@ -47,6 +47,7 @@ final class UniversalStackSpacingBindingRoutingTests: XCTestCase {
 
     // MARK: - StackView
 
+    @MainActor
     func testStackViewSpacingBindingRoutesTokenAndRemainsLive() {
         let stack = _StackView()
         let baselineCount = heldListenerCount(of: stack.stateBindingHolder)
@@ -72,6 +73,7 @@ final class UniversalStackSpacingBindingRoutingTests: XCTestCase {
         XCTAssertEqual(stack.spacing, 16)
     }
 
+    @MainActor
     func testStackViewRepeatedSpacingBindingRemainsAdditive() {
         let stack = _StackView()
         let baselineIDs = heldListenerIDs(of: stack.stateBindingHolder)
@@ -145,6 +147,7 @@ final class UniversalStackSpacingBindingRoutingTests: XCTestCase {
 
     // MARK: - Teardown
 
+    @MainActor
     func testStackViewTeardownCancelsOwnedSpacingTokenAndPreservesUnrelatedListener() {
         let unrelatedState = State<Int>(wrappedValue: 0)
         let unrelatedHolder = TempStatesHolder()
@@ -207,6 +210,7 @@ final class UniversalStackSpacingBindingRoutingTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testAllThreeStacksTeardownCancelsTokensPreservingUnrelated() {
         let unrelatedState = State<Int>(wrappedValue: 0)
         let unrelatedHolder = TempStatesHolder()

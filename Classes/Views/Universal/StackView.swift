@@ -7,6 +7,7 @@ import UIKit
 @available(*, deprecated, renamed: "UStackView")
 public typealias StackView = UStackView
 
+@MainActor
 open class UStackView: _StackView {
     public override init () {
         super.init()
@@ -67,6 +68,7 @@ public typealias _STV = NSStackView
 public typealias _STV = UIStackView
 #endif
 
+@MainActor
 open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal, EditableStackView {
     public var declarativeView: _StackView { self }
     public lazy var properties = Properties<_StackView>()
@@ -267,12 +269,14 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
 
 extension Array where Element == BodyBuilderItemable {
     #if os(macOS)
+    @MainActor
     fileprivate func flatten(_ orientation: NSUserInterfaceLayoutOrientation) -> BaseView {
         let stackView = StackView().orientation(orientation)
         forEach { stackView.add(item: $0) }
         return stackView
     }
     #else
+    @MainActor
     fileprivate func flatten(_ axis: NSLayoutConstraint.Axis) -> BaseView {
         let stackView = UStackView().axis(axis)
         forEach { stackView.add(item: $0) }

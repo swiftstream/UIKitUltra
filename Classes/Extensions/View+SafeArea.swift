@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 extension BaseView {
     #if os(macOS)
     public struct ViewEdgeInsets {

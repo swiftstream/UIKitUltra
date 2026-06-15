@@ -47,6 +47,7 @@ private func newlyHeldTypingListeners(
 
 final class MacOSTypingStateBindingRoutingTests: XCTestCase {
 
+    @MainActor
     func testMacOSTextFieldTypingBridgeRoutesTokenSynchronizesInitiallyAndRemainsLive() {
         let field = UTextField()
         let baselineCount = typingHeldListenerCount(of: field.stateBindingHolder)
@@ -77,6 +78,7 @@ final class MacOSTypingStateBindingRoutingTests: XCTestCase {
         XCTAssertFalse(target.wrappedValue)
     }
 
+    @MainActor
     func testMacOSTextFieldTypingBridgeSupportsAdditiveFanOutAndSameTargetRegistration() {
         let field = UTextField()
         let baselineIDs = typingHeldListenerIDs(of: field.stateBindingHolder)
@@ -111,6 +113,7 @@ final class MacOSTypingStateBindingRoutingTests: XCTestCase {
         XCTAssertFalse(targetB.wrappedValue)
     }
 
+    @MainActor
     func testMacOSTextFieldTypingBridgeAllowsExternalTargetDeallocationBeforeOwnerTeardown() {
         let field = UTextField()
         let baselineCount = typingHeldListenerCount(
@@ -153,6 +156,7 @@ final class MacOSTypingStateBindingRoutingTests: XCTestCase {
         field._properties.isTypingState.wrappedValue = false
     }
 
+    @MainActor
     func testMacOSTextFieldHolderInvalidationCancelsOwnedTypingTokenAndPreservesUnrelatedListener() {
         let unrelatedState = State<Int>(wrappedValue: 0)
         let unrelatedHolder = TempStatesHolder()
