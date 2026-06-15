@@ -78,11 +78,13 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         fatalError("init(coder:) has not been implemented")
     }
     
+    @MainActor
     open override func layout() {
         super.layout()
         onLayoutSubviews()
     }
     
+    @MainActor
     open override func viewDidMoveToSuperview() {
         super.viewDidMoveToSuperview()
         movedToSuperview()
@@ -559,19 +561,23 @@ fileprivate class _InnerDelegate: NSObject, NSTextFieldDelegate, NSTextDelegate 
     var insertTabHandler: (() -> Bool)?
     var cancelOperationHandler: (() -> Bool)?
     
+    @MainActor
     @objc func action() {
         parent.properties._textFieldAction.forEach { $0(self.parent) }
         parent.properties._textFieldEmptyAction.forEach { $0() }
     }
     
+    @MainActor
     @objc func editingDidBegin() {
         parent.properties._editingDidBegin.forEach { $0(self.parent) }
     }
     
+    @MainActor
     @objc private func invalidateTimer() {
         parent._properties.isTyping = false
     }
     
+    @MainActor
     @objc func editingChanged() {
         parent._properties.typingTimer?.invalidate()
         parent._properties.typingTimer = Timer.scheduledTimer(timeInterval: parent._properties.typingInterval, target: self, selector: #selector(invalidateTimer), userInfo: nil, repeats: false)
@@ -647,12 +653,14 @@ fileprivate class _InnerDelegate: NSObject, NSTextFieldDelegate, NSTextDelegate 
     
     // MARK: NSControlTextEditingDelegate
     
+    @MainActor
     public func controlTextDidBeginEditing(_ obj: Notification) {
         editingDidBegin()
         parent.outsideDelegate?.textFieldDidBeginEditing?(parent)
         parent.properties._didBeginEditing.forEach { $0(self.parent) }
     }
 
+    @MainActor
     public func controlTextDidEndEditing(_ obj: Notification) {
         if parent.currentEditor() == nil {
             print("YAAAAY3")
@@ -662,14 +670,17 @@ fileprivate class _InnerDelegate: NSObject, NSTextFieldDelegate, NSTextDelegate 
         parent.properties._didEndEditing.forEach { $0(self.parent) }
     }
 
+    @MainActor
     public func controlTextDidChange(_ obj: Notification) {
         editingChanged()
     }
     
+    @MainActor
     public func control(_ control: NSControl, textShouldBeginEditing fieldEditor: NSText) -> Bool {
         parent.outsideDelegate?.textFieldShouldBeginEditing?(parent) ?? parent.properties._shouldBeginEditing(parent)
     }
 
+    @MainActor
     public func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         parent.outsideDelegate?.textFieldShouldEndEditing?(parent) ?? parent.properties._shouldEndEditing(parent)
     }
@@ -887,6 +898,7 @@ fileprivate class _Formatter<TF>: NumberFormatter where TF: UTextField {
         obj as? NSAttributedString
     }
     
+    @MainActor
     override func isPartialStringValid(_ partialStringPtr: AutoreleasingUnsafeMutablePointer<NSString>, proposedSelectedRange proposedSelRangePtr: NSRangePointer?, originalString origString: String, originalSelectedRange origSelRange: NSRange, errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
         var origString = origString
         guard let origReplaceRange = Range<String.Index>.init(NSRange(location: 0, length: origSelRange.location + origSelRange.length), in: origString) else {

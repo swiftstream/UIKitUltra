@@ -5,6 +5,7 @@ import UIKit
 #endif
 
 extension WrappedViewControllerable {
+    @MainActor
     public func hidden(_ hidden: Bool = true) {
         guard hidden == !protocolView.isHidden else { return }
         protocolView.hidden(hidden)

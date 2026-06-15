@@ -53,6 +53,7 @@ public class UCollection: UView, UICollectionViewDataSource {
         }
     }
     
+    @MainActor
     public init (_ layout: UICollectionViewLayout = CollectionView.defaultLayout, @BodyBuilder block: BodyBuilder.SingleView) {
         self.layout = layout
         super.init(frame: .zero)

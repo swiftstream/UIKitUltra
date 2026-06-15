@@ -9,5 +9,6 @@ public protocol UIViewable: DeclarativeProtocol {
 }
 
 extension UIViewable {
+    @MainActor
     public var _view: BaseView { declarativeView }
 }

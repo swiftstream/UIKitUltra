@@ -42,6 +42,7 @@ open class ViewController: BaseViewController {
     public var navigationController: NavigationController?
     #endif
     
+    @MainActor
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(nibName: nil, bundle: nil)
         _setup()

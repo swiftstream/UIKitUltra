@@ -5,6 +5,7 @@ import UIKit
 #endif
 
 open class UVStack: _StackView {
+    @MainActor
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         #if os(macOS)
@@ -28,11 +29,13 @@ open class UVStack: _StackView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @MainActor
     public func subviews(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         add(item: block())
         return self
     }
     
+    @MainActor
     public static func subviews(@BodyBuilder block: BodyBuilder.SingleView) -> UVStack {
         .init(block: block)
     }

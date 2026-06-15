@@ -464,6 +464,7 @@ final class StateRuntimeTests: XCTestCase {
         XCTAssertEqual(log, ["begin", "end"])
     }
 
+    @MainActor
     func testForEachViewBodyRenderedContainerRetainsBindingUntilTeardown() {
         let items = State(wrappedValue: [1])
         var buildCount = 0
@@ -518,6 +519,7 @@ final class StateRuntimeTests: XCTestCase {
         XCTAssertEqual(buildCount, finalBuildCount)
     }
 
+    @MainActor
     func testForEachStackViewRenderedContainerRetainsBindingUntilTeardown() {
         let items = State(wrappedValue: [1])
         var buildCount = 0

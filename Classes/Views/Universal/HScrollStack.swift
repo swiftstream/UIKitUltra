@@ -19,6 +19,7 @@ open class UHScrollStack: UScrollView, StackWrapperView {
     #endif
 
     #if os(macOS)
+    @MainActor
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         _configurePlatformScrollBehavior()
@@ -27,6 +28,7 @@ open class UHScrollStack: UScrollView, StackWrapperView {
         _setup()
     }
     #else
+    @MainActor
     public override init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         _configurePlatformScrollBehavior()

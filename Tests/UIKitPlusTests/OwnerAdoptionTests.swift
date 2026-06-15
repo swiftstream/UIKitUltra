@@ -25,6 +25,7 @@ private final class WeakBox<Value: AnyObject> {
 
 final class OwnerAdoptionTests: XCTestCase {
 
+    @MainActor
     func testDeclarativeViewStateBindingHolderCancelsOnlyOwnedToken() {
         let source = State<Bool>(wrappedValue: false)
         let unrelatedHolder = TempStatesHolder()
@@ -75,6 +76,7 @@ final class OwnerAdoptionTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 
+    @MainActor
     func testDeclarativeViewRepeatedStateBindingRemainsAdditiveUntilTeardown() {
         let sourceA = State<CGFloat>(wrappedValue: 0.1)
         let sourceB = State<CGFloat>(wrappedValue: 0.2)
@@ -146,6 +148,7 @@ final class OwnerAdoptionTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 2)
     }
 
+    @MainActor
     func testDeclarativeViewScalarSetterDoesNotCreateBindingToken() {
         let view = UView()
 
@@ -171,6 +174,7 @@ final class OwnerAdoptionTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testDeclarativeViewHolderTeardownCancelsBorderAndShadowBindings() {
         let borderState = State<UColor>(wrappedValue: UColor.red)
         let shadowState = State<UColor>(wrappedValue: UColor.blue)
@@ -228,6 +232,7 @@ final class OwnerAdoptionTests: XCTestCase {
     }
 
     #if os(macOS)
+    @MainActor
     func testMacOSCornersBindingDoesNotRetainSourceStateWhileViewLives() {
         let view = UView()
 
@@ -260,6 +265,7 @@ final class OwnerAdoptionTests: XCTestCase {
     #endif
 
     #if !os(macOS)
+    @MainActor
     func testUIKitDeclarativeViewTintAndUserInteractionBindingsUseHolderUntilTeardown() {
         let tintState = State<UColor>(wrappedValue: UColor.red)
         let interactionState = State<Bool>(wrappedValue: true)

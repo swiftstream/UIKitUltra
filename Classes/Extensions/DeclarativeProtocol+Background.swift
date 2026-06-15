@@ -5,16 +5,20 @@ import UIKit
 #endif
 
 extension AnyDeclarativeProtocol {
+    @MainActor
     public var background: State<UColor> { properties.$background }
     
+    @MainActor
     var _backgroundColorState: State<UColor> { background }
     
     #if os(macOS)
+    @MainActor
     func _setBackgroundColor(_ v: NSColor?) {
         declarativeView.wantsLayer = true
         declarativeView.layer?.backgroundColor = v?.cgColor
     }
     #else
+    @MainActor
     func _setBackgroundColor(_ v: UColor?) {
         declarativeView.backgroundColor = v
     }

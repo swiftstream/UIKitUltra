@@ -18,6 +18,7 @@ public class UList: UView, UITableViewDataSource {
     
     var items: [UListSection] = []
     
+    @MainActor
     public override init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         process(block())
@@ -34,6 +35,7 @@ public class UList: UView, UITableViewDataSource {
         setup()
     }
     
+    @MainActor
     public init (@BodyBuilder block: (UList) -> BodyBuilder.Result) {
         super.init(frame: .zero)
         process(block(self))

@@ -9,7 +9,7 @@ public typealias ViewBuilder = BodyBuilder
 
 @resultBuilder public struct BodyBuilder {
     public typealias Result = BodyBuilderItemable
-    public typealias SingleView = () -> Result
+    public typealias SingleView = @MainActor () -> Result
     
     /// Builds an empty view from an block containing no statements, `{ }`.
     public static func buildBlock() -> Result { [] }

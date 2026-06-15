@@ -16,6 +16,7 @@ public class NavigationController: ViewController {
     var transitionInProgress = false
     var touchPanHandler: TouchPanHandler?
     
+    @MainActor
     public init(rootViewController: ViewController) {
         self.rootViewController = rootViewController
         super.init(nibName: nil, bundle: nil)
@@ -59,6 +60,7 @@ public class NavigationController: ViewController {
         let width: CGFloat
         let endFrame: CGRect
         
+        @MainActor
         init (_ beganPoint: CGPoint, nav: NavigationController) {
             self.beganPoint = beganPoint
             self.nav = nav
@@ -158,10 +160,12 @@ public class NavigationController: ViewController {
 // MARK: - Push
 
 extension NavigationController {
-   public func pushViewController(_ viewController: ViewController) {
+    @MainActor
+    public func pushViewController(_ viewController: ViewController) {
       pushViewController(viewController, animated: true)
    }
 
+    @MainActor
     public func pushViewController(_ viewController: ViewController, animated: Bool) {
         viewController.navigationController = self
         viewController.view.wantsLayer = true
@@ -194,6 +198,7 @@ extension NavigationController {
     }
 
     @discardableResult
+    @MainActor
     public func popViewController(animated: Bool) {
         guard let currentVC = viewControllers.popLast() else {
             return
@@ -225,6 +230,7 @@ extension NavigationController {
 }
 
 extension NSViewController {
+    @MainActor
     func embedChildViewController(_ vc: ViewController) {
         addChild(vc)
         view.addSubview((vc.view as! UView).edgesToSuperview(), positioned: .below, relativeTo: nil)

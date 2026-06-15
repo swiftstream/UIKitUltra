@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol DeclarativeProtocol: AnyObject {
     associatedtype V: BaseView, DeclarativeProtocol = Self
     

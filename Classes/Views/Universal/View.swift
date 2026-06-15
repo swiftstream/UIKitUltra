@@ -41,6 +41,7 @@ open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProto
         }
     }
     
+    @MainActor
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         _setup()
@@ -306,10 +307,12 @@ extension UView {
     }
     
     @discardableResult
+    @MainActor
     public func subviews(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         body { block() }
     }
     
+    @MainActor
     public static func subviews(@BodyBuilder block: BodyBuilder.SingleView) -> UView {
         UView(block: block)
     }

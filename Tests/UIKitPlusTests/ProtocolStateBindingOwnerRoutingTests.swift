@@ -309,6 +309,7 @@ final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
         XCTAssertEqual(controller.title, "Updated")
     }
 
+    @MainActor
     func testDeclarativeUViewBackgroundBindingUsesExistingPropertiesHolder() {
         let source = State<UColor>(wrappedValue: .red)
         let view = UView()

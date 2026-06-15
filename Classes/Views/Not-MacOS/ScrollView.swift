@@ -30,6 +30,7 @@ open class UScrollView: UIScrollView, AnyDeclarativeProtocol, DeclarativeProtoco
     
     var scrollPosition: State<CGPoint>?
     
+    @MainActor
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         _setup()
@@ -179,10 +180,12 @@ extension UScrollView {
     }
     
     @discardableResult
+    @MainActor
     public func subviews(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         body { block() }
     }
     
+    @MainActor
     public static func subviews(@BodyBuilder block: BodyBuilder.SingleView) -> UScrollView {
         UScrollView(block: block)
     }

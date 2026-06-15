@@ -2,6 +2,7 @@
 import AppKit
 
 extension AnyDeclarativeProtocol {
+    @MainActor
     func onLayoutSubviews() {
         if _declarativeView._properties.circleCorners == true {
             if let minSide = [declarativeView.bounds.size.width, declarativeView.bounds.size.height].min() {
@@ -14,6 +15,7 @@ extension AnyDeclarativeProtocol {
 import UIKit
 
 extension AnyDeclarativeProtocol {
+    @MainActor
     func onLayoutSubviews() {
         if _declarativeView._properties.circleCorners == true {
             if let minSide = [declarativeView.bounds.size.width, declarativeView.bounds.size.height].min() {

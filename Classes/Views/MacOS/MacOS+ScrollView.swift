@@ -238,6 +238,7 @@ extension UScrollView {
     }
     
     @discardableResult
+    @MainActor
     public func subviews(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         documentView?.body { block() }
         return self

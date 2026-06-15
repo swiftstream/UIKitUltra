@@ -40,6 +40,7 @@ public class Window: AppBuilderContent {
     }
     
     @discardableResult
+    @MainActor
     public func body(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         window.contentView?.body { block() }
         return self

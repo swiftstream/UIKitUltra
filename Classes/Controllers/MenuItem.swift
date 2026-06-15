@@ -103,11 +103,13 @@ public class MenuItem {
     ///
     /// When a menu item is copied via NSCopying, any attached view is copied via archiving/unarchiving.
     /// Menu item views are not supported in the Dock menu.
+    @MainActor
     public func view(@BodyBuilder block: BodyBuilder.SingleView) -> Self {
         item.view = UView(block: block)
         return self
     }
     
+    @MainActor
     public func view(@BodyBuilder block: (Self) -> BodyBuilder.Result) -> Self {
         item.view = UView().body { block(self) }
         return self

@@ -20,6 +20,7 @@ open class UVScrollStack: UScrollView, StackWrapperView {
     #endif
 
     #if os(macOS)
+    @MainActor
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         _configurePlatformScrollBehavior()
@@ -27,6 +28,7 @@ open class UVScrollStack: UScrollView, StackWrapperView {
         _addBodyItemToInnerStack(block())
     }
     #else
+    @MainActor
     public override init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(frame: .zero)
         _configurePlatformScrollBehavior()
