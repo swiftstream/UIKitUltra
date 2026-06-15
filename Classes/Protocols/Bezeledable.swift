@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Bezeledable: AnyObject {
     @discardableResult
     func bezeled() -> Self

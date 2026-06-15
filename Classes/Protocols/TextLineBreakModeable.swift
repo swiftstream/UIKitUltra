@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol TextLineBreakModeable {
     @discardableResult
     func lineBreakMode(_ mode: NSLineBreakMode) -> Self

@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol MultiClickIgnorable: AnyObject {
     @discardableResult
     func ignoreMultiClick() -> Self

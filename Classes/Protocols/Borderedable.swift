@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Borderedable: AnyObject {
     @discardableResult
     func bordered() -> Self

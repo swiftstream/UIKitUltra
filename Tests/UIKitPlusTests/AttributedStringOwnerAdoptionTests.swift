@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import UIKitPlus
 
+@MainActor
 private func assertColorAttribute(
     _ key: NSAttributedString.Key,
     in attributedString: UIKitPlus.AttributedString,
@@ -31,6 +32,7 @@ private func assertColorAttribute(
     )
 }
 
+@MainActor
 final class AttributedStringOwnerAdoptionTests: XCTestCase {
 
     func testAttributedStringBackgroundBindingIsOwnedAndCancelsOnTeardown() {

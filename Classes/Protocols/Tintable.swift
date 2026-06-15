@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Tintable: AnyObject {
     @discardableResult
     func tint(_ color: UColor) -> Self

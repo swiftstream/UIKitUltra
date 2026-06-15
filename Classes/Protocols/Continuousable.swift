@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Continuousable: AnyObject {
     @discardableResult
     func continuous() -> Self

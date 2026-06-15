@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol TextFieldContentTypeable {
     func content(_ content: TextFieldContentType) -> Self
 }

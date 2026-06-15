@@ -1,3 +1,4 @@
+@MainActor
 public func +(lhs: AttrStr, rhs: AttrStr) -> AttrStr {
     let attrStr = AttrStr("")
     attrStr._attributedString.append(lhs._attributedString)

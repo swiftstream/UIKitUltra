@@ -7,6 +7,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 final class PreConstraintOwnershipTests: XCTestCase {
 
     func testPreConstraintStateUpdateUpdatesConstraintConstant() {

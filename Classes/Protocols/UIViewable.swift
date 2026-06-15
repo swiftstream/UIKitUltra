@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol UIViewable: DeclarativeProtocol {
     var _view: BaseView { get }
 }

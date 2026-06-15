@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol FirstResponderRefusable: AnyObject {
     @discardableResult
     func refuseFirstResponder() -> Self

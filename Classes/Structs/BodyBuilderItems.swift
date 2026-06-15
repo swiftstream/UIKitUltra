@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public struct BodyBuilderItems: BodyBuilderItemable {
     var items: [BodyBuilderItemable] = []
     

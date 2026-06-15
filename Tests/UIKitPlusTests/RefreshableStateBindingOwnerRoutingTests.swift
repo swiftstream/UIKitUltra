@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import UIKitPlus
 
+@MainActor
 private class RefreshableProbe: Refreshable {
     private(set) var refreshCallCount = 0
 
@@ -10,6 +11,7 @@ private class RefreshableProbe: Refreshable {
     }
 }
 
+@MainActor
 private final class OwnedRefreshableProbe:
     RefreshableProbe,
     _StateBindingOwner
@@ -17,8 +19,10 @@ private final class OwnedRefreshableProbe:
     let stateBindingHolder = TempStatesHolder()
 }
 
+@MainActor
 private final class NonOwnedRefreshableProbe: RefreshableProbe {}
 
+@MainActor
 final class RefreshableStateBindingOwnerRoutingTests: XCTestCase {
 
     func testOwnedProbeRoutesOneStateReactionIntoAuthoritativeHolder() {

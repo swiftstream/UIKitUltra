@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol TextBindable {
     @discardableResult
     func bind<A: AnyString>(_ to: UIKitPlus.State<A>) -> Self

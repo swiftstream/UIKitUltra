@@ -1,6 +1,7 @@
 #if os(macOS)
 import Cocoa
 
+@MainActor
 public protocol ControlStateable: AnyObject {
     @discardableResult
     func state(_ value: NSControl.StateValue) -> Self

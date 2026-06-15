@@ -9,6 +9,7 @@ public enum PreConstraintView {
     case tag(Int)
 }
 
+@MainActor
 public protocol PreConstraintViewable {
     var preConstraintView: PreConstraintView? { get }
 }
@@ -129,6 +130,7 @@ class PreConstraint: Equatable {
         valueListener?.cancel()
     }
 
+    @MainActor
     func inverted() -> PreConstraint? {
         guard let attribute2 = attribute2, let destinationView = destinationView?.preConstraintView else { return nil }
         let unwrappedDestinationView: BaseView

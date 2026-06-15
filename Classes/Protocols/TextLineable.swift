@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol TextLineable {
     @discardableResult
     func lines(_ number: Int) -> Self

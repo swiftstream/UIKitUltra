@@ -1,6 +1,7 @@
 #if os(macOS)
 import Cocoa
 
+@MainActor
 public protocol Keyable: AnyObject {
     @discardableResult
     func key(_ text: String) -> Self

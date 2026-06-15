@@ -5,10 +5,12 @@ import Foundation
     
     public static func buildBlock() -> AnyString { "" }
     
+    @MainActor
     public static func buildBlock(_ string: AnyString...) -> AnyString {
         buildBlock(string)
     }
     
+    @MainActor
     public static func buildBlock(_ string: [AnyString]) -> AnyString {
         AttrStr(anyStrings: string)
     }

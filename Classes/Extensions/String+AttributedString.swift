@@ -5,6 +5,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 extension String {
     /// UColor, default nil: no background
     @discardableResult

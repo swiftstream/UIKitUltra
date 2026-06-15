@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Fontable: AnyObject {
     @discardableResult
     func font(v: UFont?) -> Self

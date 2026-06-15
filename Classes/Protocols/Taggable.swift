@@ -11,6 +11,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Taggable: AnyObject {
     var tag: Int { get set }
     

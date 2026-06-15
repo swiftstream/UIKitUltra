@@ -15,11 +15,13 @@ public typealias ViewBuilder = BodyBuilder
     public static func buildBlock() -> Result { [] }
     
     /// Passes a single view written as a child view (e..g, `{ Text("Hello") }`) through unmodified.
+    @MainActor
     public static func buildBlock(_ attrs: BodyBuilderItemable...) -> Result {
         buildBlock(attrs)
     }
     
     /// Passes a single view written as a child view (e..g, `{ Text("Hello") }`) through unmodified.
+    @MainActor
     public static func buildBlock(_ attrs: [BodyBuilderItemable]) -> Result {
         BodyBuilderItems(items: attrs)
     }

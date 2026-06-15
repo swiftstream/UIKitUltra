@@ -1,6 +1,7 @@
 #if os(macOS)
 import AppKit
 
+@MainActor
 public protocol FocusRingTypeable: AnyObject {
     @discardableResult
     func focusRingType(_ value: NSFocusRingType) -> Self

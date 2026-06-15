@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 protocol StackWrapperView: AnyObject {
     var _stack: _StackView { get }
 }

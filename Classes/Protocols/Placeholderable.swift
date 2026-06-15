@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Placeholderable: AnyObject {
     #if !os(macOS)
     @discardableResult

@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol BulletsEchoable {
     @discardableResult
     func echosBullets() -> Self

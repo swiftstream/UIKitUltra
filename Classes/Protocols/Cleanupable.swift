@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Cleanupable {
     @discardableResult
     func cleanup() -> Self

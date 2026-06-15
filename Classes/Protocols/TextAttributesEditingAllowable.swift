@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol TextAttributesEditingAllowable: AnyObject {
     @discardableResult
     func allowEditingTextAttributes() -> Self

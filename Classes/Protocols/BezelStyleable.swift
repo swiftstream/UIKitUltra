@@ -1,6 +1,7 @@
 #if os(macOS)
 import Cocoa
 
+@MainActor
 public protocol BezelStyleable: AnyObject {
     @discardableResult
     func style(_ value: NSButton.BezelStyle) -> Self

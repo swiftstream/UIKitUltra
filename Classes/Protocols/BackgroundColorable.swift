@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol BackgroundColorable: AnyObject {
     @discardableResult
     func background(_ color: UColor) -> Self

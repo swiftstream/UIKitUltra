@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Typeable {
     @discardableResult
     func typing(_ binding: State<Bool>) -> Self

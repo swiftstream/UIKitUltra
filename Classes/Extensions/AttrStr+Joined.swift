@@ -44,6 +44,7 @@ extension Array where Element: NSAttributedString {
     }
 }
 
+@MainActor
 extension Array where Element: AttributedString {
     public func joined() -> AttrStr {
         let result = AttributedString("")

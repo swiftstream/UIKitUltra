@@ -1,6 +1,7 @@
 #if os(macOS)
 import AppKit
 
+@MainActor
 public protocol ArrowPositionable: AnyObject {
     @discardableResult
     func arrowPosition(_ value: NSPopUpButton.ArrowPosition) -> Self

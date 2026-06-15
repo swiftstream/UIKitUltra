@@ -8,6 +8,7 @@
 #if os(macOS)
 import Cocoa
 
+@MainActor
 public protocol KeyMaskable: AnyObject {
     @discardableResult
     func keyMask(_ mask: NSEvent.ModifierFlags) -> Self

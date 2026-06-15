@@ -5,6 +5,7 @@ import XCTest
 #if os(macOS)
 import AppKit
 
+@MainActor
 private class ControlStateableProbe: _ControlStateable {
     var _stateState = State<NSControl.StateValue>(wrappedValue: .off)
     private(set) var appliedState: NSControl.StateValue?
@@ -14,6 +15,7 @@ private class ControlStateableProbe: _ControlStateable {
     }
 }
 
+@MainActor
 private final class OwnedControlStateableProbe:
     ControlStateableProbe,
     _StateBindingOwner
@@ -21,6 +23,7 @@ private final class OwnedControlStateableProbe:
     let stateBindingHolder = TempStatesHolder()
 }
 
+@MainActor
 private class PublicControlStateableBase: ControlStateable {
     private(set) var scalarState: NSControl.StateValue?
 
@@ -31,6 +34,7 @@ private class PublicControlStateableBase: ControlStateable {
     }
 }
 
+@MainActor
 private final class PublicWitnessOwnedControlStateableProbe:
     PublicControlStateableBase,
     _ControlStateable,
@@ -45,6 +49,7 @@ private final class PublicWitnessOwnedControlStateableProbe:
     }
 }
 
+@MainActor
 private class BezelStyleableProbe: _BezelStyleable {
     var _bezelStyleState = State<NSButton.BezelStyle>(wrappedValue: .regularSquare)
     private(set) var appliedBezelStyle: NSButton.BezelStyle?
@@ -54,6 +59,7 @@ private class BezelStyleableProbe: _BezelStyleable {
     }
 }
 
+@MainActor
 private final class OwnedBezelStyleableProbe:
     BezelStyleableProbe,
     _StateBindingOwner
@@ -61,6 +67,7 @@ private final class OwnedBezelStyleableProbe:
     let stateBindingHolder = TempStatesHolder()
 }
 
+@MainActor
 private class PublicBezelStyleableBase: BezelStyleable {
     private(set) var scalarBezelStyle: NSButton.BezelStyle?
 
@@ -71,6 +78,7 @@ private class PublicBezelStyleableBase: BezelStyleable {
     }
 }
 
+@MainActor
 private final class PublicWitnessOwnedBezelStyleableProbe:
     PublicBezelStyleableBase,
     _BezelStyleable,
@@ -85,6 +93,7 @@ private final class PublicWitnessOwnedBezelStyleableProbe:
     }
 }
 
+@MainActor
 private func callPublicControlStateable(
     _ value: any ControlStateable,
     _ source: State<NSControl.StateValue>
@@ -92,6 +101,7 @@ private func callPublicControlStateable(
     value.state(source)
 }
 
+@MainActor
 private func callPublicBezelStyleable(
     _ value: any BezelStyleable,
     _ source: State<NSButton.BezelStyle>
@@ -99,6 +109,7 @@ private func callPublicBezelStyleable(
     value.style(source)
 }
 
+@MainActor
 private func callRefinedControlStateable<T: _ControlStateable>(
     _ value: T,
     _ source: State<NSControl.StateValue>
@@ -106,6 +117,7 @@ private func callRefinedControlStateable<T: _ControlStateable>(
     value.state(source)
 }
 
+@MainActor
 private func callRefinedBezelStyleable<T: _BezelStyleable>(
     _ value: T,
     _ source: State<NSButton.BezelStyle>
@@ -137,6 +149,7 @@ private final class DispatchInternalSubclass:
     DispatchInternalCapability
 {}
 
+@MainActor
 final class StoredBindingCapabilityRoutingTests: XCTestCase {
 
     @MainActor

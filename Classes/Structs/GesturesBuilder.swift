@@ -14,11 +14,13 @@ import Foundation
     public static func buildBlock() -> GesturesBuilderItem { [] }
     
     /// Passes a single preview written as a child view (e..g, `{ Text("Hello") }`) through unmodified.
+    @MainActor
     public static func buildBlock(_ attrs: GesturesBuilderItem...) -> GesturesBuilderItem {
         buildBlock(attrs)
     }
     
     /// Passes a single preview written as a child view (e..g, `{ Text("Hello") }`) through unmodified.
+    @MainActor
     public static func buildBlock(_ attrs: [GesturesBuilderItem]) -> GesturesBuilderItem {
         attrs.flatMap { $0.gestureRecognizers }
     }
@@ -43,6 +45,7 @@ import Foundation
     }
 }
 
+@MainActor
 public protocol GesturesBuilderItem {
     var gestureRecognizers: [UGestureRecognizer] { get }
 }

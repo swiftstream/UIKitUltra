@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol GestureRecognizerable: AnyObject {
     @discardableResult
     func delegate(_ v: UGestureRecognizerDelegate) -> Self

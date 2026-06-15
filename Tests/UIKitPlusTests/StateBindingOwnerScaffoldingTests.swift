@@ -14,6 +14,7 @@ private func assertStateBindingOwnerConformance<T: _StateBindingOwner>(
     _ = type
 }
 
+@MainActor
 final class StateBindingOwnerScaffoldingTests: XCTestCase {
 
     // MARK: - Cross-platform

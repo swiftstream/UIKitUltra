@@ -11,6 +11,7 @@ public enum BodyBuilderItem {
     case nested([BodyBuilderItemable])
     case forEach(AnyForEach)
 }
+@MainActor
 public protocol BodyBuilderItemable {
     var bodyBuilderItem: BodyBuilderItem { get }
 }

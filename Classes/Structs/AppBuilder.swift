@@ -8,6 +8,7 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol AppBuilderContent {
     var appBuilderContent: AppBuilderItem { get }
 }
@@ -28,27 +29,33 @@ struct _AppContent: AppBuilderContent {
 @resultBuilder public struct AppBuilder {
     public typealias Block = () -> AppBuilderContent
 
+    @MainActor
     public static func buildBlock() -> AppBuilderContent {
         _AppContent(appBuilderContent: .none)
     }
 
+    @MainActor
     public static func buildBlock(_ attrs: AppBuilderContent...) -> AppBuilderContent {
         buildBlock(attrs)
     }
 
+    @MainActor
     public static func buildBlock(_ attrs: [AppBuilderContent]) -> AppBuilderContent {
         _AppContent(appBuilderContent: .items(attrs.map { $0.appBuilderContent }))
     }
 
+    @MainActor
     public static func buildIf(_ content: AppBuilderContent?) -> AppBuilderContent {
         guard let content = content else { return _AppContent(appBuilderContent: .none) }
         return _AppContent(appBuilderContent: .items([content.appBuilderContent]))
     }
 
+    @MainActor
     public static func buildEither(first: AppBuilderContent) -> AppBuilderContent {
         _AppContent(appBuilderContent: .items([first.appBuilderContent]))
     }
 
+    @MainActor
     public static func buildEither(second: AppBuilderContent) -> AppBuilderContent {
         _AppContent(appBuilderContent: .items([second.appBuilderContent]))
     }
