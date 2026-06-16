@@ -8,6 +8,7 @@
 #if os(macOS)
 import AppKit
 
+@MainActor
 public protocol Menuable {
     @discardableResult
     func menu(_ v: Menu) -> Self
