@@ -38,6 +38,7 @@ extension BaseView {
     }
     #endif
     
+    @MainActor
     public class SafeAnchors {
         let view: BaseView
         
