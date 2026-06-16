@@ -543,6 +543,7 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
     }
 }
 
+@MainActor
 fileprivate class _InnerDelegate: NSObject, NSTextFieldDelegate, NSTextDelegate {
     let parent: UTextField
     
