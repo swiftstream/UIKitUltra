@@ -147,16 +147,20 @@ open class UHUD: UView {
                 context.duration = 0.3
                 self.animator().alphaValue = 0
             }) {
-                self.hidden().alpha(1)
-                completionHandler?()
+                DispatchQueue.main.async {
+                    self.hidden().alpha(1)
+                    completionHandler?()
+                }
             }
             #else
             UIView.animate(withDuration: 0.3, animations: {
                 self.alpha(0)
             }) { _ in
-                self.activityIndicator.stopAnimating()
-                self.hidden().alpha(1)
-                completionHandler?()
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.hidden().alpha(1)
+                    completionHandler?()
+                }
             }
             #endif
         }

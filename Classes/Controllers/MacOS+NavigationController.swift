@@ -139,8 +139,10 @@ public class NavigationController: ViewController {
                previousVC.view.animator().bounds.origin.x = width * 0.2
                currentVC.view.animator().bounds.origin.x = 0
             }) {
-                self.nav.transitionInProgress = false
-                self.previousVC.view.removeFromSuperview()
+                DispatchQueue.main.async {
+                    self.nav.transitionInProgress = false
+                    self.previousVC.view.removeFromSuperview()
+                }
             }
         }
         
@@ -152,8 +154,10 @@ public class NavigationController: ViewController {
                 currentVC.view.animator().bounds.origin.x = -endFrame.width
                 previousVC.view.animator().bounds.origin.x = 0
             }) {
-                self.nav.transitionInProgress = false
-                self.nav.unembedChildViewController(self.currentVC)
+                DispatchQueue.main.async {
+                    self.nav.transitionInProgress = false
+                    self.nav.unembedChildViewController(self.currentVC)
+                }
             }
         }
     }
@@ -186,7 +190,9 @@ extension NavigationController {
             oldVC.view.animator().bounds.origin.x = endFrame.width * 0.5
             viewController.view.animator().frame = endFrame
          }) {
-            oldVC.view.removeFromSuperview()
+            DispatchQueue.main.async {
+                oldVC.view.removeFromSuperview()
+            }
          }
     }
 }
@@ -224,8 +230,10 @@ extension NavigationController {
             currentVC.view.animator().bounds.origin.x = -endFrame.width
             previousVC.view.animator().bounds.origin.x = 0
         }) {
-            self.unembedChildViewController(currentVC)
-            self.transitionInProgress = false
+            DispatchQueue.main.async {
+                self.unembedChildViewController(currentVC)
+                self.transitionInProgress = false
+            }
         }
         return
     }
