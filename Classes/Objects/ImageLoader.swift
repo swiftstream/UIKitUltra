@@ -128,6 +128,7 @@ open class ImageLoader {
     }
     
     /// Release `imageView.image` before downloading the new one
+    @MainActor
     open func releaseBeforeDownloading(_ imageView: _UImageView, _ defaultImage: _UImage? = nil) {
         if reloadingStyle == .release {
             imageView.image = defaultImage
@@ -135,11 +136,13 @@ open class ImageLoader {
     }
     
     /// Apply chached image to `imageView.image`
+    @MainActor
     open func applyLocalImage(_ imageView: _UImageView, _ image: _UImage) {
         setImage(imageView, image)
     }
     
     /// Set image with or without animation
+    @MainActor
     open func setImage(_ imageView: _UImageView, _ image: _UImage) {
         if self.reloadingStyle == .fade {
             #if os(macOS)
