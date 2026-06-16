@@ -15,6 +15,7 @@ public protocol PreConstraintViewable {
 }
 
 extension PreConstraintView {
+    @MainActor
     public func unwrapWithSuperview(_ superview: BaseView) -> BaseView? {
         switch self {
         case .view(let view):

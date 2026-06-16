@@ -24,6 +24,7 @@ class _GestureTracker: StatesHolder {
     }
 
     #if os(macOS)
+    @MainActor
     @objc func handle(_ gesture: NSGestureRecognizer) {
         change?(gesture.state)
         switch gesture.state {

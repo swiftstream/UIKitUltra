@@ -22,6 +22,7 @@ extension EditableStackView {
 }
 
 extension Array where Element == BaseView {
+    @MainActor
     func removeFromSuperview(at indexes: [Int]) {
         guard indexes.count > 0 else { return }
         var filtered: [BaseView] = []
