@@ -187,6 +187,7 @@ public class Preview {
     }
     
     #if os(macOS)
+    @MainActor
     fileprivate var liveView: some SwiftUI.View {
         LiveView(view)
             .previewLayout(layout)
@@ -196,6 +197,7 @@ public class Preview {
     }
     
     #else
+    @MainActor
     fileprivate var liveView: some SwiftUI.View {
         LiveView(view)
             .preferredColorScheme(colorScheme.val)
@@ -214,6 +216,7 @@ public protocol DeclarativePreview: SwiftUI.PreviewProvider {
 
 @available(iOS 13.0, macOS 10.15, *)
 extension DeclarativePreview {
+    @MainActor
     public static var previews: some SwiftUI.View {
         Localization.current = preview.language
         #if !os(macOS)
@@ -230,6 +233,7 @@ public protocol DeclarativePreviewGroup: SwiftUI.PreviewProvider {
 
 @available(iOS 13.0, macOS 10.15, *)
 extension DeclarativePreviewGroup {
+    @MainActor
     public static var previews: some SwiftUI.View {
         Localization.current = previewGroup.language
         #if !os(macOS)
