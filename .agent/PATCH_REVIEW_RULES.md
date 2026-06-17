@@ -42,6 +42,22 @@ All review outputs must include architecture-ID tags (for example: `[ST12][MU04]
 - update `.agent/TECH_DEBT.md` when new stable debt is discovered;
 - update `.agent/TASKS.md` when task status changes.
 
+## Migration Patch Minimality
+
+Migration and diagnostic-reduction patches must not include unrelated style refactors.
+
+Migration patches must not add, remove, or move blank lines unless the whitespace change is directly required by the approved code change. Whitespace-only source diffs are rejected.
+
+Reject single-use private helper extraction when:
+- the helper is called from only one place;
+- the extraction has no measurable diagnostic, safety, lifecycle, or behavior effect;
+- the extraction makes git diff/review less transparent;
+- the extraction is not explicitly approved in the task scope.
+
+Do not move code into a helper merely to make a large callback "look cleaner" during a migration patch.
+
+Existing comments must be preserved unless they are factually obsolete after the behavior change. If a comment is removed or rewritten, the implementation report must name the comment and explain why it became obsolete.
+
 ## Rejection Triggers
 
 Reject patch if it introduces:
@@ -51,4 +67,8 @@ Reject patch if it introduces:
 - runtime lifecycle inconsistency,
 - platform leakage,
 - unsynchronized architecture docs,
-- review artifacts without architecture-ID traceability.
+- review artifacts without architecture-ID traceability,
+- unrelated cosmetic/style refactor mixed into migration patch,
+- whitespace-only source diff or extra blank line unrelated to the approved change,
+- single-use helper extraction without approved diagnostic/behavior purpose,
+- removal of still-valid source comments.
