@@ -53,6 +53,7 @@ public class PropertiesInternal {
     var notAppliedPreConstraintsRelative: [PreConstraint] = []
     var appliedPreConstraintsRelative: [PreConstraint] = []
     
+    @MainActor
     func moveAppliedToNotApplied() {
         appliedPreConstraintsSuper.forEach {
             $0.value.removeAllListeners()
