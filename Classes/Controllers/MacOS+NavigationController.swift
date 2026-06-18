@@ -10,7 +10,7 @@ import AppKit
 
 @MainActor
 public class NavigationController: ViewController {
-    public private (set) var viewControllers: [ViewController] = []
+    public private(set) var viewControllers: [ViewController] = []
     
     public let rootViewController: ViewController
     
