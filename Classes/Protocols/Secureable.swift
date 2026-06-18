@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Secureable: AnyObject {
     @discardableResult
     func secure() -> Self

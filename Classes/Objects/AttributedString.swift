@@ -7,6 +7,7 @@ import UIKit
 
 public typealias AttrStr = AttributedString
 
+@MainActor
 public protocol AnyString {
     func onUpdate(_ handler: @escaping (NSAttributedString) -> Void)
     var attributedString: NSAttributedString { get }
@@ -14,6 +15,7 @@ public protocol AnyString {
     static func make(_ v: NSAttributedString) -> Self
 }
 
+@MainActor
 extension Optional: AnyString where Wrapped == AnyString {
     public func onUpdate(_ handler: @escaping (NSAttributedString) -> Void) {
         switch self {
@@ -34,6 +36,7 @@ extension Optional: AnyString where Wrapped == AnyString {
     }
 }
 
+@MainActor
 extension NSAttributedString: AnyString {
     public func onUpdate(_ handler: @escaping (NSAttributedString) -> Void) {}
     
@@ -44,6 +47,7 @@ extension NSAttributedString: AnyString {
     }
 }
 
+@MainActor
 extension String: AnyString, BodyBuilderItemable {
     public var bodyBuilderItem: BodyBuilderItem { .single(UText(self)) }
     
@@ -78,7 +82,15 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     
     var _updateHandler: ((NSAttributedString) -> Void)?
     
-    private lazy var _paragraphStyle = ParagraphStyle(self)
+    private lazy var _paragraphStyle: ParagraphStyle = {
+        let ps = ParagraphStyle()
+        ps.setOnUpdate { [weak self] p in
+            DispatchQueue.main.async {
+                self?.paragraphStyle(p)
+            }
+        }
+        return ps
+    }()
     
     public static func make(_ v: NSAttributedString) -> Self {
         .init(v)
@@ -328,14 +340,6 @@ open class AttributedString: AnyString, BodyBuilderItemable {
 }
 
 extension AttributedString: _StateBindingOwner {}
-
-// MARK: ParagraphStyleDelegate
-
-extension AttributedString: ParagraphStyleDelegate {
-    func onParagraphUpdate(_ p: ParagraphStyle) {
-        paragraphStyle(p)
-    }
-}
 
 extension AttrStr: _FontableAtRange {
     func _setFont(_ v: UFont?) {

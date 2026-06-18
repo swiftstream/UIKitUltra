@@ -59,6 +59,7 @@ private func newlyHeldListeners(
         }
 }
 
+@MainActor
 final class ButtonScalarBindingRoutingTests: XCTestCase {
 
     func testButtonFourNonBugBindingsRouteIntoOwnerHolderAndApplyInitialValues() {

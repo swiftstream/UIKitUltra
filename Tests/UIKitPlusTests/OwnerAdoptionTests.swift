@@ -23,6 +23,7 @@ private final class WeakBox<Value: AnyObject> {
     }
 }
 
+@MainActor
 final class OwnerAdoptionTests: XCTestCase {
 
     @MainActor

@@ -23,6 +23,7 @@ private func reversedHeldListenerCount(of holder: TempStatesHolder) -> Int {
     holder.statesValues.heldListeners.count
 }
 
+@MainActor
 final class ReversedStateBindingRoutingTests: XCTestCase {
 
     func testCollectionInitializerRoutesOneReversedTokenAndRemainsLive() {

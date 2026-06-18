@@ -80,6 +80,7 @@ private func pickerTextColor(of picker: UPickerView) -> UIColor? {
     picker.value(forKey: "textColor") as? UIColor
 }
 
+@MainActor
 final class PickerAndSegmentedControlScalarBindingRoutingTests: XCTestCase {
 
     func testPickerViewTextColorBindingsRouteIntoOwnerHolderAndRemainLive() {

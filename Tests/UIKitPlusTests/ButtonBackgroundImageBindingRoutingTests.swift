@@ -47,6 +47,7 @@ private func newlyHeldBackgroundImageListeners(
         }
 }
 
+@MainActor
 final class ButtonBackgroundImageBindingRoutingTests: XCTestCase {
 
     func testButtonBackgroundImageBindingRoutesTokenAndAppliesInitialValueWithoutChangingForegroundImage() {

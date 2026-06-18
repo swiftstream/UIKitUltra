@@ -55,6 +55,7 @@ private func newlyHeldRefreshListeners(
         }
 }
 
+@MainActor
 final class RefreshControlTintBindingRoutingTests: XCTestCase {
 
     func testRefreshControlDeclaresExplicitStateBindingOwnerScaffolding() {

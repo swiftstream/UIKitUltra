@@ -16,7 +16,7 @@ private final class WeakStateListenerBox {
     }
 }
 
-private func heldListeners(of image: UImage) -> [StateListener] {
+@MainActor private func heldListeners(of image: UImage) -> [StateListener] {
     Array(
         image
             .stateBindingHolder
@@ -26,7 +26,7 @@ private func heldListeners(of image: UImage) -> [StateListener] {
     )
 }
 
-private func heldListenerCount(of image: UImage) -> Int {
+@MainActor private func heldListenerCount(of image: UImage) -> Int {
     image.stateBindingHolder.statesValues.heldListeners.count
 }
 
@@ -88,6 +88,7 @@ private final class RecordingImageLoader: ImageLoader {
 
 #if !os(macOS)
 
+@MainActor
 final class ImageURLLoaderBindingRoutingTests: XCTestCase {
 
     func testUIImageStringURLStateInitializerRoutesTokenAndRecordsInitialAndLiveLoads() {
@@ -338,6 +339,7 @@ private func makeImage() -> NSImage {
     NSImage(size: NSSize(width: 1, height: 1))
 }
 
+@MainActor
 final class ImageURLLoaderBindingRoutingTests: XCTestCase {
 
     func testMacOSImageURLStateInitializerRoutesTokenAndRecordsInitialAndLiveLoads() {

@@ -1,8 +1,8 @@
 import Foundation
 
-private var localization = Localization()
+private let localization = Localization()
 
-public class Localization {
+public class Localization: @unchecked Sendable {
     let currentLocaleIdentifier = Locale.preferredLanguages.first ?? Locale.current.identifier
     
     var defaultLanguage: Language = .en

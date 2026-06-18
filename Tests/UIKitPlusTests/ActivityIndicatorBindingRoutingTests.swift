@@ -58,6 +58,7 @@ private final class RecordingMacOSActivityIndicator: UActivityIndicator {
     }
 }
 
+@MainActor
 final class MacOSActivityIndicatorBindingRoutingTests: XCTestCase {
 
     func testMacOSActivityIndicatorStartedBindingRoutesTokenAndRemainsLive() {
@@ -175,6 +176,7 @@ final class MacOSActivityIndicatorBindingRoutingTests: XCTestCase {
 
 #else
 
+@MainActor
 final class UIKitActivityIndicatorBindingRoutingTests: XCTestCase {
 
     func testUIKitActivityIndicatorUIColorBindingRoutesTokenAndRemainsLive() {

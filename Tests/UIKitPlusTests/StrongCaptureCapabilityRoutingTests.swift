@@ -69,6 +69,7 @@ private struct ValueBulletsEchoableProbe: BulletsEchoable {
     }
 }
 
+@MainActor
 final class StrongCaptureCapabilityRoutingTests: XCTestCase {
 
     @MainActor

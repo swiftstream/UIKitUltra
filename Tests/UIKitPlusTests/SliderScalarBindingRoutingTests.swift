@@ -81,6 +81,7 @@ private final class SliderBindingSources {
     }
 }
 
+@MainActor
 final class SliderScalarBindingRoutingTests: XCTestCase {
 
     func testSliderAllFifteenBindingsRouteIntoOwnerHolder() {

@@ -5,6 +5,7 @@ internal protocol _StateBindingOwner: AnyObject {
 
 internal extension StateListener {
     @discardableResult
+    @MainActor
     func holdIfOwned(by candidate: AnyObject) -> Self {
         guard let owner = candidate as? _StateBindingOwner else {
             return self

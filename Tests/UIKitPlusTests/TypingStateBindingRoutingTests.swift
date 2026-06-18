@@ -45,6 +45,7 @@ private func newlyHeldTypingListeners(
 
 #if os(macOS)
 
+@MainActor
 final class MacOSTypingStateBindingRoutingTests: XCTestCase {
 
     @MainActor
@@ -224,6 +225,7 @@ final class MacOSTypingStateBindingRoutingTests: XCTestCase {
 
 #else
 
+@MainActor
 final class UIKitTypingStateBindingRoutingTests: XCTestCase {
 
     func testUIKitTextFieldTypingBridgeRoutesTokenSynchronizesInitiallyAndRemainsLive() {

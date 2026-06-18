@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Messageable: AnyObject {
     #if !os(macOS)
     @discardableResult

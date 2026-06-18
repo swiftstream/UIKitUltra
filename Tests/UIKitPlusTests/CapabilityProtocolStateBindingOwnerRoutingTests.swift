@@ -90,6 +90,7 @@ private final class OwnedMacOSCapabilityProbe: MacOSCapabilityProbe, _StateBindi
 private final class NonOwnedMacOSCapabilityProbe: MacOSCapabilityProbe {}
 #endif
 
+@MainActor
 final class CapabilityProtocolStateBindingOwnerRoutingTests: XCTestCase {
 
     @MainActor

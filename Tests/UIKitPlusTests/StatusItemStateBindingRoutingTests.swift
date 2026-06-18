@@ -5,6 +5,7 @@ import XCTest
 #if os(macOS)
 import AppKit
 
+@MainActor
 final class StatusItemStateBindingRoutingTests: XCTestCase {
 
     @MainActor

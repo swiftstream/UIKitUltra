@@ -19,6 +19,7 @@ internal protocol DeclarativeProtocolInternal: _StateBindingOwner {
     var __centerY: State<CGFloat> { get }
 }
 
+@MainActor
 extension DeclarativeProtocolInternal {
     var stateBindingHolder: TempStatesHolder {
         _properties.stateBindingHolder

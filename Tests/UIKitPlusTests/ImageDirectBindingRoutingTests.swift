@@ -13,7 +13,7 @@ private final class WeakStateListenerBox {
     }
 }
 
-private func heldListeners(of image: UImage) -> [StateListener] {
+@MainActor private func heldListeners(of image: UImage) -> [StateListener] {
     Array(
         image
             .stateBindingHolder
@@ -23,10 +23,11 @@ private func heldListeners(of image: UImage) -> [StateListener] {
     )
 }
 
-private func heldListenerCount(of image: UImage) -> Int {
+@MainActor private func heldListenerCount(of image: UImage) -> Int {
     image.stateBindingHolder.statesValues.heldListeners.count
 }
 
+@MainActor
 final class ImageDirectBindingRoutingTests: XCTestCase {
 
     func testUIImageStateInitializerRoutesTokenAndAppliesInitialValue() {
@@ -145,7 +146,7 @@ private final class WeakStateListenerBox {
     }
 }
 
-private func heldListeners(of image: UImage) -> [StateListener] {
+@MainActor private func heldListeners(of image: UImage) -> [StateListener] {
     Array(
         image
             .stateBindingHolder
@@ -155,7 +156,7 @@ private func heldListeners(of image: UImage) -> [StateListener] {
     )
 }
 
-private func heldListenerCount(of image: UImage) -> Int {
+@MainActor private func heldListenerCount(of image: UImage) -> Int {
     image.stateBindingHolder.statesValues.heldListeners.count
 }
 
@@ -163,6 +164,7 @@ private func makeImage() -> NSImage {
     NSImage(size: NSSize(width: 1, height: 1))
 }
 
+@MainActor
 final class ImageDirectBindingRoutingTests: XCTestCase {
 
     func testMacOSImageStateInitializerRoutesTokenAndAppliesInitialValue() {

@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Alternateable: AnyObject {
     @discardableResult
     func alternate() -> Self

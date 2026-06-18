@@ -63,6 +63,7 @@ private final class ToggleBindingSources {
     }
 }
 
+@MainActor
 final class ToggleScalarBindingRoutingTests: XCTestCase {
 
     func testToggleStateInitializerRoutesTokenAndPreservesBidirectionalWitness() {

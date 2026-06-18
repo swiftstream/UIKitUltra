@@ -9,7 +9,7 @@ fileprivate let loaderQueue = DispatchQueue(label: "com.uikitplus.imageloader")
 
 fileprivate let cache = ImagesCache()
 
-open class ImagesCache {
+open class ImagesCache: @unchecked Sendable {
     var cache = NSCache<NSString, NSData>()
     
     func save(_ key: String, _ image: Data) {
@@ -21,7 +21,7 @@ open class ImagesCache {
     }
 }
 
-open class ImageLoader {
+open class ImageLoader: @unchecked Sendable {
     lazy var fm = FileManager()
     
     public var reloadingStyle: ImageReloadingStyle

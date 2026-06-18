@@ -66,6 +66,7 @@ private func newlyHeldBarButtonItemListeners(
         }
 }
 
+@MainActor
 final class BarButtonItemBindingRoutingTests: XCTestCase {
 
     func testBarButtonItemDeclaresExplicitStateBindingOwnerScaffolding() {

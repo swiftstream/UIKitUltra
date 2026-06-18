@@ -5,7 +5,7 @@ import XCTest
 #if os(macOS)
 import AppKit
 
-private func outboundHeldListenerIDs(
+@MainActor private func outboundHeldListenerIDs(
     of button: UButton
 ) -> Set<UUID> {
     Set(
@@ -18,7 +18,7 @@ private func outboundHeldListenerIDs(
     )
 }
 
-private func newlyHeldOutboundListeners(
+@MainActor private func newlyHeldOutboundListeners(
     of button: UButton,
     excluding baselineIDs: Set<UUID>
 ) -> [StateListener] {
@@ -32,6 +32,7 @@ private func newlyHeldOutboundListeners(
         }
 }
 
+@MainActor
 final class MacOSButtonOutboundHoverBridgeBindingTests: XCTestCase {
 
     func testOutboundHoverBridgeRoutesOneTokenWithoutInitialSynchronization() {

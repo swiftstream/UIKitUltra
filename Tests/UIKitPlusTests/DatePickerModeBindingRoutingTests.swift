@@ -6,6 +6,7 @@ import XCTest
 import UIKit
 #if !os(tvOS)
 
+@MainActor
 final class DatePickerModeBindingRoutingTests: XCTestCase {
 
     func testDatePickerModeBindingRoutesIntoOwnerHolder() {

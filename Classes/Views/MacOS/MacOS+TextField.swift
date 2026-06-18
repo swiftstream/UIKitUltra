@@ -8,7 +8,7 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
     public typealias P = Properties<UTextField>
     public lazy var properties = P()
     lazy var _properties = PropertiesInternal()
-    fileprivate lazy var _formatter = _Formatter(self)
+    fileprivate lazy var _formatter = _Formatter()
     
     @UIKitPlus.State public var height: CGFloat = 0
     @UIKitPlus.State public var width: CGFloat = 0
@@ -875,11 +875,8 @@ extension UTextField: _TextFieldContentTypeable {
     }
 }
 
-fileprivate class _Formatter<TF>: NumberFormatter where TF: UTextField {
-    let tf: TF
-    
-    init(_ tf: TF) {
-        self.tf = tf
+fileprivate class _Formatter: NumberFormatter {
+    override init() {
         super.init()
     }
     
@@ -898,42 +895,6 @@ fileprivate class _Formatter<TF>: NumberFormatter where TF: UTextField {
     
     override func attributedString(for obj: Any, withDefaultAttributes attrs: [NSAttributedString.Key : Any]? = nil) -> NSAttributedString? {
         obj as? NSAttributedString
-    }
-    
-    @MainActor
-    override func isPartialStringValid(_ partialStringPtr: AutoreleasingUnsafeMutablePointer<NSString>, proposedSelectedRange proposedSelRangePtr: NSRangePointer?, originalString origString: String, originalSelectedRange origSelRange: NSRange, errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
-        var origString = origString
-        guard let origReplaceRange = Range<String.Index>.init(NSRange(location: 0, length: origSelRange.location + origSelRange.length), in: origString) else {
-            tf._innerDelegate.editingChanged()
-            return true
-        }
-        origString.replaceSubrange(origReplaceRange, with: "")
-        
-        var replacementString = String(partialStringPtr.pointee)
-        guard let range = Range<String.Index>.init(NSRange(location: 0, length: origSelRange.location), in: replacementString) else {
-            tf._innerDelegate.editingChanged()
-            return true
-        }
-        replacementString.replaceSubrange(range, with: "")
-        if let replacementRange = replacementString.range(of: origString) {
-            replacementString.replaceSubrange(replacementRange, with: "")
-        }
-        
-        if let result = tf.outsideDelegate?.textField?(self.tf, shouldChangeCharactersIn: origSelRange, replacementString: replacementString) {
-            return result
-        }
-        if let handler = tf.properties._shouldFormatCharacters {
-            let origStr = self.tf.stringValue
-            handler(self.tf, origSelRange, replacementString)
-            if origStr != self.tf.stringValue {
-                tf._innerDelegate.editingChanged()
-            }
-            return false
-        }
-        if let handler = tf.properties._shouldChangeCharacters {
-            return handler(tf, origSelRange, replacementString)
-        }
-        return true
     }
 }
 #endif

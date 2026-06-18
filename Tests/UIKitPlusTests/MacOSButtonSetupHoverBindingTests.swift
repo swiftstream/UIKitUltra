@@ -28,6 +28,7 @@ private final class SetupHoverSpy: UButton {
     }
 }
 
+@MainActor
 private func heldListenerIDs(
     of button: UButton
 ) -> Set<UUID> {
@@ -41,6 +42,7 @@ private func heldListenerIDs(
     )
 }
 
+@MainActor
 private func newlyHeldListeners(
     of button: UButton,
     excluding baselineIDs: Set<UUID>
@@ -55,6 +57,7 @@ private func newlyHeldListeners(
         }
 }
 
+@MainActor
 final class MacOSButtonSetupHoverBindingTests: XCTestCase {
 
     func testSetupRoutesExactlyOneHoverListenerIntoAuthoritativeHolder() {

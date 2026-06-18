@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol TextAdjustsFontSizeable: AnyObject {
     @discardableResult
     func adjustsFontSizeToFitWidth() -> Self

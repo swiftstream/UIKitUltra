@@ -43,6 +43,7 @@ private func newlyHeldListeners(
         }
 }
 
+@MainActor
 final class DatePickerScalarBindingRoutingTests: XCTestCase {
 
     func testDatePickerTextColorUIColorRoutesIntoOwnerHolder() {

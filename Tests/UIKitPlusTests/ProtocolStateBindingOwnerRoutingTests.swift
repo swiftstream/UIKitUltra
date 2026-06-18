@@ -103,6 +103,7 @@ private final class OwnedProtocolProbe: ProtocolProbe, _StateBindingOwner {
 
 private final class NonOwnedProtocolProbe: ProtocolProbe {}
 
+@MainActor
 final class ProtocolStateBindingOwnerRoutingTests: XCTestCase {
 
     @MainActor

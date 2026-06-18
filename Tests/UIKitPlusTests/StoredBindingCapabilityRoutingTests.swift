@@ -126,13 +126,15 @@ private func callRefinedBezelStyleable<T: _BezelStyleable>(
 }
 
 private enum DispatchCanary {
-    static var hits: [String] = []
+    @MainActor static var hits: [String] = []
 }
 
+@MainActor
 private protocol DispatchPublicCapability: AnyObject {
     func bind()
 }
 
+@MainActor
 private protocol DispatchInternalCapability: DispatchPublicCapability {}
 
 private extension DispatchPublicCapability {
@@ -143,6 +145,7 @@ private extension DispatchInternalCapability {
     func bind() { DispatchCanary.hits.append("internal") }
 }
 
+@MainActor
 private class DispatchPublicBase: DispatchPublicCapability {}
 private final class DispatchInternalSubclass:
     DispatchPublicBase,

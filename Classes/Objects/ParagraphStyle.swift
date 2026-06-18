@@ -11,12 +11,12 @@ import AppKit
 import UIKit
 #endif
 
-protocol ParagraphStyleDelegate: AnyObject {
-    func onParagraphUpdate(_ p: ParagraphStyle)
-}
+public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
+    private var _onUpdate: (@Sendable (ParagraphStyle) -> Void)?
 
-public class ParagraphStyle: NSMutableParagraphStyle {
-    weak var delegate: ParagraphStyleDelegate?
+    func setOnUpdate(_ handler: @escaping @Sendable (ParagraphStyle) -> Void) {
+        _onUpdate = handler
+    }
 
     private let _stateBindingHolder = TempStatesHolder()
 
@@ -24,9 +24,8 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         _stateBindingHolder
     }
 
-    init (_ delegate: ParagraphStyleDelegate) {
+    override init () {
         super.init()
-        self.delegate = delegate
     }
     
     required init?(coder: NSCoder) {
@@ -36,14 +35,14 @@ public class ParagraphStyle: NSMutableParagraphStyle {
     @discardableResult
     public func remove(tabStop: NSTextTab) -> Self {
         super.removeTabStop(tabStop)
-        delegate?.onParagraphUpdate(self)
+        _onUpdate?(self)
         return self
     }
     
     @discardableResult
     public func add(tabStop: NSTextTab) -> Self {
         super.addTabStop(tabStop)
-        delegate?.onParagraphUpdate(self)
+        _onUpdate?(self)
         return self
     }
     
@@ -107,7 +106,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.lineSpacing }
         set {
             super.lineSpacing = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
      }
     
@@ -138,7 +137,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.paragraphSpacing }
         set {
             super.paragraphSpacing = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -169,7 +168,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.firstLineHeadIndent }
         set {
             super.firstLineHeadIndent = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -200,7 +199,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.headIndent }
         set {
             super.headIndent = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -231,7 +230,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.tailIndent }
         set {
             super.tailIndent = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -262,7 +261,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.minimumLineHeight }
         set {
             super.minimumLineHeight = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -293,7 +292,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.maximumLineHeight }
         set {
             super.maximumLineHeight = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -324,7 +323,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.lineHeightMultiple }
         set {
             super.lineHeightMultiple = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -355,7 +354,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.defaultTabInterval }
         set {
             super.defaultTabInterval = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -386,7 +385,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.paragraphSpacingBefore }
         set {
             super.paragraphSpacingBefore = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -417,7 +416,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.hyphenationFactor }
         set {
             super.hyphenationFactor = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -449,7 +448,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.tighteningFactorForTruncation }
         set {
             super.tighteningFactorForTruncation = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -480,7 +479,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.headerLevel }
         set {
             super.headerLevel = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -511,7 +510,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.allowsDefaultTighteningForTruncation }
         set {
             super.allowsDefaultTighteningForTruncation = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -543,7 +542,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.alignment }
         set {
             super.alignment = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -574,7 +573,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.lineBreakMode }
         set {
             super.lineBreakMode = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -605,7 +604,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.baseWritingDirection }
         set {
             super.baseWritingDirection = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -636,7 +635,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.tabStops }
         set {
             super.tabStops = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -668,7 +667,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.textBlocks }
         set {
             super.textBlocks = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
@@ -699,7 +698,7 @@ public class ParagraphStyle: NSMutableParagraphStyle {
         get { super.textLists }
         set {
             super.textLists = newValue
-            delegate?.onParagraphUpdate(self)
+            _onUpdate?(self)
         }
     }
     
