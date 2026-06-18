@@ -57,6 +57,7 @@ extension _Fontable {
 
 // MARK: Fontable at range
 
+@MainActor
 public protocol FontableAtRange {
     @discardableResult
     func font(v: UFont?, at range: ClosedRange<Int>) -> Self
