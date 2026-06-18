@@ -37,6 +37,21 @@ private func objectIdentifier(
     return ObjectIdentifier(image)
 }
 
+private final class CancellationRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storedCount = 0
+
+    var count: Int {
+        lock.withLock { storedCount }
+    }
+
+    func recordCancellation() {
+        lock.withLock {
+            storedCount += 1
+        }
+    }
+}
+
 private final class RecordingImageLoader: ImageLoader {
 
     enum Input: Equatable {
@@ -51,7 +66,10 @@ private final class RecordingImageLoader: ImageLoader {
     }
 
     private(set) var records: [Record] = []
-    private(set) var cancelCallCount = 0
+    private nonisolated let cancellationRecorder = CancellationRecorder()
+    var cancelCallCount: Int {
+        cancellationRecorder.count
+    }
 
     override func load(
         _ url: String?,
@@ -81,8 +99,8 @@ private final class RecordingImageLoader: ImageLoader {
         )
     }
 
-    override func cancel() {
-        cancelCallCount += 1
+    nonisolated override func cancel() {
+        cancellationRecorder.recordCancellation()
     }
 }
 

@@ -10,7 +10,7 @@ private final class WeakBox<Value: AnyObject> {
     }
 }
 
-private final class ParagraphStyleUpdateSpy: @unchecked Sendable {
+private final class ParagraphStyleDelegateSpy: ParagraphStyleDelegate {
     private(set) var updateCount = 0
 
     func onParagraphUpdate(_ p: ParagraphStyle) {
@@ -39,16 +39,13 @@ final class ParagraphStyleOwnerAdoptionTests: XCTestCase {
         }
         .hold(in: unrelatedHolder)
 
-        let delegate = ParagraphStyleUpdateSpy()
+        let delegate = ParagraphStyleDelegateSpy()
 
         weak var weakParagraphStyle: ParagraphStyle?
         var tokenBoxes: [WeakBox<StateListener>] = []
 
         autoreleasepool {
-            var paragraphStyle: ParagraphStyle? = .init()
-            paragraphStyle?.setOnUpdate { [spy = delegate] p in
-                spy.onParagraphUpdate(p)
-            }
+            var paragraphStyle: ParagraphStyle? = .init(delegate)
             weakParagraphStyle = paragraphStyle
 
             paragraphStyle?.lineSpacing(externalState)
@@ -103,16 +100,13 @@ final class ParagraphStyleOwnerAdoptionTests: XCTestCase {
     func testParagraphStyleRepeatedExternalBindingsRemainAdditiveUntilTeardown() {
         let sourceA = State<CGFloat>(wrappedValue: 0.1)
         let sourceB = State<CGFloat>(wrappedValue: 0.2)
-        let delegate = ParagraphStyleUpdateSpy()
+        let delegate = ParagraphStyleDelegateSpy()
 
         weak var weakParagraphStyle: ParagraphStyle?
         var tokenBoxes: [WeakBox<StateListener>] = []
 
         autoreleasepool {
-            var paragraphStyle: ParagraphStyle? = .init()
-            paragraphStyle?.setOnUpdate { [spy = delegate] p in
-                spy.onParagraphUpdate(p)
-            }
+            var paragraphStyle: ParagraphStyle? = .init(delegate)
             weakParagraphStyle = paragraphStyle
 
             paragraphStyle?.lineSpacing(sourceA)
@@ -156,9 +150,8 @@ final class ParagraphStyleOwnerAdoptionTests: XCTestCase {
     }
 
     func testParagraphStyleScalarSetterDoesNotCreateMergeHolderTokens() {
-        let delegate = ParagraphStyleUpdateSpy()
-        let paragraphStyle = ParagraphStyle()
-        paragraphStyle.setOnUpdate { [spy = delegate] p in spy.onParagraphUpdate(p) }
+        let delegate = ParagraphStyleDelegateSpy()
+        let paragraphStyle = ParagraphStyle(delegate)
 
         paragraphStyle.lineSpacing(4)
         paragraphStyle.paragraphSpacing(8)
@@ -179,13 +172,11 @@ final class ParagraphStyleOwnerAdoptionTests: XCTestCase {
     }
 
     func testParagraphStylePeerMergeOwnsAllLinksAndRestoresMissingCrossPlatformCoverage() {
-        let leftDelegate = ParagraphStyleUpdateSpy()
-        let rightDelegate = ParagraphStyleUpdateSpy()
+        let leftDelegate = ParagraphStyleDelegateSpy()
+        let rightDelegate = ParagraphStyleDelegateSpy()
 
-        let left = ParagraphStyle()
-        left.setOnUpdate { [spy = leftDelegate] p in spy.onParagraphUpdate(p) }
-        let right = ParagraphStyle()
-        right.setOnUpdate { [spy = rightDelegate] p in spy.onParagraphUpdate(p) }
+        let left = ParagraphStyle(leftDelegate)
+        let right = ParagraphStyle(rightDelegate)
 
         // Install the existing internal scalar bridges before mutating
         // peer internal states. Slice 5D does not redesign these bridges.
@@ -228,10 +219,9 @@ final class ParagraphStyleOwnerAdoptionTests: XCTestCase {
     }
 
     func testParagraphStylePeerMergeTeardownCancelsOnlyOwnedTokens() {
-        let leftDelegate = ParagraphStyleUpdateSpy()
-        let rightDelegate = ParagraphStyleUpdateSpy()
-        let right = ParagraphStyle()
-        right.setOnUpdate { [spy = rightDelegate] p in spy.onParagraphUpdate(p) }
+        let leftDelegate = ParagraphStyleDelegateSpy()
+        let rightDelegate = ParagraphStyleDelegateSpy()
+        let right = ParagraphStyle(rightDelegate)
 
         let unrelatedHolder = TempStatesHolder()
         var unrelatedCallCount = 0
@@ -245,8 +235,7 @@ final class ParagraphStyleOwnerAdoptionTests: XCTestCase {
         var tokenBoxes: [WeakBox<StateListener>] = []
 
         autoreleasepool {
-            var left: ParagraphStyle? = .init()
-            left?.setOnUpdate { [spy = leftDelegate] p in spy.onParagraphUpdate(p) }
+            var left: ParagraphStyle? = .init(leftDelegate)
             weakLeft = left
 
             left?.mergeWithParagraphStyle(right)
@@ -293,13 +282,11 @@ final class ParagraphStyleOwnerAdoptionTests: XCTestCase {
 
     #if os(macOS)
     func testParagraphStylePeerMergeMacOSHolderCountIs40() {
-        let leftDelegate = ParagraphStyleUpdateSpy()
-        let rightDelegate = ParagraphStyleUpdateSpy()
+        let leftDelegate = ParagraphStyleDelegateSpy()
+        let rightDelegate = ParagraphStyleDelegateSpy()
 
-        let left = ParagraphStyle()
-        left.setOnUpdate { [spy = leftDelegate] p in spy.onParagraphUpdate(p) }
-        let right = ParagraphStyle()
-        right.setOnUpdate { [spy = rightDelegate] p in spy.onParagraphUpdate(p) }
+        let left = ParagraphStyle(leftDelegate)
+        let right = ParagraphStyle(rightDelegate)
 
         left.mergeWithParagraphStyle(right)
 

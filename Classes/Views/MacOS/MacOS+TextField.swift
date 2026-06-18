@@ -8,7 +8,7 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
     public typealias P = Properties<UTextField>
     public lazy var properties = P()
     lazy var _properties = PropertiesInternal()
-    fileprivate lazy var _formatter = _Formatter()
+    fileprivate lazy var _formatter = _Formatter(self)
     
     @UIKitPlus.State public var height: CGFloat = 0
     @UIKitPlus.State public var width: CGFloat = 0
@@ -875,8 +875,80 @@ extension UTextField: _TextFieldContentTypeable {
     }
 }
 
-fileprivate class _Formatter: NumberFormatter {
-    override init() {
+fileprivate protocol _TextFieldFormatterOwner: AnyObject {
+    func validatePartialString(
+        _ partialString: String,
+        originalString: String,
+        originalSelectedRange: NSRange
+    ) -> Bool
+}
+
+// NumberFormatter's legacy override is nonisolated, while AppKit invokes this
+// formatter as part of main-thread text editing. Keep the compatibility bridge
+// narrow: only this private owner conformance suppresses the inherited mismatch.
+extension UTextField: @preconcurrency _TextFieldFormatterOwner {
+    fileprivate func validatePartialString(
+        _ partialString: String,
+        originalString: String,
+        originalSelectedRange: NSRange
+    ) -> Bool {
+        var remainingOriginalString = originalString
+        guard let originalReplacementRange = Range<String.Index>(
+            NSRange(
+                location: 0,
+                length: originalSelectedRange.location + originalSelectedRange.length
+            ),
+            in: remainingOriginalString
+        ) else {
+            _innerDelegate.editingChanged()
+            return true
+        }
+        remainingOriginalString.replaceSubrange(originalReplacementRange, with: "")
+
+        var replacementString = partialString
+        guard let proposedPrefixRange = Range<String.Index>(
+            NSRange(location: 0, length: originalSelectedRange.location),
+            in: replacementString
+        ) else {
+            _innerDelegate.editingChanged()
+            return true
+        }
+        replacementString.replaceSubrange(proposedPrefixRange, with: "")
+        if let unchangedSuffixRange = replacementString.range(of: remainingOriginalString) {
+            replacementString.replaceSubrange(unchangedSuffixRange, with: "")
+        }
+
+        if let result = outsideDelegate?.textField?(
+            self,
+            shouldChangeCharactersIn: originalSelectedRange,
+            replacementString: replacementString
+        ) {
+            return result
+        }
+        if let handler = properties._shouldFormatCharacters {
+            let originalValue = stringValue
+            handler(self, originalSelectedRange, replacementString)
+            if originalValue != stringValue {
+                _innerDelegate.editingChanged()
+            }
+            return false
+        }
+        if let handler = properties._shouldChangeCharacters {
+            return handler(self, originalSelectedRange, replacementString)
+        }
+        return true
+    }
+}
+
+/// Foundation declares `NumberFormatter` as unchecked Sendable. This private
+/// final subclass is owned by one main-actor text field and keeps only a weak
+/// reference through the narrow legacy callback bridge above.
+fileprivate final class _Formatter: NumberFormatter, @unchecked Sendable {
+    private weak var textField: _TextFieldFormatterOwner?
+
+    @MainActor
+    init(_ textField: UTextField) {
+        self.textField = textField
         super.init()
     }
     
@@ -895,6 +967,14 @@ fileprivate class _Formatter: NumberFormatter {
     
     override func attributedString(for obj: Any, withDefaultAttributes attrs: [NSAttributedString.Key : Any]? = nil) -> NSAttributedString? {
         obj as? NSAttributedString
+    }
+
+    override func isPartialStringValid(_ partialStringPtr: AutoreleasingUnsafeMutablePointer<NSString>, proposedSelectedRange proposedSelRangePtr: NSRangePointer?, originalString origString: String, originalSelectedRange origSelRange: NSRange, errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
+        textField?.validatePartialString(
+            String(partialStringPtr.pointee),
+            originalString: origString,
+            originalSelectedRange: origSelRange
+        ) ?? true
     }
 }
 #endif

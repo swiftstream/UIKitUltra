@@ -11,12 +11,12 @@ import AppKit
 import UIKit
 #endif
 
-public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
-    private var _onUpdate: (@Sendable (ParagraphStyle) -> Void)?
+protocol ParagraphStyleDelegate: AnyObject {
+    func onParagraphUpdate(_ p: ParagraphStyle)
+}
 
-    func setOnUpdate(_ handler: @escaping @Sendable (ParagraphStyle) -> Void) {
-        _onUpdate = handler
-    }
+public class ParagraphStyle: NSMutableParagraphStyle {
+    weak var delegate: ParagraphStyleDelegate?
 
     private let _stateBindingHolder = TempStatesHolder()
 
@@ -24,8 +24,9 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         _stateBindingHolder
     }
 
-    override init () {
+    init (_ delegate: ParagraphStyleDelegate) {
         super.init()
+        self.delegate = delegate
     }
     
     required init?(coder: NSCoder) {
@@ -35,15 +36,19 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
     @discardableResult
     public func remove(tabStop: NSTextTab) -> Self {
         super.removeTabStop(tabStop)
-        _onUpdate?(self)
+        notifyUpdate()
         return self
     }
     
     @discardableResult
     public func add(tabStop: NSTextTab) -> Self {
         super.addTabStop(tabStop)
-        _onUpdate?(self)
+        notifyUpdate()
         return self
+    }
+
+    private func notifyUpdate() {
+        delegate?.onParagraphUpdate(self)
     }
     
     public override func setParagraphStyle(_ obj: NSParagraphStyle) {
@@ -106,7 +111,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.lineSpacing }
         set {
             super.lineSpacing = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
      }
     
@@ -137,7 +142,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.paragraphSpacing }
         set {
             super.paragraphSpacing = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -168,7 +173,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.firstLineHeadIndent }
         set {
             super.firstLineHeadIndent = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -199,7 +204,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.headIndent }
         set {
             super.headIndent = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -230,7 +235,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.tailIndent }
         set {
             super.tailIndent = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -261,7 +266,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.minimumLineHeight }
         set {
             super.minimumLineHeight = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -292,7 +297,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.maximumLineHeight }
         set {
             super.maximumLineHeight = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -323,7 +328,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.lineHeightMultiple }
         set {
             super.lineHeightMultiple = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -354,7 +359,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.defaultTabInterval }
         set {
             super.defaultTabInterval = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -385,7 +390,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.paragraphSpacingBefore }
         set {
             super.paragraphSpacingBefore = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -416,7 +421,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.hyphenationFactor }
         set {
             super.hyphenationFactor = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -448,7 +453,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.tighteningFactorForTruncation }
         set {
             super.tighteningFactorForTruncation = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -479,7 +484,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.headerLevel }
         set {
             super.headerLevel = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -510,7 +515,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.allowsDefaultTighteningForTruncation }
         set {
             super.allowsDefaultTighteningForTruncation = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -542,7 +547,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.alignment }
         set {
             super.alignment = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -573,7 +578,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.lineBreakMode }
         set {
             super.lineBreakMode = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -604,7 +609,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.baseWritingDirection }
         set {
             super.baseWritingDirection = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -635,7 +640,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.tabStops }
         set {
             super.tabStops = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -667,7 +672,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.textBlocks }
         set {
             super.textBlocks = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     
@@ -698,7 +703,7 @@ public class ParagraphStyle: NSMutableParagraphStyle, @unchecked Sendable {
         get { super.textLists }
         set {
             super.textLists = newValue
-            _onUpdate?(self)
+            notifyUpdate()
         }
     }
     

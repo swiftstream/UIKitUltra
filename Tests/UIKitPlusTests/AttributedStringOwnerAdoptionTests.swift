@@ -35,6 +35,20 @@ private func assertColorAttribute(
 @MainActor
 final class AttributedStringOwnerAdoptionTests: XCTestCase {
 
+    func testParagraphStyleMutationUpdatesAttributedStringSynchronously() {
+        let attributedString = UIKitPlus.AttributedString("A")
+
+        attributedString.lineSpacing(14)
+
+        let paragraphStyle = attributedString.attributedString.attribute(
+            .paragraphStyle,
+            at: 0,
+            effectiveRange: nil
+        ) as? NSParagraphStyle
+
+        XCTAssertEqual(paragraphStyle?.lineSpacing, 14)
+    }
+
     func testAttributedStringBackgroundBindingIsOwnedAndCancelsOnTeardown() {
         let source = State<UColor>(wrappedValue: UColor.red)
         let unrelatedHolder = TempStatesHolder()

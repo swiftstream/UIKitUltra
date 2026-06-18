@@ -20,7 +20,7 @@ private final class HookedImageLoader: ImageLoader {
     var downloadImageCalled = false
     var downloadImageURL: URL?
     
-    override func downloadImage(_ url: URL, callback: @escaping (Data) -> Void) {
+    override func downloadImage(_ url: URL, callback: @escaping @Sendable (Data) -> Void) {
         downloadImageCalled = true
         downloadImageURL = url
     }
@@ -39,7 +39,7 @@ private final class HookedImageLoaderWithSetImage: ImageLoader {
     var setImageCallCount = 0
     var onSetImage: (() -> Void)?
     
-    override func downloadImage(_ url: URL, callback: @escaping (Data) -> Void) {
+    override func downloadImage(_ url: URL, callback: @escaping @Sendable (Data) -> Void) {
         callback(tinyPNGData)
     }
     
@@ -65,6 +65,7 @@ private final class HookedImageLoaderWithApplyLocal: ImageLoader {
 
 // MARK: - Tests
 
+@MainActor
 final class ImageLoaderBehaviorTests: XCTestCase {
     
     private func makeImageView() -> _UImageView {

@@ -82,15 +82,7 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     
     var _updateHandler: ((NSAttributedString) -> Void)?
     
-    private lazy var _paragraphStyle: ParagraphStyle = {
-        let ps = ParagraphStyle()
-        ps.setOnUpdate { [weak self] p in
-            DispatchQueue.main.async {
-                self?.paragraphStyle(p)
-            }
-        }
-        return ps
-    }()
+    private lazy var _paragraphStyle = ParagraphStyle(self)
     
     public static func make(_ v: NSAttributedString) -> Self {
         .init(v)
@@ -340,6 +332,17 @@ open class AttributedString: AnyString, BodyBuilderItemable {
 }
 
 extension AttributedString: _StateBindingOwner {}
+
+// MARK: ParagraphStyleDelegate
+
+// `ParagraphStyleDelegate` predates actor annotations and is internal. The
+// concrete owner is main-actor isolated, and all delegate calls are synchronous
+// from that owner-controlled paragraph-style mutation path.
+extension AttributedString: @preconcurrency ParagraphStyleDelegate {
+    func onParagraphUpdate(_ p: ParagraphStyle) {
+        paragraphStyle(p)
+    }
+}
 
 extension AttrStr: _FontableAtRange {
     func _setFont(_ v: UFont?) {

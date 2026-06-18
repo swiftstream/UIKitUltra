@@ -75,6 +75,30 @@ extension WeakBaseView: PreConstraintViewable {
     }
 }
 
+/// `PreConstraint` can be released from a nonisolated deinitializer on older
+/// deployment targets. The listener handoff is serialized so cancellation
+/// remains synchronous without an executor-backed deinitializer.
+private final class PreConstraintListenerStorage: @unchecked Sendable {
+    private let lock = NSLock()
+    private var listener: StateListener?
+
+    func get() -> StateListener? {
+        lock.withLock { listener }
+    }
+
+    func set(_ newValue: StateListener?) {
+        lock.withLock {
+            listener = newValue
+        }
+    }
+
+    func cancel() {
+        lock.withLock {
+            listener?.cancel()
+            listener = nil
+        }
+    }
+}
 
 @MainActor
 class PreConstraint: Equatable {
@@ -93,7 +117,11 @@ class PreConstraint: Equatable {
     let toSafe: Bool
     var destinationView: PreConstraintViewable?
     var constraint: NSLayoutConstraint?
-    private(set) var valueListener: StateListener?
+    private nonisolated let valueListenerStorage = PreConstraintListenerStorage()
+    private(set) var valueListener: StateListener? {
+        get { valueListenerStorage.get() }
+        set { valueListenerStorage.set(newValue) }
+    }
     
     init (value: State<CGFloat>,
           relation: NSLayoutConstraint.Relation,
@@ -128,8 +156,8 @@ class PreConstraint: Equatable {
         }
     }
     
-    @MainActor deinit {
-        valueListener?.cancel()
+    deinit {
+        valueListenerStorage.cancel()
     }
 
     @MainActor
