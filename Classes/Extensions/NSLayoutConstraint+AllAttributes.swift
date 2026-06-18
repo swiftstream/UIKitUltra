@@ -6,7 +6,7 @@ import UIKit
 
 extension NSLayoutConstraint.Attribute {
     #if os(macOS)
-    static var all: [NSLayoutConstraint.Attribute] = [.width,
+    static let all: [NSLayoutConstraint.Attribute] = [.width,
                                                                           .height,
                                                                           .top,
                                                                           .leading,
@@ -20,7 +20,7 @@ extension NSLayoutConstraint.Attribute {
                                                                           .lastBaseline,
                                                                           .notAnAttribute]
     #else
-    static var all: [NSLayoutConstraint.Attribute] = [.width,
+    static let all: [NSLayoutConstraint.Attribute] = [.width,
                                                                           .height,
                                                                           .top,
                                                                           .topMargin,
