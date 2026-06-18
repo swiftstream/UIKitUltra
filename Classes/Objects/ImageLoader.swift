@@ -25,6 +25,8 @@ private final class ImagesCache: @unchecked Sendable {
 
 @MainActor
 open class ImageLoader {
+    /// Cancellation may originate from a nonisolated image-view deinitializer;
+    /// the storage serializes every task read, replacement, and cancellation.
     private nonisolated let taskStorage = ImageLoaderTaskStorage()
 
     public var reloadingStyle: ImageReloadingStyle

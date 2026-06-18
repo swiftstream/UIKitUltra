@@ -49,12 +49,12 @@ public class Properties<V> {
     var isFlipped: Bool = false
     #endif
     
-    public typealias FormatCharactersClosure = (_ textField: V, _ range: NSRange, _ replacement: String) -> Void
-    public typealias ChangeCharactersClosure = (_ textField: V, _ range: NSRange, _ replacement: String) -> Bool
-    public typealias EmptyBoolClosure = () -> Bool
-    public typealias BoolClosure = (V) -> Bool
-    public typealias EmptyVoidClosure = () -> Void
-    public typealias VoidClosure = (V) -> Void
+    public typealias FormatCharactersClosure = @MainActor (_ textField: V, _ range: NSRange, _ replacement: String) -> Void
+    public typealias ChangeCharactersClosure = @MainActor (_ textField: V, _ range: NSRange, _ replacement: String) -> Bool
+    public typealias EmptyBoolClosure = @MainActor () -> Bool
+    public typealias BoolClosure = @MainActor (V) -> Bool
+    public typealias EmptyVoidClosure = @MainActor () -> Void
+    public typealias VoidClosure = @MainActor (V) -> Void
     
     var _shouldBeginEditing: BoolClosure = { _ in return true }
     var _didBeginEditing: [VoidClosure] = []

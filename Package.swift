@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "UIKitPlus",
     platforms: [
-        .macOS(.v10_14), .iOS(.v9), .tvOS(.v13),
+        .macOS(.v10_15), .iOS(.v12), .tvOS(.v13),
     ],
     products: [
         // 🏰 Declarative UIKit wrapper inspired by SwiftUI

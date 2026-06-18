@@ -102,6 +102,7 @@ private final class PreConstraintListenerStorage: @unchecked Sendable {
 
 @MainActor
 class PreConstraint: Equatable {
+    /// Equality reads only the immutable, thread-safe identity token.
     nonisolated static func == (lhs: PreConstraint, rhs: PreConstraint) -> Bool {
         lhs.id == rhs.id
     }
@@ -117,6 +118,7 @@ class PreConstraint: Equatable {
     let toSafe: Bool
     var destinationView: PreConstraintViewable?
     var constraint: NSLayoutConstraint?
+    /// The locked storage is the only state reachable from `deinit`.
     private nonisolated let valueListenerStorage = PreConstraintListenerStorage()
     private(set) var valueListener: StateListener? {
         get { valueListenerStorage.get() }

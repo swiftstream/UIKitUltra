@@ -1,11 +1,13 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol TextAutocorrectionable {
     @discardableResult
     func autocorrection(_ type: UITextAutocorrectionType) -> Self
 }
 
+@MainActor
 protocol _TextAutocorrectionable: TextAutocorrectionable {
     func _setTextAutocorrectionType(_ v: UITextAutocorrectionType)
 }

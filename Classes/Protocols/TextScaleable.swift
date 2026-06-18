@@ -1,11 +1,13 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol TextScaleable {
     @discardableResult
     func minimumScaleFactor(_ value: CGFloat) -> Self
 }
 
+@MainActor
 protocol _TextScaleable: TextScaleable {
     func _setMinimumScaleFactor(_ v: CGFloat)
 }

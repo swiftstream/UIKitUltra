@@ -4,6 +4,7 @@ import AppKit
 import UIKit
 #endif
 
+@MainActor
 public protocol Scrollable {
     @discardableResult
     func scrolling(_ enabled: Bool) -> Self
@@ -15,6 +16,7 @@ public protocol Scrollable {
     func hideAllIndicators() -> Self
 }
 
+@MainActor
 protocol _Scrollable: Scrollable {
     func _setScrollingEnabled(_ v: Bool)
     func _setVisibleVScrollIndicator(_ v: Bool)

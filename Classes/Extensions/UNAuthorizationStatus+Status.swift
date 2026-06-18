@@ -24,6 +24,7 @@ extension UNAuthorizationStatus {
             } else {
                 return .authorized
             }
+        @unknown default: return .notDetermined
         }
     }
 }

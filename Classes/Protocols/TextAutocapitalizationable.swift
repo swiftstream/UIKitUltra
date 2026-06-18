@@ -1,11 +1,13 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol TextAutocapitalizationable {
     @discardableResult
     func autocapitalization(_ type: UITextAutocapitalizationType) -> Self
 }
 
+@MainActor
 protocol _TextAutocapitalizationable: TextAutocapitalizationable {
     func _setTextAutocapitalizationType(_ v: UITextAutocapitalizationType)
 }

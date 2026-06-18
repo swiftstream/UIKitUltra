@@ -1,6 +1,7 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol TextFieldLeftViewable {
     func leftView(_ view: UIView) -> Self
     func leftView(_ view: UIView, mode: UITextField.ViewMode) -> Self
@@ -8,6 +9,7 @@ public protocol TextFieldLeftViewable {
     func leftView(mode: UITextField.ViewMode, _ view: @escaping () -> UIView) -> Self
 }
 
+@MainActor
 protocol _TextFieldLeftViewable: TextFieldLeftViewable {
     func _setLeftView(v: UIView)
     func _setLeftViewMode(v: UITextField.ViewMode)

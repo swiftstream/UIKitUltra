@@ -8,6 +8,7 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol AnyScene: AnyObject {
     var persistentIdentifier: String { get }
     var stateRestorationActivity: NSUserActivity? { get }
@@ -43,6 +44,7 @@ public protocol AnyScene: AnyObject {
     func onDidEnterBackground(_ handler: @escaping (UIWindow?) -> Void) -> Self
 }
 
+@MainActor
 protocol _AnyScene: AnyScene {
     var _onConnect: ((UIWindow?) -> Void)? { get set }
     var _onDisconnect: ((UIWindow?) -> Void)? { get set }

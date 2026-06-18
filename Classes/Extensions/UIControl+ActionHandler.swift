@@ -1,13 +1,30 @@
 #if !os(macOS)
 import UIKit
+import ObjectiveC
 
 extension UIControl {
+    private final class ActionHandlerBox {
+        let action: () -> Void
+
+        init(_ action: @escaping () -> Void) {
+            self.action = action
+        }
+    }
+
+    private var actionHandlerKey: UnsafeRawPointer {
+        UnsafeRawPointer(Unmanaged.passUnretained(self).toOpaque())
+    }
+
     private func actionHandler(action: (() -> Void)? = nil) {
-        struct Storage { static var actions: [Int: (() -> Void)] = [:] }
         if let action = action {
-            Storage.actions[hashValue] = action
+            objc_setAssociatedObject(
+                self,
+                actionHandlerKey,
+                ActionHandlerBox(action),
+                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
         } else {
-            Storage.actions[hashValue]?()
+            (objc_getAssociatedObject(self, actionHandlerKey) as? ActionHandlerBox)?.action()
         }
     }
     

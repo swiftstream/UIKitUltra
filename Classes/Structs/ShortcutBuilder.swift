@@ -8,6 +8,7 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol ShortcutBuilderContent {
     var shortcutBuilderContent: ShortcutBuilderItem { get }
 }
@@ -22,6 +23,7 @@ struct _ShortcutContent: ShortcutBuilderContent {
     let shortcutBuilderContent: ShortcutBuilderItem
 }
 
+@MainActor
 @resultBuilder public struct ShortcutBuilder {
     public typealias Block = () -> ShortcutBuilderContent
 

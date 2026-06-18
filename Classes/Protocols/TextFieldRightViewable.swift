@@ -1,6 +1,7 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol TextFieldRightViewable {
     func rightView(_ view: UIView) -> Self
     func rightView(_ view: UIView, mode: UITextField.ViewMode) -> Self
@@ -8,6 +9,7 @@ public protocol TextFieldRightViewable {
     func rightView(mode: UITextField.ViewMode, _ view: @escaping () -> UIView) -> Self
 }
 
+@MainActor
 protocol _TextFieldRightViewable: TextFieldRightViewable {
     func _setRightView(v: UIView)
     func _setRightViewMode(v: UITextField.ViewMode)

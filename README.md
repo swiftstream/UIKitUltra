@@ -3,13 +3,12 @@
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
     </a>
     <a href="https://swift.org">
-        <img src="https://img.shields.io/badge/swift-5.2-brightgreen.svg" alt="Swift 5.5">
+        <img src="https://img.shields.io/badge/Swift-6.2%2B-brightgreen.svg" alt="Swift 6.2 or newer">
     </a>
-    <a href="https://swift.org">
-        <img src="https://img.shields.io/badge/iOS-9+-brightgreen.svg" alt="Swift 5.5">
-    </a>
+    <img src="https://img.shields.io/badge/Xcode-26%2B-brightgreen.svg" alt="Xcode 26 or newer">
+    <img src="https://img.shields.io/badge/iOS-12%2B-brightgreen.svg" alt="iOS 12 or newer">
+    <img src="https://img.shields.io/badge/macOS-10.15%2B-brightgreen.svg" alt="macOS 10.15 or newer">
     <img src="https://img.shields.io/badge/iPadOS+Catalyst-✓-brightgreen.svg" alt="iPadOS and Catalyst support">
-    <img src="https://img.shields.io/badge/macOS-✓-brightgreen.svg" alt="macOS support">
     <a href="https://cocoapods.org/pods/UIKit-Plus">
         <img src="https://img.shields.io/cocoapods/v/UIKit-Plus.svg" alt="Cocoapod">
     </a>
@@ -19,10 +18,7 @@
 </p>
 <p align="center">🚀❤️ YOU WILL LOVE <b>UIKIT</b> MORE THAN EVER ❤️🚀</p>
 <br/>
-<p align="center"><b>Nothing is impossible!</b></p>
-<p align="center">Build awesome responsive UIs even simpler than with SwiftUI <b>cause you already know everything</b>.</p>
-<br/>
-<p align="center">With. Live. Preview. iOS9+.</p>
+<p align="center">A declarative, protocol-oriented UI framework built on UIKit and AppKit.</p>
 <br/>
 <p align="center">
 <img src="https://user-images.githubusercontent.com/1272610/216769696-65cc09d1-2796-4b7e-b746-01e25fc70486.jpeg">
@@ -33,63 +29,54 @@
 
 ## Requirements
 
-Xcode 13.0+
+- Swift 6.2+
+- Xcode 26+
+- iOS 12+
+- macOS 10.15+
+- tvOS 13+
 
-Swift 5.5+
+The current Swift 6 line uses main-actor isolation for its public UI DSL protocols. Create and mutate UIKit/AppKit objects on the main actor; crossing that boundary requires an explicit actor hop.
 
-Good mood
+Legacy iOS 9 support belongs to pre-Swift-6 tags and branches. It is not a supported deployment target for the current main branch.
+
+Application targets own their entry point explicitly: annotate the `BaseApp` or `UIKitPlus.App` subclass with `@main`. The bundled templates already do this.
 
 ## Installation
 
-#### With [CocoaPods](https://cocoapods.org)
+### Swift Package Manager
 
-Add the following line to your Podfile:
-```ruby
-pod 'UIKit-Plus', '~> 2.3.0'
-```
+In Xcode 26+, choose `File -> Add Package Dependencies` and enter:
 
-#### With [Swift Package Manager](https://swift.org/package-manager/)
-
-In Xcode 13.0+ go to `File -> Swift Packages -> Add Package Dependency` and enter there URL of this repo
-```
+```text
 https://github.com/MihaelIsaev/UIKitPlus
 ```
 
-#### IMPORTANT!
+### CocoaPods
 
-Since version 2 there are a lot of advantages and fixes, and your project could look cleaner since there are no AppDelegate and SceneDelegate anymore, everything is under the hood like with SwiftUI, but it is very obvious and convenient to use any AppDelegate/SceneDelegate methods.
+The podspec is maintained for Swift 6 projects. Until a matching Swift 6 tag is published, consume the current branch explicitly:
 
-Check it out by creating a project with the new project template!
-
-#### IMPORTANT!
-
-To support iOS lower than 13 you have to set `-weak_framework SwiftUI` in `Other Linker Flags` in `Build Settings`.
-
-Without that your app gonna crash on iOS lower than 13 because it will try to load SwiftUI without luck.
-
-<img width="816" alt="Screenshot 2020-03-29 at 03 35 10" src="https://user-images.githubusercontent.com/1272610/77836323-bbd71e00-716e-11ea-88f8-3a6b135b99ec.png">
-
-## Project Template! 🍾
-
-To simplify life with UIKitPlus you can download our template!
-
-For that run the following commands in console
-
-```bash
-git clone https://github.com/MihaelIsaev/UIKitPlus.git
-cp -R UIKitPlus/Templates ~/Library/Developer/Xcode/
-rm -rf UIKitPlus
+```ruby
+pod 'UIKit-Plus', :git => 'https://github.com/MihaelIsaev/UIKitPlus.git', :branch => 'master'
 ```
 
-After that you will be able to go to `File -> New -> Project` and choose `UIKitPlus` app! 🚀
+SwiftUI-backed previews are availability-gated. Xcode 26 weak-links later-availability system frameworks automatically, so current projects do not need a manual `-weak_framework SwiftUI` linker flag.
 
-![UIKitPlus App Template Screenshot](https://user-images.githubusercontent.com/1272610/78511655-87d3ac80-77af-11ea-96f7-dc0b75287207.jpg)
+## Project Templates
 
-> 💡After project creation you have to install UIKitPlus manually either with Swift Package Manager or with CocoaPods
+The repository includes three Xcode project templates:
 
-### File Template
+- `UIKitPlus App`: iOS/iPadOS application, iOS 12+
+- `UIKitPlus macOS App`: macOS application, macOS 10.15+
+- `UIKitPlus Multiplatform App`: separate iOS and macOS targets with shared UI code
 
-Together with project template you will get the file template 👍
+Install them from a repository checkout:
+
+```bash
+mkdir -p ~/Library/Developer/Xcode/Templates
+cp -R "Templates/Project Templates" ~/Library/Developer/Xcode/Templates/
+```
+
+Restart Xcode, choose `File -> New -> Project`, and select the required UIKitPlus template. Add UIKitPlus to the generated target or targets with Swift Package Manager or CocoaPods.
 
 ## Features
 
@@ -148,7 +135,7 @@ Declare views or its styles in extensions. Subclass views. Use all the power of 
 
 ### 7. All modern features
 
-Diffable data-source (yes yes for iOS9+). Dynamic colors for light/dark mode. Stateable animations. Reactivity.
+Diffable data sources, dynamic colors for light/dark mode, state-backed animations, and reactive bindings.
 
 ### 8. Everything and even more
 
@@ -827,11 +814,11 @@ func verify(_ code: String) {
 UVisualEffectView(.darkBlur)
 UVisualEffectView(.lightBlur)
 UVisualEffectView(.extraLightBlur)
-// iOS10+
+// iOS 12+
 UVisualEffectView(.prominent)
 UVisualEffectView(.regular)
 
-// iOS13+ (but can be used since iOS9+)
+// iOS 13+
 // automatic dynamic effect for light and dark modes
 UVisualEffectView(.darkBlur, .lightBlur) // effect will be switched automatically. darkBlur is for light mode.
 ```
@@ -1031,7 +1018,7 @@ UButton(.shareLink) // Share link
 <details>
 <summary>Status bar style</summary>
 
-In any `UViewController` you can set `statusBarStyle` and all its values are iOS9+.
+In any `UViewController` you can set `statusBarStyle` using values available to the selected deployment target.
 ```swift
 override var statusBarStyle: StatusBarStyle { .default }
 override var statusBarStyle: StatusBarStyle { .dark }

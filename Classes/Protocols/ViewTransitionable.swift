@@ -1,6 +1,7 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 protocol _ViewTransitionable {
     var _transitionableView: UIView { get }
     

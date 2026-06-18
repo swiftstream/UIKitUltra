@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 private var _picker: ImagePicker?
 
 @available(*, deprecated, renamed: "MediaPicker")
@@ -16,6 +17,7 @@ public typealias VideoPicker = MediaPicker
 @available(*, deprecated, renamed: "MediaPicker")
 public typealias ImagePicker = MediaPicker
 
+@MainActor
 open class MediaPicker: NSObject {
     private lazy var picker = UIImagePickerController()
     

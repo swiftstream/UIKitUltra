@@ -5,11 +5,9 @@ import UIKitPlus
 final class MainViewController: ViewController {
     override func buildUI() {
         super.buildUI()
-        view.backgroundColor = .white
 
         body {
-            UText("UIKitPlus")
-                .color(.black)
+            UText("UIKitPlus for macOS")
                 .centerInSuperview()
         }
     }

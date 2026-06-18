@@ -74,6 +74,7 @@ extension UIAlertAction: _Enableable {
     }
 }
 
+@MainActor
 public protocol UIAlertViewControllerable {
     var controller: UIAlertController { get }
     
@@ -140,6 +141,7 @@ public protocol UIAlertViewControllerable {
     func textField(configurationHandler: @escaping ((UITextField) -> Void)) -> Self
 }
 
+@MainActor
 protocol _UIAlertViewControllerable: UIAlertViewControllerable {
     func _present(in vc: UIViewController, animated: Bool, completion: (() -> Void)?) -> Self
 }

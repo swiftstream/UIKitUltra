@@ -8,7 +8,6 @@
 #if !os(macOS)
 import UIKit
 
-@UIApplicationMain
 open class BaseApp: UIApplication, UIApplicationDelegate {
     public static override var shared: BaseApp { super.shared as! BaseApp }
     public static var mainScene: MainScene { shared.mainScene }
@@ -299,8 +298,9 @@ open class BaseApp: UIApplication, UIApplicationDelegate {
     private func refreshPushStates() {
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().getNotificationSettings { settings in
+                let status = settings.authorizationStatus.status
                 DispatchQueue.main.async {
-                    self.pushAuthorizationStatus = settings.authorizationStatus.status
+                    self.pushAuthorizationStatus = status
                 }
             }
         } else {

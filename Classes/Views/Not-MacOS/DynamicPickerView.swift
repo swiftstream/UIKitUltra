@@ -2,6 +2,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 public protocol UDynamicPickerableView {
     associatedtype ValueType: Codable
     var value: ValueType { get }

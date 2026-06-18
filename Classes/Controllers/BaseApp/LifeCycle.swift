@@ -8,8 +8,10 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public var Lifecycle: LifecycleBuilderProtocol { LifecycleBuilder() }
 
+@MainActor
 public protocol LifecycleBuilderProtocol: AnyObject, AppBuilderContent {
     func didFinishLaunching(_ handler: @escaping () -> Void) -> Self
     func willFinishLaunching(_ handler: @escaping (_ launchOptions: [UIApplication.LaunchOptionsKey: Any]) -> Bool) -> Self

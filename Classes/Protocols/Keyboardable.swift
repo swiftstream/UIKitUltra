@@ -1,6 +1,7 @@
 #if !os(macOS)
 import UIKit
 
+@MainActor
 public protocol Keyboardable {
     @discardableResult
     func keyboard(_ keyboard: UIKeyboardType) -> Self
@@ -18,6 +19,7 @@ public protocol Keyboardable {
     func inputAccessoryView(_ view: UIView) -> Self
 }
 
+@MainActor
 protocol _Keyboardable: Keyboardable {
     func _setKeyboardType(_ v: UIKeyboardType)
     func _setReturnKeyType(_ v: UIReturnKeyType)

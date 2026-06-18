@@ -37,6 +37,7 @@ private func objectIdentifier(
     return ObjectIdentifier(image)
 }
 
+/// Test-only counter whose mutable state is fully serialized by `lock`.
 private final class CancellationRecorder: @unchecked Sendable {
     private let lock = NSLock()
     private var storedCount = 0
@@ -66,6 +67,7 @@ private final class RecordingImageLoader: ImageLoader {
     }
 
     private(set) var records: [Record] = []
+    /// Mirrors `ImageLoader` cancellation from a nonisolated deinitializer.
     private nonisolated let cancellationRecorder = CancellationRecorder()
     var cancelCallCount: Int {
         cancellationRecorder.count

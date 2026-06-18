@@ -5,7 +5,7 @@
 //  Created by Mihael Isaev on 10.09.2020.
 //
 
-public enum PushNotificationsAuthorizationStatus {
+public enum PushNotificationsAuthorizationStatus: Sendable {
     // The user has not yet made a choice regarding whether the application may post user notifications.
     case notDetermined
 
