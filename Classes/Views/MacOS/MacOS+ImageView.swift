@@ -138,7 +138,7 @@ open class UImage: NSImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         buildView()
     }
     
-    deinit {
+    @MainActor deinit {
         _imageLoader.cancel()
     }
     

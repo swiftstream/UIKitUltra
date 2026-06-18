@@ -128,7 +128,7 @@ class PreConstraint: Equatable {
         }
     }
     
-    deinit {
+    @MainActor deinit {
         valueListener?.cancel()
     }
 
