@@ -78,7 +78,7 @@ extension WeakBaseView: PreConstraintViewable {
 
 @MainActor
 class PreConstraint: Equatable {
-    static func == (lhs: PreConstraint, rhs: PreConstraint) -> Bool {
+    nonisolated static func == (lhs: PreConstraint, rhs: PreConstraint) -> Bool {
         lhs.id == rhs.id
     }
     
