@@ -58,6 +58,7 @@ extension String: AnyString, BodyBuilderItemable {
     }
 }
 
+@MainActor
 open class AttributedString: AnyString, BodyBuilderItemable {
     private let _stateBindingHolder = TempStatesHolder()
 
