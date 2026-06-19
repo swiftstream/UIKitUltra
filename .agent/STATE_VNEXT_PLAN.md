@@ -1,6 +1,6 @@
 # UIKitPlus State vNext Plan
 
-Status: `PLANNED / DEFERRED`
+Status: `IN PROGRESS — S1-S4 accepted`
 
 Owner scope: `GLOBAL STATE ARCHITECTURE DEBT`
 
@@ -112,36 +112,11 @@ listener.holdIfOwned(by: self)
 
 The long-term goal is to remove the need for `holdIfOwned(by:)` in production code or hide it behind clearer internal helpers that do not affect public documentation.
 
-### 2.4 `removeListeners()` is the preferred external name
+### 2.4 `removeListeners()` is the canonical API
 
-The user-facing cleanup API should be:
-
-```swift
-state.removeListeners()
-```
-
-`removeAllListeners()` is unnecessarily verbose for public documentation and should not be the primary API name.
-
-If `removeAllListeners()` remains for compatibility, it should be a secondary alias.
-
-Preferred final shape:
-
-```swift
-public func removeListeners()
-
-@available(*, deprecated, message: "Use removeListeners() instead.")
-public func removeAllListeners()
-```
-
-or, if deprecation is too disruptive initially:
-
-```swift
-public func removeListeners() {
-    removeAllListeners()
-}
-```
-
-with documentation using only `removeListeners()`.
+**Implemented (S1).** `removeListeners()` is now the sole bulk listener cleanup API.
+`removeAllListeners()` was removed from UIKitPlus source and tests.
+Accepted by commit `586fde8`.
 
 ### 2.5 `@State` must become Swift 6 strict-concurrency compatible
 
@@ -166,9 +141,13 @@ The exact final declaration may differ after ADR review, but the direction is ma
 
 ## 3. Current Known UIKitPlus Deviations from Desired DX
 
-This section records known differences between current UIKitPlus and the SwifDroid `docs/state.md` developer experience.
+This section records differences between current UIKitPlus and the SwifDroid `docs/state.md` developer experience.
 
-### 3.1 `listenDistinct` is missing
+**S1-S4 are now resolved.** Items 3.1–3.4 are implemented/accepted. Item 3.5 (`holdIfOwned`) remains pending.
+
+### 3.1 `listenDistinct` — IMPLEMENTED (S2)
+
+**Status**: Implemented and accepted by commit `d2ce34c`.
 
 Desired DX:
 
@@ -185,13 +164,17 @@ $selectedCountry.listenDistinct { oldValue, newValue in
 Current UIKitPlus status:
 
 ```text
-No `listenDistinct` implementation found in current UIKitPlus source.
+Implemented:
+- `Stateable where Value: Equatable` now has `listenDistinct` overloads.
+- `InnerState where InnerValue: Equatable` delegates `listenDistinct` to projected state.
+- `CodableState` receives `listenDistinct` through `Stateable`.
+- Accepted by commit `d2ce34c`.
 ```
 
-Required future API:
+API surface:
 
 ```swift
-public extension State where Value: Equatable {
+public extension Stateable where Value: Equatable {
     @discardableResult
     func listenDistinct(_ listener: @escaping (_ value: Value) -> Void) -> StateListener
 
@@ -200,22 +183,27 @@ public extension State where Value: Equatable {
 }
 ```
 
-Expected semantics:
+Semantics:
 
 ```text
 If old == new, listener is not called.
 If old != new, listener is called exactly once in normal listener order.
 ```
 
-Acceptance tests:
+Acceptance tests: ✅
 
 - setting same value does not call `listenDistinct`;
 - setting different value calls once;
 - old/new overload receives correct values;
 - returned token supports `.hold(in:)` and `.cancel()`;
-- `listenDistinct` works with `StatesHolder` cleanup.
+- `listenDistinct` works with `StatesHolder` cleanup;
+- `InnerState.listenDistinct` delegates correctly;
+- `CodableState.listenDistinct` delegates correctly.
 
-### 3.2 `StateValuable` is missing
+### 3.2 `StateValuable` — IMPLEMENTED, core API migration DEFERRED (S3)
+
+**Status**: Minimal API implemented and accepted by commit `2650186`.
+UIKitPlus core API migration deferred per Strategy D.
 
 Desired DX from `state.md`:
 
@@ -233,10 +221,30 @@ TitleView().text($titleText)
 Current UIKitPlus status:
 
 ```text
-No `StateValuable`, `simpleValue`, or `stateValue` surface found in current UIKitPlus source.
+Implemented:
+- `StateValuable` protocol exists.
+- `State`, `CodableState`, `InnerState`, `String`, `Bool`, `Int`, and `Double` conform.
+- Accepted by commit `2650186`.
+
+StateValuable is currently intended for custom user components and examples.
+UIKitPlus core API migration is deferred.
 ```
 
-Required future API:
+Reference:
+
+```text
+.artifacts/planning/statevaluable-overload-ambiguity-audit.md
+Strategy D — Do not migrate UIKitPlus core APIs yet.
+```
+
+Why deferred:
+
+- Bool APIs risk overload ambiguity (15+ protocol families accept Bool);
+- text APIs are blocked by AnyString/LocalizedString complexity;
+- color/font APIs should wait for concurrency ADR;
+- existing tests rely on current overloads.
+
+Required API:
 
 ```swift
 public protocol StateValuable {
@@ -252,23 +260,7 @@ extension State: StateValuable {
 }
 ```
 
-Base value conformances must be evaluated carefully. Common candidates:
-
-```text
-String
-Bool
-Int
-Double
-Float
-CGFloat
-URL
-Data
-Array where Element: Sendable
-Dictionary where Key: Sendable, Value: Sendable
-Optional where Wrapped: Sendable
-```
-
-However, broad conformances can create API ambiguity. This requires a focused overload-collision audit before implementation.
+Base value conformances: `String`, `Bool`, `Int`, `Double` (not Float, CGFloat, URL, Data, etc.).
 
 Preferred custom view pattern:
 
@@ -288,7 +280,7 @@ class TitleView: UView {
 }
 ```
 
-Acceptance tests:
+Acceptance tests: ✅
 
 - static value path applies immediately and creates no listener;
 - state value path applies immediately and updates later;
@@ -296,7 +288,10 @@ Acceptance tests:
 - no overload ambiguity with existing framework APIs;
 - examples from `state.md` compile with UIKitPlus naming.
 
-### 3.3 `removeListeners()` naming mismatch
+### 3.3 `removeListeners()` — IMPLEMENTED, CANONICAL (S1)
+
+**Status**: Implemented and accepted by commit `586fde8`.
+`removeAllListeners()` was removed; `removeListeners()` is now the sole canonical API.
 
 Desired DX:
 
@@ -308,42 +303,30 @@ value.removeListeners()
 Current UIKitPlus status:
 
 ```text
-State exposes `removeAllListeners()`.
+Implemented:
+- `removeListeners()` is now the canonical bulk listener cleanup API.
+- `removeAllListeners()` was removed from UIKitPlus source/tests.
+- Accepted by commit `586fde8`.
+
+Do not reintroduce `removeAllListeners()`.
+Docs and user examples should use only `removeListeners()`.
 ```
 
-Required future API:
+API surface:
 
 ```swift
 public func removeListeners()
 ```
 
-Compatibility strategy:
-
-```swift
-public func removeListeners() {
-    removeAllListeners()
-}
-```
-
-Future optional deprecation:
-
-```swift
-@available(*, deprecated, message: "Use removeListeners() instead.")
-public func removeAllListeners() {
-    removeListeners()
-}
-```
-
-Do not deprecate until all internal call sites are migrated and cross-framework docs are updated.
-
-Acceptance tests:
+Acceptance tests: ✅
 
 - `removeListeners()` removes begin triggers, listeners, and end triggers;
 - held listener tokens are invalidated;
-- manual `cancel()` after `removeListeners()` is safe/no-op;
-- `removeAllListeners()` remains compatible during migration window.
+- manual `cancel()` after `removeListeners()` is safe/no-op.
 
-### 3.4 Multi-state `.and(...)` chain is incomplete or unverified
+### 3.4 Multi-state `.and(...)` chain — IMPLEMENTED (S4)
+
+**Status**: Implemented and accepted by commits `10583f7` + `d6be11c`.
 
 Desired DX:
 
@@ -358,36 +341,30 @@ TextView("Hey")
     })
 ```
 
-Current UIKitPlus source surface confirmed:
+Current UIKitPlus status:
 
 ```text
-State.and(_:) -> CombinedState<A, B>
-CombinedState<A, B>.map(...)
+Implemented:
+- `CombinedState3`
+- `CombinedState4`
+- `CombinedState5`
+- `CombinedState6`
+- `CombinedState7`
+- chained `.and(...)` works up to 7 states;
+- `map` closures support 3...7 positional values.
+
+Accepted by:
+- 10583f7 🛠 Add multi-state State mapping
+- d6be11c 🧪 Strengthen State combined lifecycle tests
 ```
 
-Not confirmed in current UIKitPlus source:
+Lifecycle evidence:
 
-```text
-CombinedState3
-CombinedState4
-CombinedState5
-CombinedState6
-CombinedState7
-```
+- mapped State owns upstream listener tokens;
+- source subscriptions are released through existing `StatesHolder` lifecycle;
+- stronger tests cover token counts, expression stop after deinit, `releaseStates`, non-retention, and token deallocation for representative arities 3 and 7.
 
-Required future behavior:
-
-- support `and` chaining up to 7 states, matching SwifDroid docs;
-- or explicitly replace the docs with a better supported model;
-- nested maps must remain available for unlimited composition.
-
-Potential implementation options:
-
-1. Restore/implement `CombinedState3...CombinedState7` classes.
-2. Implement variadic-like nested generic composition using existing Swift capabilities.
-3. Keep only two-state `and`, but update docs. This is not preferred because it worsens DX.
-
-Acceptance tests:
+Acceptance tests: ✅
 
 - `$a.and($b).map { a, b in ... }` compiles and updates;
 - `$a.and($b).and($c).map { a, b, c in ... }` compiles and updates;
@@ -910,16 +887,15 @@ Recommended order:
 
 ### Track 1 — State API parity with `state.md`
 
-Add/restore:
+**S1-S4 completed.** Remaining:
 
 ```text
-listenDistinct
-StateValuable
-removeListeners()
-CombinedState3...7 or equivalent and-chain support
+✅ removeListeners() — canonical API (S1, 586fde8)
+✅ listenDistinct — additive Equatable listener API (S2, d2ce34c)
+✅ StateValuable minimal API — custom components only (S3, 2650186)
+✅ CombinedState3...7 — additive multi-state mapping (S4, 10583f7 + d6be11c)
+❌ StateValuable UIKitPlus core API migration — deferred (Strategy D)
 ```
-
-Do not change built-in view DX.
 
 ### Track 2 — Listener lifecycle simplification
 
@@ -966,16 +942,11 @@ state.listenDistinct { [weak self] newValue in
 
 ### Track 5 — API naming cleanup
 
-Preferred public naming:
+**Completed (S1).**
 
 ```text
-removeListeners()
-```
-
-Compatibility:
-
-```text
-removeAllListeners() remains temporarily as alias.
+✅ removeListeners() is now canonical.
+✅ removeAllListeners() has been removed.
 ```
 
 ### Track 6 — Cross-framework docs sync
@@ -1121,19 +1092,33 @@ State vNext is not complete until:
 
 ---
 
-## 11. Deferred Status
+## 11. State vNext Slice Status
 
-This plan is intentionally deferred.
+| Slice | Status | Commit / Artifact | Notes |
+|---|---|---|---|
+| S0 Readiness Audit | Accepted | state-vnext-readiness-audit.md | initial audit |
+| S1 removeListeners canonical | Accepted | 586fde8 | canonical API; removeAllListeners removed |
+| S2 listenDistinct | Accepted | d2ce34c | additive Equatable listener API |
+| S3 StateValuable minimal API | Accepted | 2650186 | custom components only for now |
+| S3B StateValuable UIKitPlus API migration audit | Accepted / deferred | statevaluable-overload-ambiguity-audit.md | Strategy D — do not migrate core APIs yet |
+| S4 CombinedState3...7 | Accepted | 10583f7 + d6be11c | additive multi-state mapping + lifecycle tests |
+| S5 holdIfOwned cleanup | **Pending** | — | next major State task |
+| S6 State concurrency envelope ADR | **Pending** | — | after holdIfOwned audit or before implementation if needed |
+| S7 shared State package ADR | **Pending** | — | later |
 
-Current priority order:
+---
 
-```text
-1. UIKitPlus governance docs commit.
-2. Independent 52-commit audit.
-3. UIKitPlus Swift 6 strict concurrency migration.
-4. State ADR.
-5. State vNext implementation.
-6. Shared State package extraction/migration.
-```
+## 12. Next Recommended Task
 
-Do not start State vNext implementation before steps 1-3 are complete and accepted.
+**S5A — `holdIfOwned(by:)` audit and refactor plan**
+
+This is the next major State task. There are 112 call sites and this can easily cause listener lifecycle regressions if done incorrectly. The task should be an audit first, followed by a scoped refactor plan.
+
+Key facts:
+
+- 112 total `.holdIfOwned(by:)` call sites across the codebase.
+- Existing `_StateBindingOwner` protocol with `stateBindingHolder` is the correct internal bridge.
+- Strategy: Replace all `holdIfOwned(by: self)` calls with explicit `_StateBindingOwner` check pattern.
+- Risk: listener leaks for types that don't conform to `_StateBindingOwner`.
+
+Do not start implementation before audit is complete and accepted.
