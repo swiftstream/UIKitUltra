@@ -166,6 +166,151 @@ open class State<Value>: Stateable, StatesHolder {
         stateB.listen(listener).hold(in: self)
     }
 
+    init <A, B, C>(
+        _ stateA: State<A>,
+        _ stateB: State<B>,
+        _ stateC: State<C>,
+        _ expression: @escaping (A, B, C) -> Value
+    ) {
+        let valueExpression: () -> Value? = { [weak stateA, weak stateB, weak stateC] in
+            guard let stateA = stateA, let stateB = stateB, let stateC = stateC else { return nil }
+            return expression(stateA.wrappedValue, stateB.wrappedValue, stateC.wrappedValue)
+        }
+
+        let value = valueExpression()!
+        _originalValue = value
+        _wrappedValue = value
+
+        let listener: () -> Void = { [weak self] in
+            guard let value = valueExpression() else { return }
+            self?.wrappedValue = value
+        }
+
+        stateA.listen(listener).hold(in: self)
+        stateB.listen(listener).hold(in: self)
+        stateC.listen(listener).hold(in: self)
+    }
+
+    init <A, B, C, D>(
+        _ stateA: State<A>,
+        _ stateB: State<B>,
+        _ stateC: State<C>,
+        _ stateD: State<D>,
+        _ expression: @escaping (A, B, C, D) -> Value
+    ) {
+        let valueExpression: () -> Value? = { [weak stateA, weak stateB, weak stateC, weak stateD] in
+            guard let stateA = stateA, let stateB = stateB, let stateC = stateC, let stateD = stateD else { return nil }
+            return expression(stateA.wrappedValue, stateB.wrappedValue, stateC.wrappedValue, stateD.wrappedValue)
+        }
+
+        let value = valueExpression()!
+        _originalValue = value
+        _wrappedValue = value
+
+        let listener: () -> Void = { [weak self] in
+            guard let value = valueExpression() else { return }
+            self?.wrappedValue = value
+        }
+
+        stateA.listen(listener).hold(in: self)
+        stateB.listen(listener).hold(in: self)
+        stateC.listen(listener).hold(in: self)
+        stateD.listen(listener).hold(in: self)
+    }
+
+    init <A, B, C, D, E>(
+        _ stateA: State<A>,
+        _ stateB: State<B>,
+        _ stateC: State<C>,
+        _ stateD: State<D>,
+        _ stateE: State<E>,
+        _ expression: @escaping (A, B, C, D, E) -> Value
+    ) {
+        let valueExpression: () -> Value? = { [weak stateA, weak stateB, weak stateC, weak stateD, weak stateE] in
+            guard let stateA = stateA, let stateB = stateB, let stateC = stateC, let stateD = stateD, let stateE = stateE else { return nil }
+            return expression(stateA.wrappedValue, stateB.wrappedValue, stateC.wrappedValue, stateD.wrappedValue, stateE.wrappedValue)
+        }
+
+        let value = valueExpression()!
+        _originalValue = value
+        _wrappedValue = value
+
+        let listener: () -> Void = { [weak self] in
+            guard let value = valueExpression() else { return }
+            self?.wrappedValue = value
+        }
+
+        stateA.listen(listener).hold(in: self)
+        stateB.listen(listener).hold(in: self)
+        stateC.listen(listener).hold(in: self)
+        stateD.listen(listener).hold(in: self)
+        stateE.listen(listener).hold(in: self)
+    }
+
+    init <A, B, C, D, E, F>(
+        _ stateA: State<A>,
+        _ stateB: State<B>,
+        _ stateC: State<C>,
+        _ stateD: State<D>,
+        _ stateE: State<E>,
+        _ stateF: State<F>,
+        _ expression: @escaping (A, B, C, D, E, F) -> Value
+    ) {
+        let valueExpression: () -> Value? = { [weak stateA, weak stateB, weak stateC, weak stateD, weak stateE, weak stateF] in
+            guard let stateA = stateA, let stateB = stateB, let stateC = stateC, let stateD = stateD, let stateE = stateE, let stateF = stateF else { return nil }
+            return expression(stateA.wrappedValue, stateB.wrappedValue, stateC.wrappedValue, stateD.wrappedValue, stateE.wrappedValue, stateF.wrappedValue)
+        }
+
+        let value = valueExpression()!
+        _originalValue = value
+        _wrappedValue = value
+
+        let listener: () -> Void = { [weak self] in
+            guard let value = valueExpression() else { return }
+            self?.wrappedValue = value
+        }
+
+        stateA.listen(listener).hold(in: self)
+        stateB.listen(listener).hold(in: self)
+        stateC.listen(listener).hold(in: self)
+        stateD.listen(listener).hold(in: self)
+        stateE.listen(listener).hold(in: self)
+        stateF.listen(listener).hold(in: self)
+    }
+
+    init <A, B, C, D, E, F, G>(
+        _ stateA: State<A>,
+        _ stateB: State<B>,
+        _ stateC: State<C>,
+        _ stateD: State<D>,
+        _ stateE: State<E>,
+        _ stateF: State<F>,
+        _ stateG: State<G>,
+        _ expression: @escaping (A, B, C, D, E, F, G) -> Value
+    ) {
+        let valueExpression: () -> Value? = { [weak stateA, weak stateB, weak stateC, weak stateD, weak stateE, weak stateF, weak stateG] in
+            guard let stateA = stateA, let stateB = stateB, let stateC = stateC, let stateD = stateD, let stateE = stateE, let stateF = stateF, let stateG = stateG else { return nil }
+            return expression(stateA.wrappedValue, stateB.wrappedValue, stateC.wrappedValue, stateD.wrappedValue, stateE.wrappedValue, stateF.wrappedValue, stateG.wrappedValue)
+        }
+
+        let value = valueExpression()!
+        _originalValue = value
+        _wrappedValue = value
+
+        let listener: () -> Void = { [weak self] in
+            guard let value = valueExpression() else { return }
+            self?.wrappedValue = value
+        }
+
+        stateA.listen(listener).hold(in: self)
+        stateB.listen(listener).hold(in: self)
+        stateC.listen(listener).hold(in: self)
+        stateD.listen(listener).hold(in: self)
+        stateE.listen(listener).hold(in: self)
+        stateF.listen(listener).hold(in: self)
+        stateG.listen(listener).hold(in: self)
+    }
+
     public init(wrappedValue value: Value) {
         _originalValue = value
         _wrappedValue = value
@@ -385,4 +530,96 @@ public class CombinedState<A, B> {
 public struct CombinedDeprecatedResult<A, B> {
     public let left: A
     public let right: B
+}
+
+extension CombinedState {
+    public func and<C>(_ state: State<C>) -> CombinedState3<A, B, C> {
+        CombinedState3(self, state)
+    }
+}
+
+public class CombinedState3<A, B, C> {
+    let _box: CombinedState<A, B>
+    let _c: State<C>
+
+    init(_ box: CombinedState<A, B>, _ c: State<C>) {
+        self._box = box
+        self._c = c
+    }
+
+    public func map<Result>(_ expression: @escaping (A, B, C) -> Result) -> State<Result> {
+        .init(_box._left, _box._right, _c, expression)
+    }
+
+    public func and<D>(_ state: State<D>) -> CombinedState4<A, B, C, D> {
+        CombinedState4(self, state)
+    }
+}
+
+public class CombinedState4<A, B, C, D> {
+    let _box: CombinedState3<A, B, C>
+    let _d: State<D>
+
+    init(_ box: CombinedState3<A, B, C>, _ d: State<D>) {
+        self._box = box
+        self._d = d
+    }
+
+    public func map<Result>(_ expression: @escaping (A, B, C, D) -> Result) -> State<Result> {
+        .init(_box._box._left, _box._box._right, _box._c, _d, expression)
+    }
+
+    public func and<E>(_ state: State<E>) -> CombinedState5<A, B, C, D, E> {
+        CombinedState5(self, state)
+    }
+}
+
+public class CombinedState5<A, B, C, D, E> {
+    let _box: CombinedState4<A, B, C, D>
+    let _e: State<E>
+
+    init(_ box: CombinedState4<A, B, C, D>, _ e: State<E>) {
+        self._box = box
+        self._e = e
+    }
+
+    public func map<Result>(_ expression: @escaping (A, B, C, D, E) -> Result) -> State<Result> {
+        .init(_box._box._box._left, _box._box._box._right, _box._box._c, _box._d, _e, expression)
+    }
+
+    public func and<F>(_ state: State<F>) -> CombinedState6<A, B, C, D, E, F> {
+        CombinedState6(self, state)
+    }
+}
+
+public class CombinedState6<A, B, C, D, E, F> {
+    let _box: CombinedState5<A, B, C, D, E>
+    let _f: State<F>
+
+    init(_ box: CombinedState5<A, B, C, D, E>, _ f: State<F>) {
+        self._box = box
+        self._f = f
+    }
+
+    public func map<Result>(_ expression: @escaping (A, B, C, D, E, F) -> Result) -> State<Result> {
+        .init(_box._box._box._box._left, _box._box._box._box._right, _box._box._box._c, _box._box._d, _box._e, _f, expression)
+    }
+
+    public func and<G>(_ state: State<G>) -> CombinedState7<A, B, C, D, E, F, G> {
+        CombinedState7(self, state)
+    }
+}
+
+public class CombinedState7<A, B, C, D, E, F, G> {
+    let _box: CombinedState6<A, B, C, D, E, F>
+    let _g: State<G>
+
+    init(_ box: CombinedState6<A, B, C, D, E, F>, _ g: State<G>) {
+        self._box = box
+        self._g = g
+    }
+
+    public func map<Result>(_ expression: @escaping (A, B, C, D, E, F, G) -> Result) -> State<Result> {
+        .init(_box._box._box._box._box._left, _box._box._box._box._box._right, _box._box._box._box._c, _box._box._box._d, _box._box._e, _box._f, _g, expression)
+    }
 }
