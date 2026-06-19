@@ -1,5 +1,7 @@
 //___FILEHEADER___
 
+#if os(macOS)
+
 import UIKitPlus
 
 @main
@@ -17,3 +19,5 @@ final class App: UIKitPlus.App {
             .makeKeyAndOrderFront()
     }
 }
+
+#endif

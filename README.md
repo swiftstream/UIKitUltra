@@ -67,7 +67,7 @@ The repository includes three Xcode project templates:
 
 - `UIKitPlus App`: iOS/iPadOS application, iOS 12+
 - `UIKitPlus macOS App`: macOS application, macOS 10.15+
-- `UIKitPlus Multiplatform App`: separate iOS and macOS targets with shared UI code
+- `UIKitPlus Multiplatform App`: one iOS/iPadOS/macOS target with platform-specific entry points and shared UI code
 
 Install them from a repository checkout:
 
@@ -76,7 +76,14 @@ mkdir -p ~/Library/Developer/Xcode/Templates
 cp -R "Templates/Project Templates" ~/Library/Developer/Xcode/Templates/
 ```
 
-Restart Xcode, choose `File -> New -> Project`, and select the required UIKitPlus template. Add UIKitPlus to the generated target or targets with Swift Package Manager or CocoaPods.
+Restart Xcode, choose `File -> New -> Project`, and select the required UIKitPlus template. Add UIKitPlus to the generated target with Swift Package Manager or CocoaPods.
+
+The templates do not embed a package reference because Xcode project-template metadata cannot reliably declare an external local or remote Swift package dependency. To add UIKitPlus with Swift Package Manager:
+
+1. Select `File -> Add Package Dependencies`.
+2. For a published dependency, enter `https://github.com/MihaelIsaev/UIKitPlus.git`.
+3. For framework development, choose `Add Local...` and select the UIKitPlus repository checkout.
+4. Add the `UIKitPlus` library product to the generated app target. The multiplatform template has one target, so link the product once.
 
 ## Features
 

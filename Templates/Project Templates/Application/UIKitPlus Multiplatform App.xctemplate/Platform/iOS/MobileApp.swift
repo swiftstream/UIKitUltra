@@ -1,5 +1,7 @@
 //___FILEHEADER___
 
+#if !os(macOS)
+
 import UIKitPlus
 
 @main
@@ -10,3 +12,5 @@ final class App: BaseApp {
         }
     }
 }
+
+#endif
