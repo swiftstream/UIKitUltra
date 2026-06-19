@@ -73,19 +73,13 @@
 				<key>COMBINE_HIDPI_IMAGES</key>
 				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
-				<string>1</string>
+				<string>1.0.0</string>
 				<key>ENABLE_APP_SANDBOX</key>
 				<string>YES</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
-				<key>GENERATE_INFOPLIST_FILE</key>
-				<string>YES</string>
-				<key>INFOPLIST_KEY_UIApplicationSceneManifest_Generation</key>
-				<string>YES</string>
-				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad</key>
-				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
-				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone</key>
-				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
+				<key>INFOPLIST_FILE</key>
+				<string>___PACKAGENAME___/Info.plist</string>
 				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
 				<string>12.0</string>
 				<key>LD_RUNPATH_SEARCH_PATHS</key>
@@ -116,6 +110,19 @@
 				<string>6.0</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
+			</dict>
+			<key>Configurations</key>
+			<dict>
+				<key>Debug</key>
+				<dict>
+					<key>SWIFT_OPTIMIZATION_LEVEL</key>
+					<string>-Onone</string>
+				</dict>
+				<key>Release</key>
+				<dict>
+					<key>SWIFT_COMPILATION_MODE</key>
+					<string>wholemodule</string>
+				</dict>
 			</dict>
 		</dict>
 	</array>
@@ -164,6 +171,7 @@
 	<array>
 		<string>Platform/iOS/MobileApp.swift</string>
 		<string>Platform/macOS/MacApp.swift</string>
+		<string>Info.plist</string>
 		<string>Shared/MainViewController.swift</string>
 		<string>Assets.xcassets</string>
 	</array>
@@ -188,6 +196,15 @@
 				<string>Platform</string>
 				<string>macOS</string>
 			</array>
+		</dict>
+		<key>Info.plist</key>
+		<dict>
+			<key>Path</key>
+			<string>Info.plist</string>
+			<key>SortOrder</key>
+			<integer>2</integer>
+			<key>TargetIndices</key>
+			<array/>
 		</dict>
 		<key>Shared/MainViewController.swift</key>
 		<dict>

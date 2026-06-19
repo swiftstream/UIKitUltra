@@ -73,17 +73,9 @@
 				<key>CLANG_ENABLE_MODULES</key>
 				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
-				<string>1</string>
-				<key>GENERATE_INFOPLIST_FILE</key>
-				<string>YES</string>
-				<key>INFOPLIST_KEY_UILaunchStoryboardName</key>
-				<string>LaunchScreen</string>
-				<key>INFOPLIST_KEY_UIApplicationSceneManifest_Generation</key>
-				<string>YES</string>
-				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad</key>
-				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
-				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone</key>
-				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
+				<string>1.0.0</string>
+				<key>INFOPLIST_FILE</key>
+				<string>___PACKAGENAME___/Info.plist</string>
 				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
 				<string>12.0</string>
 				<key>LD_RUNPATH_SEARCH_PATHS</key>
@@ -106,6 +98,19 @@
 				<string>6.0</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
+			</dict>
+			<key>Configurations</key>
+			<dict>
+				<key>Debug</key>
+				<dict>
+					<key>SWIFT_OPTIMIZATION_LEVEL</key>
+					<string>-Onone</string>
+				</dict>
+				<key>Release</key>
+				<dict>
+					<key>SWIFT_COMPILATION_MODE</key>
+					<string>wholemodule</string>
+				</dict>
 			</dict>
 		</dict>
 	</array>
@@ -153,6 +158,7 @@
 	<key>Nodes</key>
 	<array>
 		<string>App.swift</string>
+		<string>Info.plist</string>
 		<string>ViewControllers/MainViewController.swift</string>
 		<string>Assets.xcassets</string>
 		<string>Base.lproj/LaunchScreen.storyboard</string>
@@ -166,6 +172,15 @@
 			<key>SortOrder</key>
 			<integer>1</integer>
 		</dict>
+		<key>Info.plist</key>
+		<dict>
+			<key>Path</key>
+			<string>Info.plist</string>
+			<key>SortOrder</key>
+			<integer>2</integer>
+			<key>TargetIndices</key>
+			<array/>
+		</dict>
 		<key>ViewControllers/MainViewController.swift</key>
 		<dict>
 			<key>Path</key>
@@ -175,7 +190,7 @@
 				<string>ViewControllers</string>
 			</array>
 			<key>SortOrder</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<key>Assets.xcassets</key>
 		<dict>

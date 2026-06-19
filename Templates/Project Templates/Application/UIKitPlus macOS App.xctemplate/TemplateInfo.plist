@@ -75,9 +75,9 @@
 				<key>COMBINE_HIDPI_IMAGES</key>
 				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
-				<string>1</string>
-				<key>GENERATE_INFOPLIST_FILE</key>
-				<string>YES</string>
+				<string>1.0.0</string>
+				<key>INFOPLIST_FILE</key>
+				<string>___PACKAGENAME___/Info.plist</string>
 				<key>LD_RUNPATH_SEARCH_PATHS</key>
 				<string>$(inherited) @executable_path/../Frameworks</string>
 				<key>MACOSX_DEPLOYMENT_TARGET</key>
@@ -98,6 +98,19 @@
 				<string>complete</string>
 				<key>SWIFT_VERSION</key>
 				<string>6.0</string>
+			</dict>
+			<key>Configurations</key>
+			<dict>
+				<key>Debug</key>
+				<dict>
+					<key>SWIFT_OPTIMIZATION_LEVEL</key>
+					<string>-Onone</string>
+				</dict>
+				<key>Release</key>
+				<dict>
+					<key>SWIFT_COMPILATION_MODE</key>
+					<string>wholemodule</string>
+				</dict>
 			</dict>
 		</dict>
 	</array>
@@ -145,6 +158,7 @@
 	<key>Nodes</key>
 	<array>
 		<string>MacApp.swift</string>
+		<string>Info.plist</string>
 		<string>ViewControllers/MainViewController.swift</string>
 		<string>Assets.xcassets</string>
 	</array>
@@ -157,6 +171,15 @@
 			<key>SortOrder</key>
 			<integer>1</integer>
 		</dict>
+		<key>Info.plist</key>
+		<dict>
+			<key>Path</key>
+			<string>Info.plist</string>
+			<key>SortOrder</key>
+			<integer>2</integer>
+			<key>TargetIndices</key>
+			<array/>
+		</dict>
 		<key>ViewControllers/MainViewController.swift</key>
 		<dict>
 			<key>Path</key>
@@ -166,7 +189,7 @@
 				<string>ViewControllers</string>
 			</array>
 			<key>SortOrder</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<key>Assets.xcassets</key>
 		<dict>
