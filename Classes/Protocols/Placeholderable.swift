@@ -83,7 +83,7 @@ extension Placeholderable {
         state.listen { [weak self] in
             self?.placeholder($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return self
     }
 }

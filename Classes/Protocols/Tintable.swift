@@ -39,7 +39,7 @@ extension Tintable {
         state.listen { [weak self] in
             self?.tint($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return tint(state.wrappedValue)
     }
 }

@@ -91,7 +91,7 @@ extension Textable {
 
             self.text(newValue)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         (self as? TextBindable)?.bind(state)
         return self
     }

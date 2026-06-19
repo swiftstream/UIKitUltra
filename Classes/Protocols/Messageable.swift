@@ -81,7 +81,7 @@ extension Messageable {
         state.listen { [weak self] in
             self?.message($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return self
     }
 }

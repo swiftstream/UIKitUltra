@@ -38,7 +38,7 @@ extension BackgroundColorable {
         state.listen { [weak self] in
             self?.background($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return background(state.wrappedValue)
     }
 }
