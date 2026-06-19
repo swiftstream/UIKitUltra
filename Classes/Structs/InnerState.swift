@@ -74,3 +74,19 @@ public class InnerState<Value, InnerValue>: AnyState, StatesHolder {
         projectedValue.removeListeners()
     }
 }
+
+public extension InnerState where InnerValue: Equatable {
+    @discardableResult
+    func listenDistinct(
+        _ listener: @escaping (_ old: InnerValue, _ new: InnerValue) -> Void
+    ) -> StateListener {
+        projectedValue.listenDistinct(listener)
+    }
+
+    @discardableResult
+    func listenDistinct(
+        _ listener: @escaping (_ value: InnerValue) -> Void
+    ) -> StateListener {
+        projectedValue.listenDistinct(listener)
+    }
+}

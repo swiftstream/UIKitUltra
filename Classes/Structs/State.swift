@@ -23,6 +23,28 @@ public protocol Stateable: AnyState {
 
 public typealias UState = State
 
+public extension Stateable where Value: Equatable {
+    @discardableResult
+    func listenDistinct(
+        _ listener: @escaping (_ old: Value, _ new: Value) -> Void
+    ) -> StateListener {
+        listen { oldValue, newValue in
+            guard oldValue != newValue else { return }
+
+            listener(oldValue, newValue)
+        }
+    }
+
+    @discardableResult
+    func listenDistinct(
+        _ listener: @escaping (_ value: Value) -> Void
+    ) -> StateListener {
+        listenDistinct { _, newValue in
+            listener(newValue)
+        }
+    }
+}
+
 @propertyWrapper
 open class State<Value>: Stateable, StatesHolder {
     public let id = UUID()
