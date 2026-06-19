@@ -34,7 +34,7 @@ extension Continuousable {
         binding.listen { [weak self] in
             self?.continuous($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return continuous(binding.wrappedValue)
     }
 }

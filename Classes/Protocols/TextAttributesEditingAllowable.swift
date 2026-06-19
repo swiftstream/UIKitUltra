@@ -32,7 +32,7 @@ extension TextAttributesEditingAllowable {
         binding.listen { [weak self] in
             self?.allowEditingTextAttributes($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return allowEditingTextAttributes(binding.wrappedValue)
     }
 }

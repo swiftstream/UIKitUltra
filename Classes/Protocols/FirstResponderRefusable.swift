@@ -34,7 +34,7 @@ extension FirstResponderRefusable {
         binding.listen { [weak self] in
             self?.refuseFirstResponder($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return refuseFirstResponder(binding.wrappedValue)
     }
 }

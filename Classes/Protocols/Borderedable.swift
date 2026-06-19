@@ -34,7 +34,7 @@ extension Borderedable {
         binding.listen { [weak self] in
             self?.bordered($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return bordered(binding.wrappedValue)
     }
 }

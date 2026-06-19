@@ -31,7 +31,7 @@ extension Alternateable {
         binding.listen { [weak self] in
             self?.alternate($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return alternate(binding.wrappedValue)
     }
 }
