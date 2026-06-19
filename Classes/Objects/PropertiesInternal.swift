@@ -56,7 +56,7 @@ public class PropertiesInternal {
     @MainActor
     func moveAppliedToNotApplied() {
         appliedPreConstraintsSuper.forEach {
-            $0.value.removeAllListeners()
+            $0.value.removeListeners()
             notAppliedPreConstraintsSuper.append($0)
         }
         appliedPreConstraintsSuper.removeAll()

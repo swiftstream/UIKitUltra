@@ -61,11 +61,7 @@ public class CodableState<Value>: Stateable, Codable, Equatable, Hashable where 
     }
 
     public func removeListeners() {
-        removeAllListeners()
-    }
-
-    public func removeAllListeners() {
-        projectedValue.removeAllListeners()
+        projectedValue.removeListeners()
     }
 
     public static func == (lhs: CodableState<Value>, rhs: CodableState<Value>) -> Bool {

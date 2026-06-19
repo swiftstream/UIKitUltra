@@ -71,10 +71,6 @@ public class InnerState<Value, InnerValue>: AnyState, StatesHolder {
     }
 
     public func removeListeners() {
-        removeAllListeners()
-    }
-
-    public func removeAllListeners() {
-        projectedValue.removeAllListeners()
+        projectedValue.removeListeners()
     }
 }

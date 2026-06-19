@@ -67,7 +67,7 @@ open class State<Value>: Stateable, StatesHolder {
 
     deinit {
         invalidateStates()
-        removeAllListeners()
+        removeListeners()
     }
 
     init (_ stateA: AnyState, _ stateB: AnyState, _ expression: @escaping () -> Value) {
@@ -240,10 +240,6 @@ open class State<Value>: Stateable, StatesHolder {
     }
 
     public func removeListeners() {
-        removeAllListeners()
-    }
-
-    public func removeAllListeners() {
         beginTriggers.removeAll()
         listeners.removeAll()
         endTriggers.removeAll()

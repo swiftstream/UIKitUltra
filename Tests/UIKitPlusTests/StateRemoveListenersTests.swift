@@ -80,7 +80,7 @@ final class StateRemoveListenersTests: XCTestCase {
         XCTAssertEqual(calls, 1)
     }
 
-    func testRemoveAllListenersStillWorks() {
+    func testRemoveListenersIsOnlyBulkRemovalAPI() {
         let state = State(wrappedValue: 0)
 
         var calls = 0
@@ -92,7 +92,7 @@ final class StateRemoveListenersTests: XCTestCase {
         state.wrappedValue = 1
         XCTAssertEqual(calls, 1)
 
-        state.removeAllListeners()
+        state.removeListeners()
 
         state.wrappedValue = 2
         XCTAssertEqual(calls, 1)

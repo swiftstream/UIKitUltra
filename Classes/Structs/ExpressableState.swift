@@ -26,13 +26,7 @@ public protocol AnyState: AnyObject {
     func listen(_ listener: @escaping () -> Void) -> StateListener
 
     func removeListener(id: UUID)
-    func removeAllListeners()
-}
-
-public extension AnyState {
-    func removeListeners() {
-        removeAllListeners()
-    }
+    func removeListeners()
 }
 
 extension Array where Element == AnyState {

@@ -108,7 +108,7 @@ final class StateRuntimeTests: XCTestCase {
         state.listen { _, _ in log.append("listener") }
         state.endTrigger { log.append("end") }
 
-        state.removeAllListeners()
+        state.removeListeners()
 
         state.wrappedValue = 1
 
@@ -1177,7 +1177,7 @@ final class StateRuntimeTests: XCTestCase {
 
         XCTAssertEqual(holder.statesValues.heldListeners.count, 2)
 
-        state.removeAllListeners()
+        state.removeListeners()
 
         XCTAssertEqual(holder.statesValues.heldListeners.count, 0)
 
@@ -1207,7 +1207,7 @@ final class StateRuntimeTests: XCTestCase {
         state.wrappedValue = 1
         XCTAssertEqual(count, 1)
 
-        state.removeAllListeners()
+        state.removeListeners()
 
         state.wrappedValue = 2
         XCTAssertEqual(count, 1)
@@ -1511,13 +1511,13 @@ final class StateRuntimeTests: XCTestCase {
         XCTAssertEqual(log, ["A", "C"])
     }
 
-    func testRemoveAllListenersDuringDispatchAffectsNextMutationOnly() {
+    func testRemoveListenersDuringDispatchAffectsNextMutationOnly() {
         let state = State(wrappedValue: 0)
         var log: [String] = []
 
         state.listen { _, _ in
             log.append("A")
-            state.removeAllListeners()
+            state.removeListeners()
         }
 
         state.listen { _, _ in
@@ -1798,7 +1798,7 @@ final class StateRuntimeTests: XCTestCase {
             secondCount += 1
         }
 
-        inner.removeAllListeners()
+        inner.removeListeners()
 
         parent.wrappedValue = .init(count: 2)
 
