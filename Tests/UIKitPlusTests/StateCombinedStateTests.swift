@@ -187,6 +187,245 @@ final class StateCombinedStateTests: XCTestCase {
         c.wrappedValue = 30
     }
 
+    func testCombinedState3HoldsOneListenerPerSource() {
+        let a = State(wrappedValue: 1)
+        let b = State(wrappedValue: 2)
+        let c = State(wrappedValue: 3)
+
+        let mapped = a.and(b).and(c).map { a, b, c in
+            a + b + c
+        }
+
+        XCTAssertEqual(mapped.wrappedValue, 6)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 3)
+    }
+
+    func testCombinedState7HoldsOneListenerPerSource() {
+        let a = State(wrappedValue: 1)
+        let b = State(wrappedValue: 2)
+        let c = State(wrappedValue: 3)
+        let d = State(wrappedValue: 4)
+        let e = State(wrappedValue: 5)
+        let f = State(wrappedValue: 6)
+        let g = State(wrappedValue: 7)
+
+        let mapped = a.and(b).and(c).and(d).and(e).and(f).and(g).map { a, b, c, d, e, f, g in
+            a + b + c + d + e + f + g
+        }
+
+        XCTAssertEqual(mapped.wrappedValue, 28)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 7)
+    }
+
+    func testCombinedState3ExpressionStopsEvaluatingAfterMappedStateDeinit() {
+        let a = State(wrappedValue: 1)
+        let b = State(wrappedValue: 2)
+        let c = State(wrappedValue: 3)
+
+        var evaluationCount = 0
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = a.and(b).and(c).map { a, b, c in
+                evaluationCount += 1
+                return a + b + c
+            }
+
+            weakMapped = mapped
+
+            XCTAssertEqual(mapped.wrappedValue, 6)
+            XCTAssertEqual(evaluationCount, 1)
+
+            a.wrappedValue = 10
+            XCTAssertEqual(mapped.wrappedValue, 15)
+            XCTAssertEqual(evaluationCount, 2)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        a.wrappedValue = 100
+        b.wrappedValue = 200
+        c.wrappedValue = 300
+
+        XCTAssertEqual(evaluationCount, 2)
+    }
+
+    func testCombinedState7ExpressionStopsEvaluatingAfterMappedStateDeinit() {
+        let a = State(wrappedValue: 1)
+        let b = State(wrappedValue: 2)
+        let c = State(wrappedValue: 3)
+        let d = State(wrappedValue: 4)
+        let e = State(wrappedValue: 5)
+        let f = State(wrappedValue: 6)
+        let g = State(wrappedValue: 7)
+
+        var evaluationCount = 0
+        weak var weakMapped: State<Int>?
+
+        do {
+            let mapped = a.and(b).and(c).and(d).and(e).and(f).and(g).map { a, b, c, d, e, f, g in
+                evaluationCount += 1
+                return a + b + c + d + e + f + g
+            }
+
+            weakMapped = mapped
+
+            XCTAssertEqual(mapped.wrappedValue, 28)
+            XCTAssertEqual(evaluationCount, 1)
+
+            g.wrappedValue = 70
+            XCTAssertEqual(mapped.wrappedValue, 91)
+            XCTAssertEqual(evaluationCount, 2)
+        }
+
+        XCTAssertNil(weakMapped)
+
+        a.wrappedValue = 10
+        b.wrappedValue = 20
+        c.wrappedValue = 30
+        d.wrappedValue = 40
+        e.wrappedValue = 50
+        f.wrappedValue = 60
+        g.wrappedValue = 70
+
+        XCTAssertEqual(evaluationCount, 2)
+    }
+
+    func testCombinedState7ReleaseStatesDisconnectsEverySource() {
+        let a = State(wrappedValue: 1)
+        let b = State(wrappedValue: 2)
+        let c = State(wrappedValue: 3)
+        let d = State(wrappedValue: 4)
+        let e = State(wrappedValue: 5)
+        let f = State(wrappedValue: 6)
+        let g = State(wrappedValue: 7)
+
+        var evaluationCount = 0
+
+        let mapped = a.and(b).and(c).and(d).and(e).and(f).and(g).map { a, b, c, d, e, f, g in
+            evaluationCount += 1
+            return a + b + c + d + e + f + g
+        }
+
+        XCTAssertEqual(mapped.wrappedValue, 28)
+        XCTAssertEqual(evaluationCount, 1)
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 7)
+
+        mapped.releaseStates()
+
+        XCTAssertEqual(mapped.statesValues.heldListeners.count, 0)
+
+        a.wrappedValue = 10
+        b.wrappedValue = 20
+        c.wrappedValue = 30
+        d.wrappedValue = 40
+        e.wrappedValue = 50
+        f.wrappedValue = 60
+        g.wrappedValue = 70
+
+        XCTAssertEqual(mapped.wrappedValue, 28)
+        XCTAssertEqual(evaluationCount, 1)
+    }
+
+    func testCombinedState3MappedStateDoesNotRetainSourceStates() {
+        weak var weakA: State<CombinedSourceBox>?
+        weak var weakB: State<CombinedSourceBox>?
+        weak var weakC: State<CombinedSourceBox>?
+
+        let mapped: State<Int>
+
+        do {
+            let a = State(wrappedValue: CombinedSourceBox(1))
+            let b = State(wrappedValue: CombinedSourceBox(2))
+            let c = State(wrappedValue: CombinedSourceBox(3))
+
+            weakA = a
+            weakB = b
+            weakC = c
+
+            mapped = a.and(b).and(c).map { a, b, c in
+                a.value + b.value + c.value
+            }
+
+            XCTAssertEqual(mapped.wrappedValue, 6)
+        }
+
+        XCTAssertNil(weakA)
+        XCTAssertNil(weakB)
+        XCTAssertNil(weakC)
+    }
+
+    func testCombinedState7MappedStateDoesNotRetainSourceStates() {
+        weak var weakA: State<CombinedSourceBox>?
+        weak var weakB: State<CombinedSourceBox>?
+        weak var weakC: State<CombinedSourceBox>?
+        weak var weakD: State<CombinedSourceBox>?
+        weak var weakE: State<CombinedSourceBox>?
+        weak var weakF: State<CombinedSourceBox>?
+        weak var weakG: State<CombinedSourceBox>?
+
+        let mapped: State<Int>
+
+        do {
+            let a = State(wrappedValue: CombinedSourceBox(1))
+            let b = State(wrappedValue: CombinedSourceBox(2))
+            let c = State(wrappedValue: CombinedSourceBox(3))
+            let d = State(wrappedValue: CombinedSourceBox(4))
+            let e = State(wrappedValue: CombinedSourceBox(5))
+            let f = State(wrappedValue: CombinedSourceBox(6))
+            let g = State(wrappedValue: CombinedSourceBox(7))
+
+            weakA = a
+            weakB = b
+            weakC = c
+            weakD = d
+            weakE = e
+            weakF = f
+            weakG = g
+
+            mapped = a.and(b).and(c).and(d).and(e).and(f).and(g).map { a, b, c, d, e, f, g in
+                a.value + b.value + c.value + d.value + e.value + f.value + g.value
+            }
+
+            XCTAssertEqual(mapped.wrappedValue, 28)
+        }
+
+        XCTAssertNil(weakA)
+        XCTAssertNil(weakB)
+        XCTAssertNil(weakC)
+        XCTAssertNil(weakD)
+        XCTAssertNil(weakE)
+        XCTAssertNil(weakF)
+        XCTAssertNil(weakG)
+    }
+
+    func testCombinedState7HeldListenerTokensDeallocateAfterMappedStateDeinit() {
+        let a = State(wrappedValue: 1)
+        let b = State(wrappedValue: 2)
+        let c = State(wrappedValue: 3)
+        let d = State(wrappedValue: 4)
+        let e = State(wrappedValue: 5)
+        let f = State(wrappedValue: 6)
+        let g = State(wrappedValue: 7)
+
+        var weakTokens: [WeakStateListenerBox] = []
+
+        do {
+            let mapped = a.and(b).and(c).and(d).and(e).and(f).and(g).map { a, b, c, d, e, f, g in
+                a + b + c + d + e + f + g
+            }
+
+            XCTAssertEqual(mapped.statesValues.heldListeners.count, 7)
+
+            weakTokens = mapped.statesValues.heldListeners.values.map {
+                WeakStateListenerBox($0)
+            }
+        }
+
+        XCTAssertEqual(weakTokens.count, 7)
+        XCTAssertTrue(weakTokens.allSatisfy { $0.listener == nil })
+    }
+
     func testCombinedState7MappedStateCanBeListenedTo() {
         let a = State(wrappedValue: 1)
         let b = State(wrappedValue: 2)
@@ -218,5 +457,21 @@ final class StateCombinedStateTests: XCTestCase {
         b.wrappedValue = 20
         XCTAssertEqual(mapped.wrappedValue, 55)
         XCTAssertEqual(values, [37, 55])
+    }
+}
+
+private final class CombinedSourceBox {
+    var value: Int
+
+    init(_ value: Int) {
+        self.value = value
+    }
+}
+
+private final class WeakStateListenerBox {
+    weak var listener: StateListener?
+
+    init(_ listener: StateListener) {
+        self.listener = listener
     }
 }
