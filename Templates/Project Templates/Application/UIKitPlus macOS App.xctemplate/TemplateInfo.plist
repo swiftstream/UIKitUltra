@@ -84,6 +84,8 @@
 				<string>10.15</string>
 				<key>MARKETING_VERSION</key>
 				<string>1.0</string>
+				<key>OTHER_LDFLAGS</key>
+				<string>$(inherited) -weak_framework SwiftUI</string>
 				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
 				<string>___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.___VARIABLE_productName:RFC1034Identifier___</string>
 				<key>PRODUCT_NAME</key>
