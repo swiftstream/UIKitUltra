@@ -29,6 +29,12 @@ public protocol AnyState: AnyObject {
     func removeAllListeners()
 }
 
+public extension AnyState {
+    func removeListeners() {
+        removeAllListeners()
+    }
+}
+
 extension Array where Element == AnyState {
     public func map<Result>(_ expression: @escaping () -> Result) -> State<Result> {
         let state = State<Result>.init(wrappedValue: expression())

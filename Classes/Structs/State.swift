@@ -239,6 +239,10 @@ open class State<Value>: Stateable, StatesHolder {
         token?.sourceDidRemove()
     }
 
+    public func removeListeners() {
+        removeAllListeners()
+    }
+
     public func removeAllListeners() {
         beginTriggers.removeAll()
         listeners.removeAll()

@@ -60,6 +60,10 @@ public class CodableState<Value>: Stateable, Codable, Equatable, Hashable where 
         projectedValue.removeListener(id: id)
     }
 
+    public func removeListeners() {
+        removeAllListeners()
+    }
+
     public func removeAllListeners() {
         projectedValue.removeAllListeners()
     }
