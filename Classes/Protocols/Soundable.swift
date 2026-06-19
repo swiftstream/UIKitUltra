@@ -21,7 +21,7 @@ extension Soundable {
         binding.listen { [weak self] in
             self?.sound($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return sound(binding.wrappedValue)
     }
 }

@@ -32,7 +32,7 @@ extension PullsDownable {
         binding.listen { [weak self] in
             self?.pullsDown($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return pullsDown(binding.wrappedValue)
     }
 }

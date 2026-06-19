@@ -28,7 +28,7 @@ extension ControlStateable {
         binding.listen { [weak s] in
             s?._setState($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return self
     }
     
@@ -51,7 +51,7 @@ extension _ControlStateable {
         binding.listen { [weak self] in
             self?._setState($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return self
     }
     

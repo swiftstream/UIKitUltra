@@ -28,7 +28,7 @@ extension BezelStyleable {
         binding.listen { [weak s] in
             s?._setBezelStyle($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return self
     }
     
@@ -51,7 +51,7 @@ extension _BezelStyleable {
         binding.listen { [weak self] in
             self?._setBezelStyle($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return self
     }
     

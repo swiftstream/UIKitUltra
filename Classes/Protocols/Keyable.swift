@@ -30,7 +30,7 @@ extension Keyable {
         state.listen { [weak self] in
             self?.key($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return self
     }
 }

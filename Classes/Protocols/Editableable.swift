@@ -32,7 +32,7 @@ extension Editableable {
         binding.listen { [weak self] in
             self?.editable($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return editable(binding.wrappedValue)
     }
 }

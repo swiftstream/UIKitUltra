@@ -21,7 +21,7 @@ extension ArrowPositionable {
         binding.listen { [weak self] in
             self?.arrowPosition($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return arrowPosition(binding.wrappedValue)
     }
 }
