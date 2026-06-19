@@ -32,7 +32,7 @@ extension Enableable {
         binding.listen { [weak self] in
             self?.enabled($0)
         }
-        .holdIfOwned(by: self)
+        .holdInStateBindingOwnerIfAvailable(self)
         return enabled(binding.wrappedValue)
     }
 }

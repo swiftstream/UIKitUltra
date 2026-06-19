@@ -197,6 +197,89 @@ final class StateBindingOwnerScaffoldingTests: XCTestCase {
         XCTAssertFalse(tracker is _StateBindingOwner)
     }
 
+    // MARK: - holdInStateBindingOwnerIfAvailable helper characterization
+
+    func testHoldInStateBindingOwnerIfAvailableRoutesOwnerAndReturnsSameToken() {
+        let view = UView()
+        let source = State<Int>(wrappedValue: 0)
+
+        guard let owner = view as? _StateBindingOwner else {
+            XCTFail("Expected _StateBindingOwner conformance")
+            return
+        }
+
+        let token = source.listen { _ in }
+
+        let returned = token.holdInStateBindingOwnerIfAvailable(view)
+
+        XCTAssertTrue(returned === token)
+        XCTAssertEqual(owner.stateBindingHolder.statesValues.heldListeners.count, 1)
+
+        source.wrappedValue = 1
+    }
+
+    func testHoldInStateBindingOwnerIfAvailableLeavesNonOwnerTokenLiveAndReturnsSameToken() {
+        let candidate: AnyObject = _GestureTracker()
+        let source = State<Int>(wrappedValue: 0)
+
+        var calls = 0
+
+        let token = source.listen { _ in
+            calls += 1
+        }
+
+        let returned = token.holdInStateBindingOwnerIfAvailable(candidate)
+
+        XCTAssertTrue(returned === token)
+
+        source.wrappedValue = 1
+
+        XCTAssertEqual(calls, 1)
+    }
+
+    func testHoldInStateBindingOwnerIfAvailableInvalidatesWithOwnerHolder() {
+        let view = UView()
+        let source = State<Int>(wrappedValue: 0)
+
+        guard let owner = view as? _StateBindingOwner else {
+            XCTFail("Expected _StateBindingOwner conformance")
+            return
+        }
+
+        var calls = 0
+
+        source.listen { _ in
+            calls += 1
+        }
+        .holdInStateBindingOwnerIfAvailable(view)
+
+        source.wrappedValue = 1
+        XCTAssertEqual(calls, 1)
+
+        owner.stateBindingHolder.invalidateStates()
+
+        source.wrappedValue = 2
+        XCTAssertEqual(calls, 1)
+        XCTAssertEqual(owner.stateBindingHolder.statesValues.heldListeners.count, 0)
+    }
+
+    func testHoldIfOwnedDelegatesToStateBindingOwnerHelper() {
+        let view = UView()
+        let source = State<Int>(wrappedValue: 0)
+
+        guard let owner = view as? _StateBindingOwner else {
+            XCTFail("Expected _StateBindingOwner conformance")
+            return
+        }
+
+        let token = source.listen { _ in }
+
+        let returned = token.holdIfOwned(by: view)
+
+        XCTAssertTrue(returned === token)
+        XCTAssertEqual(owner.stateBindingHolder.statesValues.heldListeners.count, 1)
+    }
+
     // MARK: - macOS-only
 
     #if os(macOS)

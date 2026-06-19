@@ -93,7 +93,7 @@ open class URefreshControl: UIRefreshControl {
             self?.tintColor = new
             self?.tint = new
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         return self
     }
     
