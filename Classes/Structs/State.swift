@@ -500,6 +500,12 @@ open class State<Value>: Stateable, StatesHolder {
     public func and<V>(_ state: State<V>) -> CombinedState<Value, V> {
         CombinedState(left: projectedValue, right: state)
     }
+
+    public func release(with holder: StatesHolder) {
+        holder.awaitRelease { [weak self] in
+            self?.releaseStates()
+        }
+    }
 }
 
 public protocol OptionalStateValue {
