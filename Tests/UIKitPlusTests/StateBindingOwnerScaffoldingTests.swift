@@ -263,23 +263,6 @@ final class StateBindingOwnerScaffoldingTests: XCTestCase {
         XCTAssertEqual(owner.stateBindingHolder.statesValues.heldListeners.count, 0)
     }
 
-    func testHoldIfOwnedDelegatesToStateBindingOwnerHelper() {
-        let view = UView()
-        let source = State<Int>(wrappedValue: 0)
-
-        guard let owner = view as? _StateBindingOwner else {
-            XCTFail("Expected _StateBindingOwner conformance")
-            return
-        }
-
-        let token = source.listen { _ in }
-
-        let returned = token.holdIfOwned(by: view)
-
-        XCTAssertTrue(returned === token)
-        XCTAssertEqual(owner.stateBindingHolder.statesValues.heldListeners.count, 1)
-    }
-
     // MARK: - macOS-only
 
     #if os(macOS)

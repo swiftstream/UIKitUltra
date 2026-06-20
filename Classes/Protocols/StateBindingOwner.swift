@@ -15,10 +15,4 @@ internal extension StateListener {
 
         return hold(in: owner.stateBindingHolder)
     }
-
-    @discardableResult
-    @MainActor
-    func holdIfOwned(by candidate: AnyObject) -> Self {
-        holdInStateBindingOwnerIfAvailable(candidate)
-    }
 }
