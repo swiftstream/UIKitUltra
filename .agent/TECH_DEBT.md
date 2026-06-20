@@ -58,7 +58,7 @@ Do not update this file for:
   - Not auditing commits now.
   - Not pushing.
 
-### TD-002 — Swift 6 strict concurrency migration pending
+### TD-002 — Swift 6 strict concurrency monitoring
 
 - Status: Partially Resolved (S6)
 - Severity: High
@@ -89,16 +89,16 @@ Do not update this file for:
 - Files:
   - `.agent/STATE_VNEXT_PLAN.md`
 - Issue:
-  - UIKitPlus `@State` diverges from desired DX (missing `listenDistinct`, `StateValuable`, `removeListeners()`, multi-state `.and(...)` chain).
-  - `listenDistinct`, `removeListeners()`, `StateValuable` minimal API, `CombinedState3...7`, and `holdIfOwned(by:)` cleanup are all resolved (S1-S5).
-  - Remaining: State concurrency envelope ADR (S6), shared State package extraction (S7).
+  - UIKitPlus `@State` previously diverged from desired DX and lifecycle conventions.
+  - `listenDistinct`, `removeListeners()`, `StateValuable` minimal API, `CombinedState3...7`, `holdIfOwned(by:)` cleanup, and S6 concurrency envelope ADR/probe are resolved (S1-S6).
+  - Remaining: shared State package extraction/design (S7) and any future cross-framework State packaging decision.
 - Risk:
-  - Swift 6 strict concurrency migration and shared State package remain pending.
+  - Shared State package design remains pending.
+  - Future Swift versions or API policy may still require revisiting the State concurrency envelope, but current S6 diagnostics are clean.
 - Suggested direction:
-  - Write State concurrency ADR (S6).
-  - Complete Swift 6 strict concurrency migration.
-  - Implement State vNext in standalone State package.
-  - Migrate UIKitPlus to shared State package.
+  - Write S7 shared State package ADR if cross-framework architecture is the next goal.
+  - Optionally run a release/readiness audit for S1-S6 before starting another large State track.
+  - Do not implement `@MainActor State`, `Value: Sendable`, or `@unchecked Sendable` unless a future diagnostic or accepted API policy requires it.
 - Non-goals for this docs-closure chat:
   - Not implementing State vNext.
   - Not editing Swift state source.
