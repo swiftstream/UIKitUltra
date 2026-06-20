@@ -1949,4 +1949,43 @@ final class StateRuntimeTests: XCTestCase {
             "1->5",
         ])
     }
+
+    // MARK: - Portable P0 State tests [ST-002][ST-004][ST-005]
+
+    func testProjectedValueReturnsSameInstance() {
+        let state = State(wrappedValue: 42)
+        XCTAssertTrue(state.projectedValue === state)
+    }
+
+    func testListenValueOnlyCallbackFiresNewValue() {
+        let state = State(wrappedValue: 1)
+        var received: [Int] = []
+
+        let listener = state.listen { value in
+            received.append(value)
+        }
+
+        state.wrappedValue = 2
+        state.wrappedValue = 3
+
+        XCTAssertEqual(received, [2, 3])
+
+        _ = listener
+    }
+
+    func testListenVoidCallbackFiresOnChange() {
+        let state = State(wrappedValue: 1)
+        var callCount = 0
+
+        let listener = state.listen { () in
+            callCount += 1
+        }
+
+        state.wrappedValue = 2
+        state.wrappedValue = 3
+
+        XCTAssertEqual(callCount, 2)
+
+        _ = listener
+    }
 }
