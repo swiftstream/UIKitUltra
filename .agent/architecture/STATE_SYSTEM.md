@@ -3,7 +3,7 @@
 ## Metadata
 - Layer: Runtime
 - Depends On Layers: DSL, Platform
-- Primary Runtime Artifacts: `State`, `InnerState`, `CombinedState`, `ExpressableState` mappings, `merge(with:)`, listener arrays
+- Primary Runtime Artifacts: `State`, `InnerState`, `CombinedState`, `ExpressableState` mappings, `merge(with:)`, ordered/snapshot listener dispatch
 
 ## Purpose
 
@@ -40,7 +40,7 @@ For `wrappedValue` assignment, runtime order is:
 
 ### ST6: Listener Registration Is Additive
 
-Listeners/triggers append to arrays and persist until removed via `removeAllListeners()` or object lifecycle teardown.
+Listeners/triggers append to ordered registrations and persist until removed via `removeListeners()` or object lifecycle teardown.
 
 There is no automatic cleanup guarantee unless owning code explicitly provides cleanup.
 
@@ -61,7 +61,7 @@ There is no automatic cleanup guarantee unless owning code explicitly provides c
 - `InnerState` listener propagation has two channels:
   1. direct `InnerState.listen` listeners,
   2. projected `$innerState` listeners.
-- Inner-state listener arrays are additive; repeated setup can duplicate callbacks.
+- Inner-state listener registrations are additive; repeated setup can duplicate callbacks.
 
 ## Mutation Hazards
 
@@ -71,7 +71,7 @@ There is no automatic cleanup guarantee unless owning code explicitly provides c
 
 ## Listener Lifecycle and Memory Safety
 
-- Listener arrays are additive and can grow silently under repeated attachment.
+- Listener registrations are additive and can grow silently under repeated attachment.
 - No automatic cleanup is guaranteed for listeners/bindings unless owning code removes or scopes them.
 - Closure captures in long-lived listener paths should use weak ownership by default when owner lifetime is shorter than state lifetime.
 - Repeated-registration paths must declare ownership, guard/dedup strategy, and teardown strategy where applicable.
@@ -128,3 +128,20 @@ State-sensitive patches must verify:
 - recursion guard correctness,
 - listener lifecycle safety,
 - no unintended synchronization loops.
+
+## State vNext corrective status
+
+- SwifDroid is the canonical reference for the State API shape.
+- UIKitPlus must preserve its local improvements:
+  - `public typealias UState = State`
+  - `removeListeners()`
+  - `listenDistinct(...)` on `Stateable`
+  - ordered/snapshot listener dispatch
+  - improved `StateListener` class lifecycle
+  - holder invalidation and targeted release
+  - `InnerState`
+  - `CodableState`
+  - `StateBindingOwner`
+- The previous `SharedState`/`SwiftState` extraction track is invalid and stopped.
+- `/Users/imike/Development/State` must not be rebuilt until UIKitPlus State is finalized.
+- UIKitPlus must not depend on `/Users/imike/Development/State` until that package is rebuilt and validated.
