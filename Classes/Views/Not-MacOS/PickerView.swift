@@ -109,7 +109,7 @@ open class UPickerView: UIPickerView, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func textColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.textColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return textColor(binding.wrappedValue)
     }
@@ -117,7 +117,7 @@ open class UPickerView: UIPickerView, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func textColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.textColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return textColor(binding.wrappedValue)
     }

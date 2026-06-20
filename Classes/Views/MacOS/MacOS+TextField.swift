@@ -805,7 +805,7 @@ extension UTextField: _Typeable {
             guard v.wrappedValue != $0 else { return }
             v.wrappedValue = $0
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         if v.wrappedValue != _properties.isTyping {
             v.wrappedValue = _properties.isTyping
         }

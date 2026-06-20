@@ -31,7 +31,7 @@ public class UList: UView, UITableViewDataSource {
                 self?.tableView.reloadData()
             }
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         setup()
     }
     
@@ -48,7 +48,7 @@ public class UList: UView, UITableViewDataSource {
                 self?.tableView.reloadData()
             }
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         setup()
     }
     

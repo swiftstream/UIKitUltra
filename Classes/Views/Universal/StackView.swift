@@ -206,7 +206,7 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
         state.listen { [weak self] new in
             self?.spacing = new
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         self.spacing = state.wrappedValue
         return self
     }

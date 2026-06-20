@@ -76,7 +76,7 @@ open class UImage: NSImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         image.listen { [weak self] old, new in
             self?.image = new
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     public init (_ url: State<URL>, defaultImage: NSImage? = nil, loader: ImageLoader = .defaultRelease) {
@@ -89,7 +89,7 @@ open class UImage: NSImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
             guard let self = self else { return }
             self._imageLoader.load(new, imageView: self, defaultImage: defaultImage)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     public init (_ url: State<String>, defaultImage: NSImage? = nil, loader: ImageLoader = .defaultRelease) {
@@ -102,7 +102,7 @@ open class UImage: NSImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
             guard let self = self else { return }
             self._imageLoader.load(new, imageView: self, defaultImage: defaultImage)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     public init (url: URL, defaultImage: NSImage? = nil, loader: ImageLoader = .defaultRelease) {

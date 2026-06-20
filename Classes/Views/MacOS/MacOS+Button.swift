@@ -280,7 +280,7 @@ open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         state.listen { [weak self] in
             self?.setButtonType($0)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
 
         return self
     }

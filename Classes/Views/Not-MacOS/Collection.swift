@@ -68,7 +68,7 @@ public class UCollection: UView, UICollectionViewDataSource {
                 self?.collectionView.reloadData()
             }
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     required public init?(coder aDecoder: NSCoder) {
