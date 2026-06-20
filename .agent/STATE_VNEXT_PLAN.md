@@ -1,6 +1,6 @@
 # UIKitPlus State vNext Plan
 
-Status: `IN PROGRESS — S1-S4 accepted`
+Status: `IN PROGRESS — S1-S5 accepted`
 
 Owner scope: `GLOBAL STATE ARCHITECTURE DEBT`
 
@@ -100,17 +100,12 @@ For custom views/controllers/services that manually attach listeners, the public
 listener.hold(in: self)
 ```
 
-not:
+`hold(in:)` remains the preferred public lifecycle API.
 
-```swift
-listener.holdIfOwned(by: self)
-```
-
-`hold(in:)` is the preferred public lifecycle API.
-
-`holdIfOwned(by:)` is currently an internal UIKitPlus convenience used to conditionally attach listeners when protocol extensions only know `self` as `AnyObject`. It should not become part of the user-facing mental model.
-
-The long-term goal is to remove the need for `holdIfOwned(by:)` in production code or hide it behind clearer internal helpers that do not affect public documentation.
+S5 removed the obsolete `holdIfOwned(by:)` helper and all production call sites.
+Protocol-extension call sites now use the explicit internal bridge
+`holdInStateBindingOwnerIfAvailable(_:)`; concrete owners use direct
+`.hold(in: stateBindingHolder)`.
 
 ### 2.4 `removeListeners()` is the canonical API
 
@@ -143,7 +138,7 @@ The exact final declaration may differ after ADR review, but the direction is ma
 
 This section records differences between current UIKitPlus and the SwifDroid `docs/state.md` developer experience.
 
-**S1-S4 are now resolved.** Items 3.1–3.4 are implemented/accepted. Item 3.5 (`holdIfOwned`) remains pending.
+**S1-S5 are now resolved.** Items 3.1–3.5 are implemented/accepted. S6 remains the next State vNext planning task.
 
 ### 3.1 `listenDistinct` — IMPLEMENTED (S2)
 
@@ -372,118 +367,25 @@ Acceptance tests: ✅
 - nested map composition remains supported;
 - listener cleanup works for all source states.
 
-### 3.5 `.holdIfOwned(by:)` appears in UIKitPlus implementation
+### 3.5 `holdIfOwned(by:)` cleanup — ACCEPTED (S5)
 
-Current UIKitPlus has:
+**Status**: Implemented and accepted.
 
-```swift
-internal extension StateListener {
-    @discardableResult
-    func holdIfOwned(by candidate: AnyObject) -> Self
-}
-```
+`holdIfOwned(by:)` was an internal transition helper used while protocol
+extensions did not always have direct access to a `stateBindingHolder`.
 
-This exists because many protocol extensions only know `self` as a protocol type or `AnyObject`, not statically as `StatesHolder`.
+S5 resolved this by:
 
-Example internal need:
+- adding `holdInStateBindingOwnerIfAvailable(_:)` for protocol-extension routing;
+- migrating protocol call sites to that explicit bridge;
+- migrating concrete owners to `.hold(in: stateBindingHolder)`;
+- removing the obsolete `holdIfOwned(by:)` helper and its characterization test.
 
-```swift
-state.listen { ... }
-    .holdIfOwned(by: self)
-```
+Current invariant:
 
-The method is internal, so it is not currently a public API. However, it is a design smell because it creates a second lifecycle phrase next to the desired public model:
-
-```swift
-.hold(in: self)
-```
-
-Long-term objective:
-
-```text
-The only documented lifecycle API should be `.hold(in:)`.
-```
-
-Possible replacement models:
-
-#### Model A — Make all bindable framework receivers statically `StatesHolder`
-
-Refactor protocols and concrete types so state-binding protocol extensions can call:
-
-```swift
-listener.hold(in: self)
-```
-
-Pros:
-- cleanest implementation;
-- no conditional ownership ambiguity;
-- matches public DX.
-
-Cons:
-- may require changing many protocol constraints;
-- can expose `StatesHolder` requirements in more public protocol surfaces;
-- risk of source compatibility changes.
-
-#### Model B — Keep internal conditional helper but rename away from public mental model
-
-Replace `holdIfOwned(by:)` with a more explicit internal helper:
-
-```swift
-internal func holdInFrameworkOwnerIfAvailable(_ candidate: AnyObject) -> Self
-```
-
-or avoid fluent syntax:
-
-```swift
-internal enum StateBindingRouting {
-    static func hold(_ listener: StateListener, in candidate: AnyObject)
-}
-```
-
-Pros:
-- less public-DX confusion;
-- lower implementation risk;
-- no public API change.
-
-Cons:
-- still not as clean as `.hold(in:)` internally.
-
-#### Model C — Introduce internal owner-erased protocol bridge
-
-Use an internal bridge:
-
-```swift
-internal protocol _StateListenerOwner: AnyObject {
-    var stateBindingHolder: TempStatesHolder { get }
-}
-```
-
-and a helper that routes to `.hold(in:)` on `stateBindingHolder`.
-
-Pros:
-- keeps ownership explicit;
-- avoids broad public `StatesHolder` conformance.
-
-Cons:
-- still a second internal ownership model.
-
-Preferred future direction:
-
-```text
-First audit all `holdIfOwned(by:)` call sites.
-Then replace with `.hold(in:)` wherever statically possible.
-For remaining protocol-extension cases, either strengthen receiver constraints or isolate the conditional routing behind a clearly internal non-public helper.
-Do not document `holdIfOwned(by:)`.
-Do not expose `holdIfOwned(by:)` publicly.
-```
-
-Acceptance criteria:
-
-- no public documentation mentions `holdIfOwned(by:)`;
-- custom-view docs use only `.hold(in:)`;
-- built-in view docs require no manual hold;
-- internal call sites are either `.hold(in:)` or clearly isolated as framework routing internals;
-- no listener leaks are reintroduced.
+- `Classes` and `Tests` have zero `holdIfOwned` references;
+- `holdInStateBindingOwnerIfAvailable(_:)` remains internal;
+- public lifecycle docs should continue to present `.hold(in:)` only.
 
 ---
 
@@ -899,23 +801,14 @@ Recommended order:
 
 ### Track 2 — Listener lifecycle simplification
 
-Goal:
+**Completed (S5).**
 
 ```text
-Public and documented lifecycle API is only `.hold(in:)`.
+✅ holdIfOwned(by:) obsolete helper removed.
+✅ Protocol extensions use holdInStateBindingOwnerIfAvailable(_:).
+✅ Concrete owners use direct .hold(in: stateBindingHolder).
+✅ Classes/Tests have zero holdIfOwned references.
 ```
-
-Work:
-
-1. Inventory every `.holdIfOwned(by:)` call site.
-2. Classify each call site:
-   - can become `.hold(in: self)` immediately;
-   - needs protocol constraint strengthening;
-   - needs internal routing helper;
-   - should be removed because built-in owner already handles listener.
-3. Replace where safe.
-4. Hide remaining conditional routing behind internal implementation details.
-5. Ensure docs never mention `holdIfOwned(by:)`.
 
 ### Track 3 — Built-in view automatic cleanup audit
 
@@ -979,7 +872,7 @@ StatesHolder.swift
 InnerState.swift
 ExpressableState.swift
 StateBindingOwner.swift
-all `.holdIfOwned(by:)` call sites
+all `.hold(in: stateBindingHolder)` call sites
 all `.hold(in:)` call sites
 all State.listen registrations
 all State.merge usages
@@ -1064,7 +957,7 @@ State vNext is not complete until:
 - `@State`, `$state`, `map`, `and`, `merge`, `reset`, `listen`, `listenDistinct`, `hold(in:)`, `cancel`, `removeListeners`, and `StateValuable` are documented consistently;
 - built-in views require no manual listener management;
 - custom views use `.hold(in:)` only;
-- `holdIfOwned(by:)` is not public and not documented.
+- `holdIfOwned(by:)` is fully removed.
 
 ### Runtime behavior
 
@@ -1102,23 +995,23 @@ State vNext is not complete until:
 | S3 StateValuable minimal API | Accepted | 2650186 | custom components only for now |
 | S3B StateValuable UIKitPlus API migration audit | Accepted / deferred | statevaluable-overload-ambiguity-audit.md | Strategy D — do not migrate core APIs yet |
 | S4 CombinedState3...7 | Accepted | 10583f7 + d6be11c | additive multi-state mapping + lifecycle tests |
-| S5 holdIfOwned cleanup | **Pending** | — | next major State task |
-| S6 State concurrency envelope ADR | **Pending** | — | after holdIfOwned audit or before implementation if needed |
+| S5 holdIfOwned cleanup | Accepted | holdifowned-audit.md + 92f9163 + 5b4c30b + ff3628c + 531e93c + 561ae57 + 2f5b880 + f7546bb + 4fb53a1 + 3a0af89 + 930181d + c83b9f9 + 9733831 | obsolete helper removed; Classes/Tests zero |
+| S6 State concurrency envelope ADR | **Pending** | — | next State vNext task after S5 cleanup |
 | S7 shared State package ADR | **Pending** | — | later |
 
 ---
 
 ## 12. Next Recommended Task
 
-**S5A — `holdIfOwned(by:)` audit and refactor plan**
+**S6 — State concurrency envelope ADR**
 
-This is the next major State task. There are 112 call sites and this can easily cause listener lifecycle regressions if done incorrectly. The task should be an audit first, followed by a scoped refactor plan.
+S5 is complete. The next State vNext task is to write an ADR for the
+Swift 6 concurrency envelope before changing `State` declarations.
 
-Key facts:
+The ADR should decide:
 
-- 112 total `.holdIfOwned(by:)` call sites across the codebase.
-- Existing `_StateBindingOwner` protocol with `stateBindingHolder` is the correct internal bridge.
-- Strategy: Replace all `holdIfOwned(by: self)` calls with explicit `_StateBindingOwner` check pattern.
-- Risk: listener leaks for types that don't conform to `_StateBindingOwner`.
-
-Do not start implementation before audit is complete and accepted.
+- whether `State` becomes `@MainActor`;
+- whether `Value: Sendable` is required;
+- whether `State` itself is `Sendable` or `@unchecked Sendable`;
+- how listener closures are isolated;
+- what migration path avoids breaking existing UIKitPlus APIs.

@@ -72,7 +72,7 @@ Extension-driven feature composition (the `DeclarativeProtocol+Feature.swift` pa
 
 Protocol-oriented abstractions:
 
-- `StateBindingOwner.swift` — `_StateBindingOwner` protocol and `holdIfOwned(by:)` internal helper.
+- `StateBindingOwner.swift` — `_StateBindingOwner` protocol and `holdInStateBindingOwnerIfAvailable(_:)` internal bridge for protocol-extension listener ownership.
 - `DeclarativeProtocol.swift` — core protocol for fluent chain API.
 - `Colorable.swift`, `Tintable.swift`, `BackgroundColorable.swift` — color protocol state routing.
 - `Textable.swift`, `Titleable.swift`, `Messageable.swift`, `Placeholderable.swift` — text protocol state routing.

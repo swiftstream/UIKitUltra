@@ -82,20 +82,20 @@ Do not update this file for:
 
 ### TD-003 — State vNext deferred/global architecture debt
 
-- Status: Deferred
+- Status: Partially Resolved
 - Severity: High
 - Area: State Architecture
 - Files:
   - `.agent/STATE_VNEXT_PLAN.md`
 - Issue:
   - UIKitPlus `@State` diverges from desired DX (missing `listenDistinct`, `StateValuable`, `removeListeners()`, multi-state `.and(...)` chain).
-  - `.holdIfOwned(by:)` appears in implementation; public API should use only `.hold(in:)`.
-  - This is global cross-framework debt shared with SwifDroid and SwifWeb.
+  - `listenDistinct`, `removeListeners()`, `StateValuable` minimal API, `CombinedState3...7`, and `holdIfOwned(by:)` cleanup are all resolved (S1-S5).
+  - Remaining: State concurrency envelope ADR (S6), shared State package extraction (S7).
 - Risk:
-  - Continued DX divergence across frameworks.
-  - Internal routing helpers leak into public mental model.
+  - Swift 6 strict concurrency migration and shared State package remain pending.
 - Suggested direction:
-  - After Swift 6 migration, write State ADR.
+  - Write State concurrency ADR (S6).
+  - Complete Swift 6 strict concurrency migration.
   - Implement State vNext in standalone State package.
   - Migrate UIKitPlus to shared State package.
 - Non-goals for this docs-closure chat:

@@ -49,5 +49,6 @@ This file stores stable governance memory for UIKitPlus agent work.
 - Global cross-framework debt shared with SwifDroid and SwifWeb.
 - External `@State` DX stays simple.
 - `.hold(in:)` public lifecycle API.
-- `.holdIfOwned(by:)` internal only.
+- S5 removed obsolete `holdIfOwned(by:)`; `Classes`/`Tests` should stay free of it.
+- Protocol extensions use internal `holdInStateBindingOwnerIfAvailable(_:)`; concrete owners use `.hold(in: stateBindingHolder)`.
 - `removeListeners()` preferred naming.
