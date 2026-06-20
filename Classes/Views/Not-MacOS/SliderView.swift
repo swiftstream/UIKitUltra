@@ -88,7 +88,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public func value(_ binding: UIKitPlus.State<Float>) -> Self {
         bindValue = binding
         binding.listen { [weak self] in self?.value($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return value(binding.wrappedValue)
     }
@@ -102,7 +102,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func minimumValue(_ binding: UIKitPlus.State<Float>) -> Self {
         binding.listen { [weak self] in self?.minimumValue($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return minimumValue(binding.wrappedValue)
     }
@@ -116,7 +116,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func maximumValue(_ binding: UIKitPlus.State<Float>) -> Self {
         binding.listen { [weak self] in self?.maximumValue($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return maximumValue(binding.wrappedValue)
     }
@@ -130,7 +130,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func minimumValueImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.minimumValueImage($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return minimumValueImage(binding.wrappedValue)
     }
@@ -144,7 +144,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func maximumValueImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.maximumValueImage($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return maximumValueImage(binding.wrappedValue)
     }
@@ -158,7 +158,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func isContinuous(_ binding: UIKitPlus.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.isContinuous($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return isContinuous(binding.wrappedValue)
     }
@@ -178,7 +178,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func minimumTrackTintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.minimumTrackTintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return minimumTrackTintColor(binding.wrappedValue)
     }
@@ -186,7 +186,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func minimumTrackTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.minimumTrackTintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return minimumTrackTintColor(binding.wrappedValue)
     }
@@ -206,7 +206,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func maximumTrackTintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.maximumTrackTintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return maximumTrackTintColor(binding.wrappedValue)
     }
@@ -214,7 +214,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func maximumTrackTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.maximumTrackTintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return maximumTrackTintColor(binding.wrappedValue)
     }
@@ -234,7 +234,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func thumbTintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.thumbTintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return thumbTintColor(binding.wrappedValue)
     }
@@ -242,7 +242,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func thumbTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.thumbTintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return thumbTintColor(binding.wrappedValue)
     }
@@ -262,7 +262,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func tintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.tintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return tintColor(binding.wrappedValue)
     }
@@ -270,7 +270,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func tintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.tintColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return tintColor(binding.wrappedValue)
     }
@@ -284,7 +284,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     @discardableResult
     public func thumbImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.thumbImage($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
 
         return thumbImage(binding.wrappedValue)
     }
