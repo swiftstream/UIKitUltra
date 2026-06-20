@@ -43,7 +43,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         name.listen { [weak self] new in
             self?.image = UIImage(named: new)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     public init (_ image: UIImage?) {
@@ -59,7 +59,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         image.listen { [weak self] new in
             self?.image = new
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     public convenience init (url: State<URL?>, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
@@ -74,7 +74,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
                 defaultImage: defaultImage
             )
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     public init (url: State<String?>, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
@@ -87,7 +87,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
             guard let self = self else { return }
             self._imageLoader.load(new, imageView: self, defaultImage: defaultImage)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
     }
     
     public init (url: URL?, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
