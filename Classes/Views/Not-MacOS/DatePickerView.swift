@@ -86,14 +86,14 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         binding.listen { [weak self] in
             self?.textColor($0)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         return textColor(binding.wrappedValue)
     }
     
     @discardableResult
     public func textColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.textColor($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
         return textColor(binding.wrappedValue)
     }
     
@@ -108,7 +108,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func mode(_ binding: UIKitPlus.State<UIDatePicker.Mode>) -> Self {
         binding.listen { [weak self] in self?.mode($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
         return mode(binding.wrappedValue)
     }
     
@@ -123,7 +123,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func locale(_ binding: UIKitPlus.State<Locale>) -> Self {
         binding.listen { [weak self] in self?.locale($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
         return locale(binding.wrappedValue)
     }
     
@@ -138,7 +138,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func calendar(_ binding: UIKitPlus.State<Calendar>) -> Self {
         binding.listen { [weak self] in self?.calendar($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
         return calendar(binding.wrappedValue)
     }
     
@@ -153,7 +153,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func timeZone(_ binding: UIKitPlus.State<TimeZone>) -> Self {
         binding.listen { [weak self] in self?.timeZone($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
         return timeZone(binding.wrappedValue)
     }
     
@@ -173,7 +173,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         binding.listen { [weak self] in
             self?.date($0, animated: animated)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         return date(binding.wrappedValue)
     }
     
@@ -190,7 +190,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         binding.listen { [weak self] in
             self?.minimumDate($0)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         return minimumDate(binding.wrappedValue)
     }
     
@@ -207,7 +207,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         binding.listen { [weak self] in
             self?.maximumDate($0)
         }
-        .holdIfOwned(by: self)
+        .hold(in: stateBindingHolder)
         return maximumDate(binding.wrappedValue)
     }
     
@@ -222,7 +222,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func countDownDuration(_ binding: UIKitPlus.State<TimeInterval>) -> Self {
         binding.listen { [weak self] in self?.countDownDuration($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
         return countDownDuration(binding.wrappedValue)
     }
     
@@ -237,7 +237,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     @discardableResult
     public func minuteInterval(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.minuteInterval($0) }
-            .holdIfOwned(by: self)
+            .hold(in: stateBindingHolder)
         return minuteInterval(binding.wrappedValue)
     }
     
