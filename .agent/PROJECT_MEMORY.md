@@ -52,3 +52,5 @@ This file stores stable governance memory for UIKitPlus agent work.
 - S5 removed obsolete `holdIfOwned(by:)`; `Classes`/`Tests` should stay free of it.
 - Protocol extensions use internal `holdInStateBindingOwnerIfAvailable(_:)`; concrete owners use `.hold(in: stateBindingHolder)`.
 - `removeListeners()` preferred naming.
+- S6 accepted Option C first: keep `State<Value>` unconstrained for now and isolate UI binding surfaces only if future diagnostics require it.
+- Strict build/test currently pass with zero State-related diagnostics; no immediate `@MainActor State` / `Value: Sendable` implementation is required.

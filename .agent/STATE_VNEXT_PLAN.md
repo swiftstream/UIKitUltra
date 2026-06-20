@@ -996,22 +996,26 @@ State vNext is not complete until:
 | S3B StateValuable UIKitPlus API migration audit | Accepted / deferred | statevaluable-overload-ambiguity-audit.md | Strategy D — do not migrate core APIs yet |
 | S4 CombinedState3...7 | Accepted | 10583f7 + d6be11c | additive multi-state mapping + lifecycle tests |
 | S5 holdIfOwned cleanup | Accepted | holdifowned-audit.md + 92f9163 + 5b4c30b + ff3628c + 531e93c + 561ae57 + 2f5b880 + f7546bb + 4fb53a1 + 3a0af89 + 930181d + c83b9f9 + 9733831 | obsolete helper removed; Classes/Tests zero |
-| S6 State concurrency envelope ADR | **Pending** | — | next State vNext task after S5 cleanup |
+| S6 State concurrency envelope ADR/probe | Accepted | state-concurrency-envelope-adr.md + state-concurrency-diagnostic-probe.md | Option C accepted first; strict build/test pass; no immediate State implementation required |
 | S7 shared State package ADR | **Pending** | — | later |
 
 ---
 
 ## 12. Next Recommended Task
 
-**S6 — State concurrency envelope ADR**
+**Decision point after S6**
 
-S5 is complete. The next State vNext task is to write an ADR for the
-Swift 6 concurrency envelope before changing `State` declarations.
+S6 ADR/probe is complete. Current strict-concurrency diagnostics do not force
+State implementation work: both strict build and strict test pass, with zero
+State-related diagnostics.
 
-The ADR should decide:
+Recommended next step is to choose one of:
 
-- whether `State` becomes `@MainActor`;
-- whether `Value: Sendable` is required;
-- whether `State` itself is `Sendable` or `@unchecked Sendable`;
-- how listener closures are isolated;
-- what migration path avoids breaking existing UIKitPlus APIs.
+1. **S7 — shared State package ADR** if the goal is cross-framework architecture.
+2. **Strict-concurrency warning cleanup** if the goal is to remove the remaining
+   non-State warnings.
+3. **Release/readiness audit** if the goal is to summarize S1-S6 before the next
+   larger State vNext track.
+
+Do not implement `@MainActor State`, `Value: Sendable`, or `@unchecked Sendable`
+unless a future diagnostic or explicit API decision requires it.

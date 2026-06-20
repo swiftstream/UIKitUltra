@@ -60,24 +60,25 @@ Do not update this file for:
 
 ### TD-002 — Swift 6 strict concurrency migration pending
 
-- Status: Deferred
+- Status: Partially Resolved (S6)
 - Severity: High
 - Area: Swift 6 / Concurrency
 - Files:
   - `.agent/STATE_VNEXT_PLAN.md` (§5)
 - Issue:
-  - UIKitPlus is not yet Swift 6 strict-concurrency compatible.
-  - `@State` needs `@MainActor` isolation, `Value: Sendable`, and closure Sendability annotations.
-  - Open question: `open class State` vs `final class State`.
+  - UIKitPlus strict-concurrency diagnostics are currently clean.
+  - `swift build -Xswiftc -strict-concurrency=complete` passes.
+  - `swift test -Xswiftc -strict-concurrency=complete` passes (286 tests, 0 failures).
+  - Zero State-related diagnostics found.
+  - No immediate `@MainActor State`, `Value: Sendable`, or `@unchecked Sendable` implementation is required.
 - Risk:
-  - Delayed migration accumulates more source debt.
-  - Swift 6 language mode may produce new warnings or errors.
+  - Low for now. Diagnostics are clean.
+  - Revisit only if future Swift versions or API policy require deeper State changes.
 - Suggested direction:
-  - Complete governance docs commit first.
-  - Complete 52-commit audit.
-  - Then begin Swift 6 strict concurrency migration following `STATE_VNEXT_PLAN.md` §5.
+  - S6 accepted Option C first: keep `State<Value>` unconstrained.
+  - Consider S7 (shared State package ADR) or strict-concurrency warning cleanup next.
 - Non-goals for this docs-closure chat:
-  - Not starting Swift 6 migration.
+  - Not implementing State concurrency changes.
   - Not editing Swift source.
 
 ### TD-003 — State vNext deferred/global architecture debt
