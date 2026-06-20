@@ -502,6 +502,53 @@ open class State<Value>: Stateable, StatesHolder {
     }
 }
 
+public protocol OptionalStateValue {
+    associatedtype Wrapped
+
+    var optional: Wrapped? { get }
+
+    static func unwrap(_ wrapped: Wrapped) -> Self
+}
+
+extension Optional: OptionalStateValue {
+    public var optional: Wrapped? { self }
+
+    public static func unwrap(_ wrapped: Wrapped) -> Self {
+        wrapped
+    }
+}
+
+public extension State where Value: OptionalStateValue, Value: ExpressibleByNilLiteral {
+    @discardableResult
+    func mergeWithNonOptional(with state: State<Value.Wrapped>) -> [StateListener] {
+        wrappedValue = .unwrap(state.wrappedValue)
+
+        var justSetExternal = false
+        var justSetInternal = false
+
+        let externalListener = state.listen { [weak self] newValue in
+            guard !justSetInternal else { return }
+
+            justSetExternal = true
+            defer { justSetExternal = false }
+
+            self?.wrappedValue = .unwrap(newValue)
+        }
+
+        let optionalListener = listen { [weak state] newValue in
+            guard !justSetExternal else { return }
+            guard let unwrappedValue = newValue.optional else { return }
+
+            justSetInternal = true
+            defer { justSetInternal = false }
+
+            state?.wrappedValue = unwrappedValue
+        }
+
+        return [externalListener, optionalListener]
+    }
+}
+
 public class CombinedState<A, B> {
     let _left: State<A>
     let _right: State<B>
