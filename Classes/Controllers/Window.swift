@@ -354,12 +354,22 @@ public class Window: AppBuilderContent {
     
     // MARK: Min Size
     
+    public func minSize(_ width: CGFloat, _ height: CGFloat) -> Self {
+        window.minSize = .init(width: width, height: height)
+        return self
+    }
+
     public func minSize(_ value: NSSize) -> Self {
         window.minSize = value
         return self
     }
     
     // MARK: Max Size
+
+    public func maxSize(_ width: CGFloat, _ height: CGFloat) -> Self {
+        window.maxSize = .init(width: width, height: height)
+        return self
+    }
 
     public func maxSize(_ value: NSSize) -> Self {
         window.maxSize = value
@@ -368,6 +378,11 @@ public class Window: AppBuilderContent {
     
     // MARK: Content Min Size
 
+    public func contentMinSize(_ width: CGFloat, _ height: CGFloat) -> Self {
+        window.contentMinSize = .init(width: width, height: height)
+        return self
+    }
+
     public func contentMinSize(_ value: NSSize) -> Self {
         window.contentMinSize = value
         return self
@@ -375,6 +390,11 @@ public class Window: AppBuilderContent {
 
     // MARK: Content Max Size
     
+    public func contentMaxSize(_ width: CGFloat, _ height: CGFloat) -> Self {
+        window.contentMaxSize = .init(width: width, height: height)
+        return self
+    }
+
     public func contentMaxSize(_ value: NSSize) -> Self {
         window.contentMaxSize = value
         return self
@@ -382,6 +402,11 @@ public class Window: AppBuilderContent {
 
     // MARK: Min Full Screen Content Size
     
+    public func minFullScreenContentSize(_ width: CGFloat, _ height: CGFloat) -> Self {
+        window.minFullScreenContentSize = .init(width: width, height: height)
+        return self
+    }
+
     public func minFullScreenContentSize(_ value: NSSize) -> Self {
         window.minFullScreenContentSize = value
         return self
@@ -389,6 +414,11 @@ public class Window: AppBuilderContent {
 
     // MARK: Max Full Screen Content Size
     
+    public func maxFullScreenContentSize(_ width: CGFloat, _ height: CGFloat) -> Self {
+        window.maxFullScreenContentSize = .init(width: width, height: height)
+        return self
+    }
+
     public func maxFullScreenContentSize(_ value: NSSize) -> Self {
         window.maxFullScreenContentSize = value
         return self
