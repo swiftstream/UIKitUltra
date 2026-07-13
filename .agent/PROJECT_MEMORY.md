@@ -19,10 +19,22 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Baselines
 
-- macOS swift test baseline: 362
+- macOS swift test baseline: 369 tests, 5 skipped
 - iOS simulator baseline: 218
 
 - macOS `UTextView` is an AppKit scroll/text wrapper with declarative state, editing, command support, auto-growing height, and maximum-height scrolling.
+
+## Glass Effect Facts
+
+- macOS 26+ uses the native AppKit `UGlassEffectView: NSGlassEffectView` view.
+- iOS/iPadOS/tvOS 26+ use native UIKit effect objects, with Glass effects hosted by the existing `UVisualEffectView`.
+- The generic corner-configuration modifier assigns native `UIView.cornerConfiguration` and preserves declarative view identity.
+- UIKitPlus has no synthetic UIKit Glass view or wrapper effect.
+- Native `UIVisualEffectView` installation may copy supplied effects. UIKitPlus validates the installed native type and public configuration rather than supplied-object identity.
+- `UIKitPlus-iPhone-26-2` (iPhone 17 Pro-equivalent) and `UIKitPlus-iPad-26-2` (iPad Pro 11-inch-equivalent) iOS 26.2 runtime probes passed; native diagnostics observed copied effect identities while configured public values survived installation.
+- The focused tvOS 26.2 Glass runtime probe passed. The complete tvOS package build remains blocked by unrelated pre-existing unavailable UIKit APIs and is not claimed tvOS-clean.
+- Catalyst follows the iOS source branch, but current macabi validation was not performed successfully because the compiler failed before loading UIKit.
+- visionOS and watchOS are excluded from the Glass feature.
 
 ## Frozen Architectural Decisions
 

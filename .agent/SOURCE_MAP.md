@@ -59,12 +59,17 @@ macOS-only views (guarded by `#if os(macOS)`):
 - `MacOS+ImageView.swift` — `UImage` macOS `NSImage` and URL state bindings.
 - `MacOS+TextField.swift` — `UTextField` macOS typing-state and attributed-string listener.
 - `MacOS+TextView.swift` — macOS `UTextView` owned `NSTextView` inside `NSScrollView` with declarative text/state/editing/command API, auto-growing height, and maximum-height scrolling.
+- `MacOS+GlassEffectView.swift` — macOS 26+ native `UGlassEffectView: NSGlassEffectView` declarative Glass host.
+- `MacOS+VisualEffectView.swift` — macOS native `UVisualEffectView: NSVisualEffectView` legacy effect host.
 
 ### Classes/Extensions/**
 
 Extension-driven feature composition (the `DeclarativeProtocol+Feature.swift` pattern):
 
 - `DeclarativeProtocol+*.swift` — declarative view-owned state bindings (Tint, Corners, Hidden, Alpha, Opacity, UserInteraction, Borders, Shadow).
+- `UIGlassEffect+Declarative.swift` — iOS/iPadOS/tvOS 26+ fluent modifiers for the native `UIGlassEffect` object.
+- `UIGlassContainerEffect+Declarative.swift` — iOS/iPadOS/tvOS 26+ fluent spacing modifier for the native `UIGlassContainerEffect` object.
+- `DeclarativeProtocol+CornerConfiguration.swift` — generic iOS/tvOS 26+ declarative `UIView.cornerConfiguration` modifier.
 - `UIColor+Dynamic.swift` — macOS dynamic-color theme listener.
 - `AttrStr+Joined.swift` — attributed string joined composition.
 - `Array+Diff.swift` — collision-safe identity and duplicate matching diff helpers.
@@ -101,7 +106,16 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 362 tests (macOS baseline), 218 tests (iOS simulator baseline).
+Test suite: 369 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
+
+### Glass Effect Ownership and Validation
+
+- `MacOSVisualEffectsDeclarativeTests.swift` — macOS native and legacy visual-effect coverage; macOS 26-only Glass tests skip on older macOS hosts.
+- `UIKitGlassEffectsDeclarativeTests.swift` — shared seven-test iOS/tvOS Glass and corner-configuration contract suite.
+- UIKit Glass effect extensions are shared by iOS/iPadOS/tvOS 26+; `UVisualEffectView` remains the UIKit native host. Installed effect identity is not guaranteed after native installation; installed type and public configuration are the supported assertions. [PA1][PA2][PA3][FC1][FC2][FC3][EX1][EX4]
+- Focused iOS 26.2 runtime probes passed on `UIKitPlus-iPhone-26-2` (iPhone 17 Pro-equivalent) and `UIKitPlus-iPad-26-2` (iPad Pro 11-inch-equivalent) simulators.
+- Focused tvOS 26.2 runtime probe passed on an available Apple TV simulator. The complete tvOS package build remains blocked by unrelated pre-existing unavailable UIKit APIs in `PushNotificationOption.swift` and other paths; it is not a tvOS-clean baseline.
+- Catalyst follows the iOS source branch but was not validated because the current macabi compiler path failed before loading UIKit.
 
 ## Key Ownership Notes
 
