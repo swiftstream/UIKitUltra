@@ -58,6 +58,7 @@ macOS-only views (guarded by `#if os(macOS)`):
 - `MacOS+Button.swift` — `UButton` macOS type state binding, hover bridge, setup listener.
 - `MacOS+ImageView.swift` — `UImage` macOS `NSImage` and URL state bindings.
 - `MacOS+TextField.swift` — `UTextField` macOS typing-state and attributed-string listener.
+- `MacOS+TextView.swift` — macOS `UTextView` owned `NSTextView` inside `NSScrollView` with declarative text/state/editing/command API, auto-growing height, and maximum-height scrolling.
 
 ### Classes/Extensions/**
 
@@ -100,7 +101,7 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 228 tests (macOS baseline), 218 tests (iOS simulator baseline).
+Test suite: 362 tests (macOS baseline), 218 tests (iOS simulator baseline).
 
 ## Key Ownership Notes
 

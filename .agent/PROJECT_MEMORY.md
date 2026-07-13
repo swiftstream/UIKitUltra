@@ -19,8 +19,10 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Baselines
 
-- macOS swift test baseline: 228
+- macOS swift test baseline: 362
 - iOS simulator baseline: 218
+
+- macOS `UTextView` is an AppKit scroll/text wrapper with declarative state, editing, command support, auto-growing height, and maximum-height scrolling.
 
 ## Frozen Architectural Decisions
 
