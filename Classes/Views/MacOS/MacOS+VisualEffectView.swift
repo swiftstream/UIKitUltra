@@ -53,6 +53,13 @@ open class UVisualEffectView: NSVisualEffectView, AnyDeclarativeProtocol, Declar
         wantsLayer = true
     }
     
+    /// A value indicating appearance
+    @discardableResult
+    public func appearance(_ v: NSAppearance.Name) -> Self {
+        appearance = .init(named: v)
+        return self
+    }
+
     /// A value indicating which material is shown by the NSVisualEffectView.
     /// See the comments on NSVisualEffectMaterial.
     /// Defaults to NSVisualEffectMaterialAppearanceBased.
