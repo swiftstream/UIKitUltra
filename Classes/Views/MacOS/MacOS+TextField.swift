@@ -290,6 +290,14 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         return self
     }
     
+    // MARK: UsesSingleLineMode
+
+    @discardableResult
+    public func usesSingleLineMode(_ value: Bool = true) -> Self {
+        self.usesSingleLineMode = value
+        return self
+    }
+
     // MARK: NewLine Action
     
     @discardableResult
@@ -525,16 +533,9 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
     // MARK:
     
     func _setBackgroundColor(_ v: NSColor?) {
-        guard v != .clear else {
-            (cell as? NSTextFieldCell)?.drawsBackground = false
-            return
-        }
-        guard let v = v else {
-            (cell as? NSTextFieldCell)?.drawsBackground = false
-            return
-        }
-        (cell as? NSTextFieldCell)?.drawsBackground = true
-        (cell as? NSTextFieldCell)?.backgroundColor = v
+        wantsLayer = true
+        (cell as? NSTextFieldCell)?.drawsBackground = false
+        layer?.backgroundColor = v?.cgColor
     }
     
     public func `return`() {
