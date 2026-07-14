@@ -21,8 +21,12 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
 
 ### Classes/Controllers/**
 
+- `Menu.swift` — macOS `NSMenu` wrapper; UIKitPlus-created menus use private
+  `_NSMenu` storage to retain declarative `MenuItem` action owners for the
+  native AppKit menu lifetime. [RT7][PA1][PA3]
 - `StatusItem.swift` — macOS status item controller with state binding support.
-- `MenuItem.swift` — macOS menu item with state bindings and listener lifecycle.
+- `MenuItem.swift` — macOS menu item with state bindings, closure actions, and
+  cycle-free helper ownership. [RT7][PA1][PA3]
 
 ### Classes/Views/Universal/**
 
@@ -106,7 +110,11 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 369 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
+Test suite: 372 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
+
+- `MenuItemLifecycleTests.swift` — verifies cycle-free menu item teardown,
+  native-menu ownership of closure targets after wrapper release, submenu
+  action lifetime, and external `NSMenu` identity preservation. [RT7][PA1][PA3]
 
 ### Glass Effect Ownership and Validation
 
@@ -123,6 +131,6 @@ Test suite: 369 tests, 5 skipped (macOS baseline); 218 tests (historical complet
 - `PreConstraint.swift` — self-owned `StateListener` pattern (completed in milestone 6).
 - `Identable.swift` — identity conformance for diff.
 - `Array+Diff.swift` — collision-safe identity and duplicate matching (completed in milestone 7).
-- `MenuItem.swift` — lifecycle fix with retain-cycle repair (completed in milestone 5M).
+- `Menu.swift` owns native `_NSMenu` declarative-item storage; `MenuItem.swift` remains cycle-free; native AppKit ownership, not reverse wrapper cycles, keeps closure actions alive. [RT7][PA1][PA3]
 - `List.swift` — reversed-state binding.
 - `ForEach.swift` — scoped subscriptions.

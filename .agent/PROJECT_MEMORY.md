@@ -19,10 +19,20 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Baselines
 
-- macOS swift test baseline: 369 tests, 5 skipped
+- macOS swift test baseline: 372 tests, 5 skipped
 - iOS simulator baseline: 218
 
 - macOS `UTextView` is an AppKit scroll/text wrapper with declarative state, editing, command support, auto-growing height, and maximum-height scrolling.
+
+## macOS Menu Ownership Facts
+
+- UIKitPlus-created macOS menus use private `_NSMenu: NSMenu` storage that
+  retains declarative `MenuItem` wrappers for the lifetime of the native menu. [RT7][PA1][PA3]
+- This keeps closure-based actions and key equivalents functional when AppKit
+  retains only `NSMenu`. [RT7][PA1][PA3]
+- The ownership graph contains no Objective-C associated objects, global
+  registry, `_MenuItem.root`, or `MenuItemHelper.root`. [RT7][PA1][PA3]
+- `Menu.init(_ menu: NSMenu)` preserves the exact external native-menu identity. [RT7][PA1][PA3]
 
 ## Glass Effect Facts
 

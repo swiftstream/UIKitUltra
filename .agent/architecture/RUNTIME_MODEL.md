@@ -38,6 +38,19 @@ Unresolved relative constraints by tag can register notification-based retry usi
 
 Views with trait handlers route trait changes to registered handlers; behavior differs by platform and OS version availability.
 
+### RT7: Native Menu Retains Declarative Action Owners
+
+UIKitPlus-created macOS menus use a private `_NSMenu: NSMenu` whose Swift
+storage strongly retains the declarative `MenuItem` wrappers for the lifetime
+of the native menu. This preserves closure targets when AppKit retains only the
+native `NSMenu`, including main menus, submenus, status-item menus, contextual
+menus, popup menus, and Dock-menu returns. [RT7][PA1][PA3]
+
+The ownership direction is native menu -> storage -> declarative menu items.
+Do not restore reverse `_MenuItem`/`MenuItemHelper` root references to
+`MenuItem`; releasing the native menu must release the declarative action
+owners. [RT7][PA1][PA3]
+
 ## Property and Configuration Timing
 
 - Chain value setters usually apply current value immediately to runtime object state.
@@ -98,4 +111,6 @@ Runtime patches must verify:
 - lifecycle ordering compatibility,
 - deferred activation correctness,
 - observer/listener propagation safety,
-- no hidden regressions in ForEach or trait-driven updates.
+- no hidden regressions in ForEach or trait-driven updates,
+- closure-based menu actions survive wrapper release while native-menu ownership exists, [RT7][PA1][PA3]
+- releasing the native menu releases declarative wrappers. [RT7][PA1][PA3]
