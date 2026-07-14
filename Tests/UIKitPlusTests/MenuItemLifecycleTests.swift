@@ -161,5 +161,137 @@ final class MenuItemLifecycleTests: XCTestCase {
             "MenuItem should deallocate after Menu is released because Menu.items was the authoritative owner."
         )
     }
+
+    @MainActor
+    func testNativeMenuRetainsBuilderActionAfterMenuWrapperDeallocation() {
+        var actionCount = 0
+        weak var weakItem: MenuItem?
+        var nativeMenu: NSMenu?
+
+        autoreleasepool {
+            var item: MenuItem? = MenuItem("Quit")
+                .key("q")
+                .keyMask(.command)
+                .onAction {
+                    actionCount += 1
+                }
+
+            weakItem = item
+
+            var menu: Menu? = Menu {
+                item!
+            }
+
+            nativeMenu = menu?.menu
+
+            XCTAssertEqual(menu?.items.count, 1)
+            XCTAssertEqual(nativeMenu?.numberOfItems, 1)
+
+            item = nil
+            menu = nil
+        }
+
+        XCTAssertNotNil(
+            weakItem,
+            "The native NSMenu must retain the declarative MenuItem after the temporary Menu wrapper is released."
+        )
+
+        XCTAssertEqual(nativeMenu?.item(at: 0)?.keyEquivalent, "q")
+        XCTAssertEqual(
+            nativeMenu?.item(at: 0)?.keyEquivalentModifierMask,
+            .command
+        )
+        XCTAssertNotNil(nativeMenu?.item(at: 0)?.target)
+        XCTAssertNotNil(nativeMenu?.item(at: 0)?.action)
+
+        _ = NSApplication.shared
+        nativeMenu?.performActionForItem(at: 0)
+
+        XCTAssertEqual(
+            actionCount,
+            1,
+            "A closure-based native menu action must still execute after the temporary Menu wrapper is released."
+        )
+
+        nativeMenu = nil
+
+        XCTAssertNil(
+            weakItem,
+            "Releasing the native menu must release its declarative MenuItem ownership."
+        )
+    }
+
+    @MainActor
+    func testSubmenuRetainsBuilderActionAfterTemporaryMenuWrapperDeallocation() {
+        var actionCount = 0
+        weak var weakChildItem: MenuItem?
+        var rootNativeMenu: NSMenu?
+        var nativeSubmenu: NSMenu?
+
+        autoreleasepool {
+            var childItem: MenuItem? = MenuItem("Quit")
+                .key("q")
+                .keyMask(.command)
+                .onAction {
+                    actionCount += 1
+                }
+
+            weakChildItem = childItem
+
+            var rootMenu: Menu? = Menu {
+                MenuItem("Application").submenu {
+                    childItem!
+                }
+            }
+
+            rootNativeMenu = rootMenu?.menu
+
+            XCTAssertEqual(rootMenu?.items.count, 1)
+            XCTAssertEqual(rootNativeMenu?.numberOfItems, 1)
+
+            childItem = nil
+            rootMenu = nil
+        }
+
+        XCTAssertNotNil(
+            weakChildItem,
+            "A native submenu must retain its declarative child action owner after temporary wrappers are released."
+        )
+
+        nativeSubmenu = rootNativeMenu?.item(at: 0)?.submenu
+
+        XCTAssertEqual(nativeSubmenu?.numberOfItems, 1)
+        XCTAssertEqual(nativeSubmenu?.item(at: 0)?.keyEquivalent, "q")
+        XCTAssertEqual(
+            nativeSubmenu?.item(at: 0)?.keyEquivalentModifierMask,
+            .command
+        )
+        XCTAssertNotNil(nativeSubmenu?.item(at: 0)?.target)
+        XCTAssertNotNil(nativeSubmenu?.item(at: 0)?.action)
+
+        _ = NSApplication.shared
+        nativeSubmenu?.performActionForItem(at: 0)
+
+        XCTAssertEqual(actionCount, 1)
+
+        nativeSubmenu = nil
+        rootNativeMenu = nil
+
+        XCTAssertNil(
+            weakChildItem,
+            "Releasing the root native menu graph must release the declarative submenu item."
+        )
+    }
+
+    func testWrappingExternalNSMenuPreservesNativeIdentity() {
+        let nativeMenu = NSMenu(title: "External")
+        let menu = Menu(nativeMenu)
+
+        XCTAssertTrue(
+            menu.menu === nativeMenu,
+            "Menu.init(_:) must continue wrapping the exact supplied NSMenu instance."
+        )
+        XCTAssertEqual(menu.items.count, 0)
+    }
 }
 #endif
