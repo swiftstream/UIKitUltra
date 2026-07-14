@@ -8,24 +8,42 @@
 #if os(macOS)
 import Cocoa
 
+private final class _NSMenu: NSMenu {
+    final class Storage {
+        var items: [MenuItem] = []
+    }
+
+    /// Retains declarative item owners for the lifetime of the native menu.
+    let storage = Storage()
+}
+
 public class Menu: NSObject, NSMenuDelegate {
     public let menu: NSMenu
-    var items: [MenuItem] = []
+    private let storage: _NSMenu.Storage
+
+    var items: [MenuItem] {
+        storage.items
+    }
     
     public init (_ menu: NSMenu) {
         self.menu = menu
+        storage = (menu as? _NSMenu)?.storage ?? _NSMenu.Storage()
         super.init()
         self.menu.delegate = self
     }
     
     public override init () {
-        menu = .init(title: "")
+        let nativeMenu = _NSMenu(title: "")
+        menu = nativeMenu
+        storage = nativeMenu.storage
         super.init()
         menu.delegate = self
     }
     
     public init (_ title: String? = nil, @MenuBuilder content: @escaping MenuBuilder.Block) {
-        menu = .init(title: title ?? "")
+        let nativeMenu = _NSMenu(title: title ?? "")
+        menu = nativeMenu
+        storage = nativeMenu.storage
         super.init()
         menu.delegate = self
         menu.cancelTracking()
@@ -35,7 +53,7 @@ public class Menu: NSObject, NSMenuDelegate {
     func parseMenuBuilder(_ item: MenuBuilderItem) {
         switch item {
         case .menuItems(let items):
-            self.items.append(contentsOf: items)
+            storage.items.append(contentsOf: items)
             items.forEach { menu.addItem($0.item) }
         case .items(let items): items.forEach { parseMenuBuilder($0) }
         case .none: break
