@@ -19,10 +19,20 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Baselines
 
-- macOS swift test baseline: 372 tests, 5 skipped
+- macOS swift test baseline: 384 tests, 5 skipped
 - iOS simulator baseline: 218
 
 - macOS `UTextView` is an AppKit scroll/text wrapper with declarative state, editing, command support, auto-growing height, and maximum-height scrolling.
+
+## macOS List Facts
+
+- High-level macOS `UList` exists with `UScrollView` plus one-column
+  `NSTableView` native backing. [PA4][VC5]
+- `UForEach` diffs map to targeted native insert, remove, and reload operations;
+  rows use automatic sizing. [VC5][RT8]
+- Chronological append plus explicit `scrollToBottom()` is supported.
+- ForEach listeners release with the list, and no AppKit diffable-data-source
+  layer was added. [RT8][ST6][PA4]
 
 ## macOS Menu Ownership Facts
 

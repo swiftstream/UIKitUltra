@@ -63,6 +63,9 @@ macOS-only views (guarded by `#if os(macOS)`):
 - `MacOS+ImageView.swift` — `UImage` macOS `NSImage` and URL state bindings.
 - `MacOS+TextField.swift` — `UTextField` macOS typing-state and attributed-string listener.
 - `MacOS+TextView.swift` — macOS `UTextView` owned `NSTextView` inside `NSScrollView` with declarative text/state/editing/command API, auto-growing height, and maximum-height scrolling.
+- `MacOS+List.swift` — macOS `UList` backed by `UScrollView` and one-column
+  view-based `NSTableView`; owns ordered sections, maps scoped `ForEach` diffs
+  to targeted native row operations, and hosts real UIKitPlus row roots.
 - `MacOS+GlassEffectView.swift` — macOS 26+ native `UGlassEffectView: NSGlassEffectView` declarative Glass host.
 - `MacOS+VisualEffectView.swift` — macOS native `UVisualEffectView: NSVisualEffectView` legacy effect host.
 
@@ -110,11 +113,14 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 372 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
+Test suite: 384 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
 
 - `MenuItemLifecycleTests.swift` — verifies cycle-free menu item teardown,
   native-menu ownership of closure targets after wrapper release, submenu
   action lifetime, and external `NSMenu` identity preservation. [RT7][PA1][PA3]
+- `MacOSListDeclarativeTests.swift` — verifies native macOS `UList` structure,
+  chronological rows, targeted ForEach mutations, row-root hosting, scrolling,
+  and scoped listener ownership. [VC5][RT8][PA4]
 
 ### Glass Effect Ownership and Validation
 

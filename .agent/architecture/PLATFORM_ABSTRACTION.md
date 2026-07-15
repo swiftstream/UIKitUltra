@@ -33,6 +33,13 @@ Core aliases (`BaseView`, `UColor`, etc.) provide shared entry points for DSL/ru
 
 Platform-only behavior must stay behind platform conditionals and not leak into shared contracts unintentionally.
 
+### PA4: Native List Platform Mapping
+
+iOS/tvOS `UList` uses `UITableView`; macOS `UList` uses `NSScrollView` plus
+view-based `NSTableView`. The macOS implementation uses one headerless column
+and native automatic row sizing. The public high-level intent remains `UList`,
+while native implementation details remain platform-explicit. [PA4][VC5]
+
 ## Forbidden Patterns
 
 - Calling UIKit-only APIs from shared code without guards.

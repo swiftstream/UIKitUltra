@@ -51,6 +51,19 @@ Do not restore reverse `_MenuItem`/`MenuItemHelper` root references to
 `MenuItem`; releasing the native menu must release the declarative action
 owners. [RT7][PA1][PA3]
 
+### RT8: Native List Owns Scoped Diff Composition
+
+A native `UList` owns its ordered section descriptors. A macOS `.forEach`
+section retains its `AnyForEach`, and that `ForEach` owns its scoped begin,
+listener, and end `StateListener` registrations. Native table cells own only
+their currently hosted declarative row root; reconfiguration removes the prior
+root and constraints.
+
+The ownership direction is list -> section -> ForEach -> scoped listeners and
+table -> visible cell -> current row root. Diff callbacks capture the list
+weakly, and releasing the list releases its scoped `ForEach` listener
+ownership. [RT8][VC5][ST6][PA4]
+
 ## Property and Configuration Timing
 
 - Chain value setters usually apply current value immediately to runtime object state.
@@ -112,5 +125,8 @@ Runtime patches must verify:
 - deferred activation correctness,
 - observer/listener propagation safety,
 - no hidden regressions in ForEach or trait-driven updates,
+- one subscription per list-owned ForEach and targeted native row operations,
+- row-root replacement removes prior roots and constraints,
+- no listener/list retain cycle,
 - closure-based menu actions survive wrapper release while native-menu ownership exists, [RT7][PA1][PA3]
 - releasing the native menu releases declarative wrappers. [RT7][PA1][PA3]

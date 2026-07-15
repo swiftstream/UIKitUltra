@@ -27,6 +27,16 @@ Built items insert real `BaseView` instances; composition does not create value-
 
 `addItem` and `add(views:at:)` define deterministic insertion order within current hierarchy operations.
 
+### VC5: Native List Composition
+
+Platform `UList` implementations consume `BodyBuilderItem` sections and map
+`ForEach` diffs to native row operations. Stateful insertions, removals, and
+modifications update only affected native rows rather than rebuilding the
+complete list composition tree.
+
+Native row ownership remains platform-owned. Row roots are real UIKitPlus
+views, and no second snapshot/diff engine is introduced. [VC5][RT5][PA4]
+
 ## Forbidden Patterns
 
 - Treating composition as immutable tree diffing engine.
