@@ -6,7 +6,7 @@ Active governance-tracked work items.
 
 ### GOV-001 — Finalize UIKitPlus agent governance docs
 
-- Status: IN PROGRESS until this docs commit is audited and committed
+- Status: COMPLETE — governance docs audited and committed locally
 - Scope: `AGENTS.md`, `.agent/**`, `.gitignore`
 - Non-scope: `Classes/**`, `Tests/**`, Swift 6 migration, State vNext implementation, push
 
@@ -34,10 +34,10 @@ Active governance-tracked work items.
 
 ## Current Known Baseline
 
-- HEAD: `379d5cb0b4af45cf4758645b0485931cf5195d09`
-- Branch: `master...origin/master [ahead 52]`
+- HEAD: `3daf001db097881e50081863cd2e2e7865b9fe7f`
+- Branch: `master...origin/master [ahead 18]`
 - Push: LOCKED
-- macOS swift test baseline: 228
+- macOS swift test baseline: 390 tests, 5 skipped
 - iOS simulator baseline: 218
 
 ## Ongoing Maintenance
