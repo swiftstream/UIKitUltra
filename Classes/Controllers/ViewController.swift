@@ -84,6 +84,298 @@ open class ViewController: BaseViewController {
     }
     
     public var window: NSWindow? { view.window }
+
+    // MARK: Notifications
+    // Listeners are additive. The no-argument overloads discard the native
+    // notification; overloads accepting `Notification` receive it unchanged.
+
+    private var notificationListeners: [NSNotification.Name: [(Notification) -> Void]] = [:]
+
+    private func addNotificationListener(
+        _ listener: @escaping (Notification) -> Void,
+        key: NSNotification.Name
+    ) {
+        if !notificationListeners.keys.contains(key) {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(windowNotification(_:)),
+                name: key,
+                object: nil
+            )
+            notificationListeners[key] = [listener]
+        } else {
+            notificationListeners[key]?.append(listener)
+        }
+    }
+
+    @objc private func windowNotification(_ notification: Notification) {
+        guard let sourceWindow = notification.object as? NSWindow,
+              let currentWindow = window,
+              sourceWindow === currentWindow else { return }
+        guard let listeners = notificationListeners[notification.name] else { return }
+        for l in listeners { l(notification) }
+    }
+
+    public func onWindowDidBecomeKey(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidBecomeKey { _ in listener() }
+    }
+    public func onWindowDidBecomeKey(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didBecomeKeyNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidBecomeMain(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidBecomeMain { _ in listener() }
+    }
+    public func onWindowDidBecomeMain(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didBecomeMainNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidChangeScreen(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidChangeScreen { _ in listener() }
+    }
+    public func onWindowDidChangeScreen(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didChangeScreenNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidDeminiaturize(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidDeminiaturize { _ in listener() }
+    }
+    public func onWindowDidDeminiaturize(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didDeminiaturizeNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidExpose(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidExpose { _ in listener() }
+    }
+    public func onWindowDidExpose(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didExposeNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidMiniaturize(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidMiniaturize { _ in listener() }
+    }
+    public func onWindowDidMiniaturize(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didMiniaturizeNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidMove(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidMove { _ in listener() }
+    }
+    public func onWindowDidMove(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didMoveNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidResignKey(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidResignKey { _ in listener() }
+    }
+    public func onWindowDidResignKey(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didResignKeyNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidResignMain(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidResignMain { _ in listener() }
+    }
+    public func onWindowDidResignMain(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didResignMainNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidResize(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidResize { _ in listener() }
+    }
+    public func onWindowDidResize(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didResizeNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidUpdate(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidUpdate { _ in listener() }
+    }
+    public func onWindowDidUpdate(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didUpdateNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillClose(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillClose { _ in listener() }
+    }
+    public func onWindowWillClose(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willCloseNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillMiniaturize(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillMiniaturize { _ in listener() }
+    }
+    public func onWindowWillMiniaturize(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willMiniaturizeNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillMove(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillMove { _ in listener() }
+    }
+    public func onWindowWillMove(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willMoveNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillBeginSheet(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillBeginSheet { _ in listener() }
+    }
+    public func onWindowWillBeginSheet(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willBeginSheetNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidEndSheet(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidEndSheet { _ in listener() }
+    }
+    public func onWindowDidEndSheet(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didEndSheetNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidChangeBackingProperties(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidChangeBackingProperties { _ in listener() }
+    }
+    public func onWindowDidChangeBackingProperties(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didChangeBackingPropertiesNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidChangeScreenProfile(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidChangeScreenProfile { _ in listener() }
+    }
+    public func onWindowDidChangeScreenProfile(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didChangeScreenProfileNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillStartLiveResize(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillStartLiveResize { _ in listener() }
+    }
+    public func onWindowWillStartLiveResize(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willStartLiveResizeNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidEndLiveResize(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidEndLiveResize { _ in listener() }
+    }
+    public func onWindowDidEndLiveResize(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didEndLiveResizeNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillEnterFullScreen(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillEnterFullScreen { _ in listener() }
+    }
+    public func onWindowWillEnterFullScreen(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willEnterFullScreenNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidEnterFullScreen(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidEnterFullScreen { _ in listener() }
+    }
+    public func onWindowDidEnterFullScreen(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didEnterFullScreenNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillExitFullScreen(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillExitFullScreen { _ in listener() }
+    }
+    public func onWindowWillExitFullScreen(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willExitFullScreenNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidExitFullScreen(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidExitFullScreen { _ in listener() }
+    }
+    public func onWindowDidExitFullScreen(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didExitFullScreenNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillEnterVersionBrowser(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillEnterVersionBrowser { _ in listener() }
+    }
+    public func onWindowWillEnterVersionBrowser(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willEnterVersionBrowserNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidEnterVersionBrowser(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidEnterVersionBrowser { _ in listener() }
+    }
+    public func onWindowDidEnterVersionBrowser(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didEnterVersionBrowserNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowWillExitVersionBrowser(_ listener: @escaping () -> Void) -> Self {
+        onWindowWillExitVersionBrowser { _ in listener() }
+    }
+    public func onWindowWillExitVersionBrowser(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.willExitVersionBrowserNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidExitVersionBrowser(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidExitVersionBrowser { _ in listener() }
+    }
+    public func onWindowDidExitVersionBrowser(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didExitVersionBrowserNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
+
+    public func onWindowDidChangeOcclusionState(_ listener: @escaping () -> Void) -> Self {
+        onWindowDidChangeOcclusionState { _ in listener() }
+    }
+    public func onWindowDidChangeOcclusionState(_ listener: @escaping (Notification) -> Void) -> Self {
+        let key = NSWindow.didChangeOcclusionStateNotification
+        addNotificationListener(listener, key: key)
+        return self
+    }
     #endif
     
     #if !os(macOS)
@@ -199,6 +491,7 @@ open class ViewController: BaseViewController {
     open func viewDidAppearFirstTime() {
         _viewWillAppearFirstTime()
     }
+
     #else
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
