@@ -438,6 +438,11 @@ public class Window: AppBuilderContent {
         window.toolbar = value
         return self
     }
+
+    public func toolbar() -> Self {
+        window.toolbar = NSToolbar()
+        return self
+    }
     
     // MARK: Shows Toolbar Button
     
