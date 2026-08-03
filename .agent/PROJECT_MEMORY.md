@@ -19,10 +19,33 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Baselines
 
-- macOS swift test baseline: 384 tests, 5 skipped
+- macOS swift test baseline: 390 tests, 5 skipped
 - iOS simulator baseline: 218
 
 - macOS `UTextView` is an AppKit scroll/text wrapper with declarative state, editing, command support, auto-growing height, and maximum-height scrolling.
+
+## macOS Window and Controller Facts
+
+- `Window.toolbar(_:)` preserves native optional semantics: passing `nil` clears
+  the toolbar, while `Window.toolbar()` creates a native `NSToolbar`. [PA1][FC1][FC6]
+- macOS `ViewController` window notifications are additive by notification name;
+  delivery checks `notification.object === view.window`, so configuration may
+  happen before attachment and remains correct if the view moves between
+  windows. Selector observers are removed during controller teardown.
+  [PA1][PA3][FC5][MU3]
+
+## macOS Text Facts
+
+macOS UText synchronizes native line-mode flags immediately and preserves the
+native `preferredMaxLayoutWidth` default. Multiline layout is resolved by the
+caller's constraint graph and native AppKit intrinsic sizing. When a multiline
+text field must wrap within a constrained horizontal space, the caller can use
+UIKitPlus's existing public compression-resistance modifier to allow horizontal
+compression instead of changing measurement properties during layout. UIKitPlus
+does not infer a width from a superview, persist provisional geometry, or run a
+parallel measurement lifecycle. Text, font, alignment, line-break, and
+line-count mutations invalidate intrinsic size, while `.lines(1)` restores
+native single-line flags. [PA1][PA3][RT1][FC5]
 
 ## macOS List Facts
 
@@ -30,6 +53,13 @@ This file stores stable governance memory for UIKitPlus agent work.
   `NSTableView` native backing. [PA4][VC5]
 - `UForEach` diffs map to targeted native insert, remove, and reload operations;
   rows use automatic sizing. [VC5][RT8]
+- Every top-level declarative row view is pinned to the native row wrapper's
+  leading and trailing edges, while the wrapper itself is pinned to the native
+  `NSTableCellView` edges. The table document view uses native width autoresizing;
+  `NSTableView.columnAutoresizingStyle` and the column autoresizing mask own
+  column width changes. `UList` has no live-resize layout override, manual frame
+  synchronization, or row-height engine. AppKit owns cell frames, live resize,
+  and automatic row-height calculation. [VC5][RT8][PA4][PA5]
 - Chronological append plus explicit `scrollToBottom()` is supported.
 - ForEach listeners release with the list, and no AppKit diffable-data-source
   layer was added. [RT8][ST6][PA4]

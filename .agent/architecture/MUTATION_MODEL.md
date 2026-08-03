@@ -39,6 +39,9 @@ UIKitPlus does not provide an implicit repository-wide mutation transaction engi
 - Common property-binding flow is: apply current value immediately, then react to future listener callbacks.
 - `ForEach` diff handlers run from subscribed listener flow.
 - Constraint constant updates occur through state-listener callbacks in `PreConstraint`.
+- macOS `ViewController` notification handlers register once per notification
+  name, filter the native event against the current window at delivery time,
+  and append repeated callbacks in registration order. [FC5][MU3][PA3]
 
 ## Hazards
 

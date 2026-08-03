@@ -17,6 +17,17 @@ Representative runtime lifecycle patterns:
 - `UView`: init -> `_setup()` -> `body { body }` -> `buildView()`.
 - `_StackView`: init -> `_setup()`.
 - `ViewController`: init -> `_setup()` -> `body { body }` -> `buildUI()`.
+- macOS `ViewController` window notifications may be configured before view
+  attachment. Observers are registered once per notification name and filter
+  delivery against the current `view.window`; repeated callbacks are additive,
+  and selector observers are removed during teardown. [RT1][PA1][PA3][FC5][MU3]
+- macOS multiline `UText`: configuration preserves native intrinsic sizing and
+  delegates width resolution to Auto Layout constraints. Callers can lower
+  horizontal compression resistance through the existing declarative modifier
+  when text should wrap within constrained space. UIKitPlus does not persist
+  provisional width, read a superview width, or run a parallel measurement
+  lifecycle. Text-style mutations invalidate intrinsic sizing.
+  [RT1][PA1][PA3][FC5]
 
 ### RT2: Deferred Constraint Activation
 
@@ -67,11 +78,10 @@ autoresizing, and the table/column autoresizing policies propagate width changes
 to cells. `UList` does not override `layout()` for resizing, call column fitting
 methods during live resize, or maintain a second resize or height-invalidation
 engine. AppKit owns live resize, cell frames, reuse, and automatic row heights.
-On macOS 11+, `.plain` prevents automatic table styles from introducing hidden
-row padding; macOS 10.15 preserves the legacy plain-compatible default because
-that API is unavailable. Diff callbacks capture the list weakly, and releasing
-the list releases its scoped `ForEach` listener ownership.
-[RT8][VC5][ST6][PA4][PA5]
+The macOS table uses `.plain` style, so this native width graph has no hidden
+full-width row padding; visual insets are explicit caller constraints.
+Diff callbacks capture the list weakly, and releasing the list releases its
+scoped `ForEach` listener ownership. [RT8][VC5][ST6][PA4][PA5]
 
 ## Property and Configuration Timing
 

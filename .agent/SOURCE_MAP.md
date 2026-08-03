@@ -24,6 +24,13 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
 - `Menu.swift` — macOS `NSMenu` wrapper; UIKitPlus-created menus use private
   `_NSMenu` storage to retain declarative `MenuItem` action owners for the
   native AppKit menu lifetime. [RT7][PA1][PA3]
+- `ViewController.swift` — cross-platform controller wrapper; macOS window
+  notification callbacks register by native notification name, filter delivery
+  against the controller's current `view.window`, preserve additive listener
+  semantics, and remove selector observers during teardown. [PA1][PA3][FC5][MU3]
+- `Window.swift` — macOS `NSWindow` fluent wrapper; `toolbar(_:)` preserves
+  native optional semantics while `toolbar()` creates a native toolbar.
+  [PA1][FC1][FC6]
 - `StatusItem.swift` — macOS status item controller with state binding support.
 - `MenuItem.swift` — macOS menu item with state bindings, closure actions, and
   cycle-free helper ownership. [RT7][PA1][PA3]
@@ -62,6 +69,13 @@ macOS-only views (guarded by `#if os(macOS)`):
 - `MacOS+Button.swift` — `UButton` macOS type state binding, hover bridge, setup listener.
 - `MacOS+ImageView.swift` — `UImage` macOS `NSImage` and URL state bindings.
 - `MacOS+TextField.swift` — `UTextField` macOS typing-state and attributed-string listener.
+- `MacOS+Text.swift` — `UText` macOS `NSTextField` label; line configuration
+  synchronizes `maximumNumberOfLines`, `usesSingleLineMode`,
+  `NSTextFieldCell.wraps`, and `NSTextFieldCell.isScrollable`. Multiline sizing
+  remains native and constraint-driven; callers can use the existing public
+  compression-resistance modifier when text should wrap inside constrained
+  horizontal space. Text-style mutations invalidate intrinsic sizing.
+  [PA1][PA3][RT1][FC5]
 - `MacOS+TextView.swift` — macOS `UTextView` owned `NSTextView` inside `NSScrollView` with declarative text/state/editing/command API, auto-growing height, and maximum-height scrolling.
 - `MacOS+List.swift` — macOS `UList` backed by `UScrollView` and one-column
   view-based `NSTableView`; owns ordered sections, maps scoped `ForEach` diffs
@@ -69,10 +83,9 @@ macOS-only views (guarded by `#if os(macOS)`):
   every top-level row view horizontally. The document view uses native width
   autoresizing, while table/column autoresizing policies delegate column sizing,
   cell frames, live resize, reuse, and automatic row heights to AppKit; there is
-  no `UList.layout()` resize loop. On macOS 11+, the table explicitly uses
-  `.plain`; macOS 10.15 keeps its legacy plain-compatible default because the
-  style API is unavailable. Neither path supplies hidden row padding, so callers
-  own visual content insets. [PA4][PA5][VC5][RT8]
+  no `UList.layout()` resize loop. The table uses AppKit's `.plain` style, so
+  the wrapper supplies no hidden full-width row padding; callers own visual
+  content insets. [PA4][PA5][VC5][RT8]
 - `MacOS+GlassEffectView.swift` — macOS 26+ native `UGlassEffectView: NSGlassEffectView` declarative Glass host.
 - `MacOS+VisualEffectView.swift` — macOS native `UVisualEffectView: NSVisualEffectView` legacy effect host.
 
@@ -120,14 +133,23 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 384 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
+Test suite: 390 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
 
 - `MenuItemLifecycleTests.swift` — verifies cycle-free menu item teardown,
   native-menu ownership of closure targets after wrapper release, submenu
   action lifetime, and external `NSMenu` identity preservation. [RT7][PA1][PA3]
 - `MacOSListDeclarativeTests.swift` — verifies native macOS `UList` structure,
-  chronological rows, targeted ForEach mutations, row-root hosting, scrolling,
-  and scoped listener ownership. [VC5][RT8][PA4]
+  chronological rows, targeted ForEach mutations, native row-root hosting,
+  scrolling, and scoped listener ownership. [VC5][RT8][PA4]
+- `MacOSTextDeclarativeTests.swift` — verifies native single-line and multiline
+  AppKit cell flags exposed by `UText.lines(_:)` and `UText.multiline()`.
+  [PA1][PA3][RT1][FC1]
+- `MacOSWindowDeclarativeTests.swift` — verifies toolbar creation, fluent
+  identity, and preservation of native `toolbar(nil)` clearing semantics.
+  [PA1][FC1][FC6]
+- `MacOSViewControllerWindowNotificationTests.swift` — verifies notification
+  filtering by the attached window, pre-attachment registration, payload
+  delivery, and additive callback registration. [PA1][PA3][FC5][MU3]
 
 ### Glass Effect Ownership and Validation
 
