@@ -105,6 +105,10 @@ open class UList: UScrollView,
         scrollerStyle = .overlay
 
         tableView.headerView = nil
+        tableView.autoresizingMask = [.width]
+        if #available(macOS 11.0, *) {
+            tableView.style = .plain
+        }
         tableView.backgroundColor = .clear
         tableView.gridStyleMask = []
         tableView.usesAlternatingRowBackgroundColors = false
@@ -270,20 +274,6 @@ open class UList: UScrollView,
         shouldSelectRow row: Int
     ) -> Bool {
         false
-    }
-
-    open override func layout() {
-        super.layout()
-
-        let width = contentView.bounds.width
-        guard width.isFinite else { return }
-        let clampedWidth = max(0, width)
-
-        var frame = tableView.frame
-        frame.size.width = clampedWidth
-        tableView.frame = frame
-        tableColumn.width = clampedWidth
-        tableView.sizeLastColumnToFit()
     }
 
     @discardableResult

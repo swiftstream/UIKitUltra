@@ -60,9 +60,18 @@ their currently hosted declarative row root; reconfiguration removes the prior
 root and constraints.
 
 The ownership direction is list -> section -> ForEach -> scoped listeners and
-table -> visible cell -> current row root. Diff callbacks capture the list
-weakly, and releasing the list releases its scoped `ForEach` listener
-ownership. [RT8][VC5][ST6][PA4]
+table -> visible cell -> wrapper root -> current declarative row. Native edge
+constraints propagate the AppKit-owned cell width through the wrapper to each
+top-level row. The document view follows its clip view through native width
+autoresizing, and the table/column autoresizing policies propagate width changes
+to cells. `UList` does not override `layout()` for resizing, call column fitting
+methods during live resize, or maintain a second resize or height-invalidation
+engine. AppKit owns live resize, cell frames, reuse, and automatic row heights.
+On macOS 11+, `.plain` prevents automatic table styles from introducing hidden
+row padding; macOS 10.15 preserves the legacy plain-compatible default because
+that API is unavailable. Diff callbacks capture the list weakly, and releasing
+the list releases its scoped `ForEach` listener ownership.
+[RT8][VC5][ST6][PA4][PA5]
 
 ## Property and Configuration Timing
 

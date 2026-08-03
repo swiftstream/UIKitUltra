@@ -37,8 +37,12 @@ Platform-only behavior must stay behind platform conditionals and not leak into 
 
 iOS/tvOS `UList` uses `UITableView`; macOS `UList` uses `NSScrollView` plus
 view-based `NSTableView`. The macOS implementation uses one headerless column
-and native automatic row sizing. The public high-level intent remains `UList`,
-while native implementation details remain platform-explicit. [PA4][VC5]
+and native automatic row sizing. On macOS 11+, it explicitly selects
+`NSTableView.Style.plain`; on macOS 10.15, where `style` is unavailable, the
+legacy default remains plain-compatible. Both paths provide no hidden row
+padding, so caller composition owns visual content insets. The public
+high-level intent remains `UList`, while native implementation details remain
+platform-explicit. [PA4][PA5][VC5]
 
 ## Forbidden Patterns
 

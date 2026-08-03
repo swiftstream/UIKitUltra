@@ -35,7 +35,15 @@ modifications update only affected native rows rather than rebuilding the
 complete list composition tree.
 
 Native row ownership remains platform-owned. Row roots are real UIKitPlus
-views, and no second snapshot/diff engine is introduced. [VC5][RT5][PA4]
+views. On macOS, every top-level declarative row view is pinned to the native
+row wrapper's leading and trailing edges, and the wrapper is pinned to the
+native cell edges. This forms one native constraint graph from the AppKit-owned
+column and cell width down to the declarative row content. UIKitPlus does not
+maintain a second resize, animation, or row-height engine. The macOS 11+
+`.plain` style and macOS 10.15 legacy plain-compatible default supply no
+implicit outer padding, so a row's visual insets are explicit constraints owned
+by the calling composition. No second snapshot/diff engine is introduced.
+[VC5][RT5][RT8][PA4][PA5]
 
 ## Forbidden Patterns
 

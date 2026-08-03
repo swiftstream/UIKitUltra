@@ -65,7 +65,14 @@ macOS-only views (guarded by `#if os(macOS)`):
 - `MacOS+TextView.swift` — macOS `UTextView` owned `NSTextView` inside `NSScrollView` with declarative text/state/editing/command API, auto-growing height, and maximum-height scrolling.
 - `MacOS+List.swift` — macOS `UList` backed by `UScrollView` and one-column
   view-based `NSTableView`; owns ordered sections, maps scoped `ForEach` diffs
-  to targeted native row operations, and hosts real UIKitPlus row roots.
+  to targeted native row operations, hosts real UIKitPlus row roots, and pins
+  every top-level row view horizontally. The document view uses native width
+  autoresizing, while table/column autoresizing policies delegate column sizing,
+  cell frames, live resize, reuse, and automatic row heights to AppKit; there is
+  no `UList.layout()` resize loop. On macOS 11+, the table explicitly uses
+  `.plain`; macOS 10.15 keeps its legacy plain-compatible default because the
+  style API is unavailable. Neither path supplies hidden row padding, so callers
+  own visual content insets. [PA4][PA5][VC5][RT8]
 - `MacOS+GlassEffectView.swift` — macOS 26+ native `UGlassEffectView: NSGlassEffectView` declarative Glass host.
 - `MacOS+VisualEffectView.swift` — macOS native `UVisualEffectView: NSVisualEffectView` legacy effect host.
 
