@@ -86,6 +86,11 @@ open class UText: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolIntern
         super.layout()
         onLayoutSubviews()
     }
+
+    private func invalidateTextLayout() {
+        invalidateIntrinsicContentSize()
+        needsLayout = true
+    }
     
     open override func viewDidMoveToSuperview() {
         super.viewDidMoveToSuperview()
@@ -105,6 +110,7 @@ extension UText: Refreshable {
 extension UText: _Fontable {
     func _setFont(_ v: UFont?) {
         font = v
+        invalidateTextLayout()
     }
 }
 
@@ -119,6 +125,7 @@ extension UText: _Textable {
     func _setText(_ v: NSAttributedString?) {
         attributedStringValue = .init() // hack to update attributed string with changed paragraph style
         attributedStringValue = v ?? .init()
+        invalidateTextLayout()
     }
 }
 
@@ -144,18 +151,30 @@ extension UText: _TextAligmentable {
         str.addAttribute(.paragraphStyle, value: p, range: NSRange(location: 0, length: str.length))
         attributedStringValue = str
         alignment = v
+        invalidateTextLayout()
     }
 }
 
 extension UText: _TextLineable {
     func _setNumbelOfLines(_ v: Int) {
         maximumNumberOfLines = v
+
+        let isMultiline = v != 1
+        usesSingleLineMode = !isMultiline
+
+        if let textFieldCell = cell as? NSTextFieldCell {
+            textFieldCell.wraps = isMultiline
+            textFieldCell.isScrollable = !isMultiline
+        }
+
+        invalidateTextLayout()
     }
 }
 
 extension UText: _TextLineBreakModeable {
     func _setLineBreakMode(_ v: NSLineBreakMode) {
         lineBreakMode = v
+        invalidateTextLayout()
     }
 }
 
