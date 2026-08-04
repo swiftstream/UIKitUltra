@@ -94,6 +94,8 @@ macOS-only views (guarded by `#if os(macOS)`):
 Extension-driven feature composition (the `DeclarativeProtocol+Feature.swift` pattern):
 
 - `DeclarativeProtocol+*.swift` — declarative view-owned state bindings (Tint, Corners, Hidden, Alpha, Opacity, UserInteraction, Borders, Shadow).
+- `DeclarativeProtocol+HuggingPriority.swift` — owns the canonical native content-hugging fluent modifier for UIKit/AppKit, preserving native priority and axis/orientation semantics. [FC1][FC2][FC3][FC6][EX1][EX4][EX5][PA1][PA3][PA5]
+- `DeclarativeProtocol+CompressionResistance.swift` — owns the canonical native content-compression-resistance fluent modifier for UIKit/AppKit, preserving native priority and axis/orientation semantics. [FC1][FC2][FC3][FC6][EX1][EX4][EX5][PA1][PA3][PA5]
 - `UIGlassEffect+Declarative.swift` — iOS/iPadOS/tvOS 26+ fluent modifiers for the native `UIGlassEffect` object.
 - `UIGlassContainerEffect+Declarative.swift` — iOS/iPadOS/tvOS 26+ fluent spacing modifier for the native `UIGlassContainerEffect` object.
 - `DeclarativeProtocol+CornerConfiguration.swift` — generic iOS/tvOS 26+ declarative `UIView.cornerConfiguration` modifier.
