@@ -10,6 +10,7 @@ Key characteristics:
 - Reference-semantic reactive state engine (`State`, `InnerState`, mapped/bound states).
 - Deferred + state-backed layout constraint system (`PreConstraint`, solo/super/relative activation).
 - Cross-platform abstraction via conditional UIKit/AppKit bridges.
+- Ownership-driven application architecture: local UI state belongs to its `UView`/`ViewController`, sibling-shared state to the nearest common composition owner, app-wide environment to `App`, and authoritative runtime state to dedicated domain/runtime owners.
 
 UIKitPlus is **not a game**. There is no deterministic simulation, no Godot, no fixed tick rate, no seeded RNG requirement, and no RenderSnapshot contract.
 
@@ -27,6 +28,11 @@ Critical architecture contracts:
 - `.agent/architecture/EXTENSION_SYSTEM.md`
 - `.agent/architecture/RUNTIME_MODEL.md`
 - `.agent/architecture/MUTATION_MODEL.md`
+
+Default UIKitPlus application architecture:
+- `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
+  - Read this for application state placement, dependency contracts, View/ViewController ownership, app-wide state, runtime/domain owner boundaries, fixture policy, and ViewModel/PresentationModel decisions.
+  - Its `AO*` invariants are mandatory for UIKitPlus application architecture unless a repository explicitly documents and approves another architecture.
 
 Workflow and governance:
 - `.agent/WORKFLOW.md`
@@ -92,6 +98,7 @@ Must include:
 - mutation-flow impact,
 - extension-collision risk,
 - state propagation risk,
+- application state-ownership and dependency-surface impact when app code is involved,
 - platform leakage risk.
 - architecture-ID tags for each risk/decision line.
 
@@ -102,7 +109,8 @@ Rules:
 - do not introduce undocumented contracts,
 - do not drift architecture,
 - keep UIKitPlus fluent/reference semantics intact,
-- keep extension composition stable and predictable.
+- keep extension composition stable and predictable,
+- keep application state with its natural owner and expose only exact state/value/callback dependencies.
 - implementation notes must include architecture-ID tags for each behavior-affecting change.
 
 ### AUDIT
@@ -110,6 +118,7 @@ Rules:
 Must validate:
 - fluent chain contract compliance,
 - state and binding propagation correctness,
+- application state ownership and absence of replacement state bags when relevant,
 - extension collision/precedence safety,
 - runtime lifecycle consistency,
 - layout side-effect safety,
@@ -154,6 +163,13 @@ Local commits are allowed only after ChatGPT audit acceptance.
 5. Platform Boundary Integrity:
 - UIKit/AppKit conditionals must not leak platform-only APIs into shared contracts.
 
+6. Application State Ownership:
+- Do not introduce a ViewModel/PresentationModel by default for UIKitPlus UI state.
+- Local UI state belongs to the nearest `UView`/`ViewController`; sibling-shared state belongs to the nearest common composition owner; app-wide environment belongs to `App`; authoritative runtime/domain state belongs to a justified dedicated owner.
+- Children receive only exact `UState` references, immutable values, or focused callbacks.
+- A renamed context/store/environment object containing unrelated mutable UI state is still a forbidden all-state bag.
+- Follow `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md` and cite `AO*` invariants in application architecture work.
+
 ## 8. ChatGPT ↔ Codex Compatibility
 
 This repository supports iterative ChatGPT planning/review and Codex implementation loops.
@@ -172,6 +188,9 @@ Required loading strategy:
 3. `.agent/architecture/LAYER_MODEL.md`
 4. one domain architecture doc
 5. one contract doc
+
+For UIKitPlus application state placement or application refactors, the domain architecture doc is:
+- `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
 
 Default maximum active architecture docs: `3`.
 

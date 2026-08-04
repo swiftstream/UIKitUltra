@@ -35,6 +35,9 @@ Default max active architecture docs: `3`.
 - Platform layer:
   - `.agent/architecture/PLATFORM_ABSTRACTION.md`
 
+- UIKitPlus application architecture:
+  - `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
+
 ## Domain Routing
 
 - Declarative protocol and chain API changes:
@@ -51,6 +54,11 @@ Default max active architecture docs: `3`.
   - `STATE_SYSTEM.md`
   - `MUTATION_MODEL.md`
   - `FLUENT_CHAIN_CONTRACT.md`
+
+- UIKitPlus application state placement, View/ViewController ownership, child dependency contracts, app-wide environment, runtime/domain owner decisions, ViewModel/PresentationModel evaluation, and fixture ownership:
+  - `APPLICATION_STATE_OWNERSHIP.md`
+  - `STATE_SYSTEM.md`
+  - `VIEW_COMPOSITION.md`
 
 - Constraint/layout changes:
   - `LAYOUT_SYSTEM.md`
@@ -107,3 +115,4 @@ Default max active architecture docs: `3`.
 - `EX*` -> `EXTENSION_SYSTEM.md`
 - `RT*` -> `RUNTIME_MODEL.md`
 - `MU*` -> `MUTATION_MODEL.md`
+- `AO*` -> `APPLICATION_STATE_OWNERSHIP.md`

@@ -17,6 +17,7 @@ This file is a compact compatibility index for the architecture chunk set.
 - `.agent/architecture/EXTENSION_SYSTEM.md`
 - `.agent/architecture/RUNTIME_MODEL.md`
 - `.agent/architecture/MUTATION_MODEL.md`
+- `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
 
 ## Architectural Core
 
@@ -27,6 +28,8 @@ UIKitPlus is governed by these core facts:
 - Constraint application can be deferred until superview/context availability.
 - Extension composition is the primary delivery mechanism for framework features.
 - UIKit/AppKit abstraction is conditional and intentionally asymmetric where platform APIs differ.
+- UIKitPlus application state follows Application State Ownership: local state belongs to its natural View/ViewController owner, sibling-shared state to the nearest common composition owner, app-wide environment to `App`, and authoritative runtime/domain state to a justified dedicated owner.
+- A ViewModel/PresentationModel is not a default UIKitPlus layer; children receive exact state references, immutable values, and focused callbacks instead of broad state bags.
 
 ## Contract Priority
 
@@ -38,6 +41,7 @@ When contracts conflict, use this priority:
 5. `RUNTIME_MODEL.md`
 6. `MUTATION_MODEL.md`
 7. Domain architecture docs
+8. `APPLICATION_STATE_OWNERSHIP.md` for application-level ownership decisions, subject to the framework contracts above
 
 ## Related Governance Docs
 
@@ -63,3 +67,4 @@ When contracts conflict, use this priority:
 - `EX*`: extension system
 - `RT*`: runtime model
 - `MU*`: mutation model
+- `AO*`: UIKitPlus application state ownership
