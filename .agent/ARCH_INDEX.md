@@ -26,6 +26,7 @@ Default max active architecture docs: `3`.
 - Runtime layer:
   - `.agent/architecture/STATE_SYSTEM.md`
   - `.agent/architecture/LAYOUT_SYSTEM.md`
+  - `.agent/architecture/MACOS_ULIST_NSTABLEVIEW.md`
   - `.agent/architecture/GESTURE_SYSTEM.md`
   - `.agent/architecture/NAVIGATION_SYSTEM.md`
   - `.agent/architecture/RUNTIME_MODEL.md`
@@ -64,6 +65,13 @@ Default max active architecture docs: `3`.
   - `LAYOUT_SYSTEM.md`
   - `RUNTIME_MODEL.md`
   - `MUTATION_MODEL.md`
+
+- macOS `UList` / `NSTableView`, visible-cell hosting, self-sizing rows,
+  recycling, scrolling, automatic row heights, or live resize:
+  - `MACOS_ULIST_NSTABLEVIEW.md`
+  - add only one supporting contract when required:
+    `RUNTIME_MODEL.md` for lifecycle/diffs, `LAYOUT_SYSTEM.md` for constraints,
+    or `MUTATION_MODEL.md` for callbacks
 
 - Gesture wrapper/delegation changes:
   - `GESTURE_SYSTEM.md`
@@ -116,3 +124,4 @@ Default max active architecture docs: `3`.
 - `RT*` -> `RUNTIME_MODEL.md`
 - `MU*` -> `MUTATION_MODEL.md`
 - `AO*` -> `APPLICATION_STATE_OWNERSHIP.md`
+- `UL*` -> `MACOS_ULIST_NSTABLEVIEW.md`

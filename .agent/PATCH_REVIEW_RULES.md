@@ -29,6 +29,8 @@ All review outputs must include architecture-ID tags (for example: `[ST12][MU04]
 6. Layout and Platform Validation
 - check against `LAYOUT_SYSTEM.md` and `PLATFORM_ABSTRACTION.md`.
 - verify no implicit platform leakage and no unsafe constraint behavior changes.
+- macOS `UList` / `NSTableView` patches must also satisfy applicable `UL*`
+  rules from `MACOS_ULIST_NSTABLEVIEW.md`.
 
 7. Documentation Synchronization
 - update affected `.agent` docs and indexes.

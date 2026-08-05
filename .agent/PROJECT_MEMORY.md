@@ -10,8 +10,9 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Current State
 
-- UIKitPlus is currently local-only ahead of origin by 52 commits.
-- Latest accepted local source commit: `379d5cb0b4af45cf4758645b0485931cf5195d09`.
+- The source baseline underlying the macOS UList/NSTableView governance contract
+  is `56b726fbbf9ec6218677a106ff33599a5b1187c3`; framework source was unchanged.
+- Local `master` tracks `origin/master`; no push is authorized.
 - Push is locked.
 - Governance docs are being finalized before Swift 6 strict concurrency migration.
 - `.artifacts` is transient and ignored.
@@ -60,6 +61,10 @@ native single-line flags. [PA1][PA3][RT1][FC5]
   column width changes. `UList` has no live-resize layout override, manual frame
   synchronization, or row-height engine. AppKit owns cell frames, live resize,
   and automatic row-height calculation. [VC5][RT8][PA4][PA5]
+- macOS `UList` keeps AppKit-owned width propagation, reuse, automatic heights,
+  scrolling, and live resize. Application rows own complete initial content and
+  content-specific self-sizing; recycling is never a resize trigger. The full
+  contract is `MACOS_ULIST_NSTABLEVIEW.md`. [RT8][UL1][UL4][UL5][UL6]
 - Chronological append plus explicit `scrollToBottom()` is supported.
 - ForEach listeners release with the list, and no AppKit diffable-data-source
   layer was added. [RT8][ST6][PA4]

@@ -10,6 +10,13 @@ Active governance-tracked work items.
 - Scope: `AGENTS.md`, `.agent/**`, `.gitignore`
 - Non-scope: `Classes/**`, `Tests/**`, Swift 6 migration, State vNext implementation, push
 
+### ULIST-DOC-001 — Define macOS UList/NSTableView golden runtime contract
+
+- Status: COMPLETE — documentation and ChatGPT audit accepted; framework source unchanged
+- Scope: `MACOS_ULIST_NSTABLEVIEW.md`, routing, runtime facts, validation, patch review, source map, memory, and operational skill
+- Non-scope: `Classes/**`, `Tests/**`, public API, source behavior, push
+- Guardrails: preserve the current native AppKit width/reuse/automatic-height graph; no speculative dual-root, forced-layout, responsive-scrolling, cache, or row-height-engine changes
+
 ## Blocked
 
 ### AUDIT-001 — Independent audit of 52 local commits before push
@@ -34,8 +41,8 @@ Active governance-tracked work items.
 
 ## Current Known Baseline
 
-- HEAD: `3daf001db097881e50081863cd2e2e7865b9fe7f`
-- Branch: `master...origin/master [ahead 18]`
+- Source baseline before this documentation commit: `56b726fbbf9ec6218677a106ff33599a5b1187c3`
+- Expected post-commit branch: `master...origin/master [ahead 1]`
 - Push: LOCKED
 - macOS swift test baseline: 390 tests, 5 skipped
 - iOS simulator baseline: 218

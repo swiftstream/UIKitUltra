@@ -79,13 +79,9 @@ macOS-only views (guarded by `#if os(macOS)`):
 - `MacOS+TextView.swift` — macOS `UTextView` owned `NSTextView` inside `NSScrollView` with declarative text/state/editing/command API, auto-growing height, and maximum-height scrolling.
 - `MacOS+List.swift` — macOS `UList` backed by `UScrollView` and one-column
   view-based `NSTableView`; owns ordered sections, maps scoped `ForEach` diffs
-  to targeted native row operations, hosts real UIKitPlus row roots, and pins
-  every top-level row view horizontally. The document view uses native width
-  autoresizing, while table/column autoresizing policies delegate column sizing,
-  cell frames, live resize, reuse, and automatic row heights to AppKit; there is
-  no `UList.layout()` resize loop. The table uses AppKit's `.plain` style, so
-  the wrapper supplies no hidden full-width row padding; callers own visual
-  content insets. [PA4][PA5][VC5][RT8]
+  to targeted native row operations, and delegates width propagation, cell
+  reuse, automatic heights, scrolling, and live resize to AppKit. Full contract:
+  `architecture/MACOS_ULIST_NSTABLEVIEW.md`. [PA4][PA5][VC5][RT8][UL1]
 - `MacOS+GlassEffectView.swift` — macOS 26+ native `UGlassEffectView: NSGlassEffectView` declarative Glass host.
 - `MacOS+VisualEffectView.swift` — macOS native `UVisualEffectView: NSVisualEffectView` legacy effect host.
 
@@ -142,7 +138,8 @@ Test suite: 390 tests, 5 skipped (macOS baseline); 218 tests (historical complet
   action lifetime, and external `NSMenu` identity preservation. [RT7][PA1][PA3]
 - `MacOSListDeclarativeTests.swift` — verifies native macOS `UList` structure,
   chronological rows, targeted ForEach mutations, native row-root hosting,
-  scrolling, and scoped listener ownership. [VC5][RT8][PA4]
+  width propagation, automatic heights, scrolling, and scoped listener
+  ownership. [VC5][RT8][PA4][UL1][UL2][UL9]
 - `MacOSTextDeclarativeTests.swift` — verifies native single-line and multiline
   AppKit cell flags exposed by `UText.lines(_:)` and `UText.multiline()`.
   [PA1][PA3][RT1][FC1]

@@ -55,6 +55,8 @@ swift test --filter <focused-test>   # when tests exist
 Platform-specific validation:
 - `xcodebuild` only when relevant and available;
 - do not claim iOS/tvOS validation unless actually run.
+- macOS `UList` / `NSTableView` source changes also require the rendered
+  recycling and live-resize gate in `MACOS_ULIST_NSTABLEVIEW.md` (`UL10`).
 
 ## 4. Push Lock
 

@@ -67,8 +67,12 @@ owners. [RT7][PA1][PA3]
 A native `UList` owns its ordered section descriptors. A macOS `.forEach`
 section retains its `AnyForEach`, and that `ForEach` owns its scoped begin,
 listener, and end `StateListener` registrations. Native table cells own only
-their currently hosted declarative row root; reconfiguration removes the prior
-root and constraints.
+their currently hosted declarative row root. Reconfiguration synchronously
+deactivates and releases the old root constraints, removes the old root,
+attaches one newly built root, and activates exactly four native cell-edge
+constraints. The generic runtime does not overlap roots, force descendant
+layout, cache row views, override responsive scrolling, or measure
+application-specific content. [RT8][PA4][MU3]
 
 The ownership direction is list -> section -> ForEach -> scoped listeners and
 table -> visible cell -> wrapper root -> current declarative row. Native edge
@@ -82,6 +86,10 @@ The macOS table uses `.plain` style, so this native width graph has no hidden
 full-width row padding; visual insets are explicit caller constraints.
 Diff callbacks capture the list weakly, and releasing the list releases its
 scoped `ForEach` listener ownership. [RT8][VC5][ST6][PA4][PA5]
+
+The complete macOS list lifecycle, self-sizing, recycling, live-resize,
+height-invalidation, validation, and framework-escalation contract is owned by
+`MACOS_ULIST_NSTABLEVIEW.md` (`UL1`–`UL10`). [RT8][UL1][UL10]
 
 ## Property and Configuration Timing
 

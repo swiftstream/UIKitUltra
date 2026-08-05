@@ -39,6 +39,13 @@ Default maximum active architecture docs: `3`.
   - Contract: `FLUENT_CHAIN_CONTRACT.md`
   - Skill: `.agent/skills/navigation_flow_skill.md`
 
+- macOS `UList` / `NSTableView`, row hosting, self-sizing, recycling,
+  scrolling, automatic heights, or live resize:
+  - Architecture: `MACOS_ULIST_NSTABLEVIEW.md`
+  - Supporting contract: at most one of `RUNTIME_MODEL.md`,
+    `LAYOUT_SYSTEM.md`, or `MUTATION_MODEL.md`, selected by the task
+  - Skill: `.agent/skills/macos_ulist_skill.md`
+
 ## Governance Routing
 
 - Source ownership:

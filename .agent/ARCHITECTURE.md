@@ -10,6 +10,7 @@ This file is a compact compatibility index for the architecture chunk set.
 - `.agent/architecture/VIEW_COMPOSITION.md`
 - `.agent/architecture/STATE_SYSTEM.md`
 - `.agent/architecture/LAYOUT_SYSTEM.md`
+- `.agent/architecture/MACOS_ULIST_NSTABLEVIEW.md`
 - `.agent/architecture/GESTURE_SYSTEM.md`
 - `.agent/architecture/NAVIGATION_SYSTEM.md`
 - `.agent/architecture/PLATFORM_ABSTRACTION.md`
@@ -68,3 +69,4 @@ When contracts conflict, use this priority:
 - `RT*`: runtime model
 - `MU*`: mutation model
 - `AO*`: UIKitPlus application state ownership
+- `UL*`: macOS UList / NSTableView runtime contract
