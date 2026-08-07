@@ -11,6 +11,7 @@ This file is a compact compatibility index for the architecture chunk set.
 - `.agent/architecture/STATE_SYSTEM.md`
 - `.agent/architecture/LAYOUT_SYSTEM.md`
 - `.agent/architecture/MACOS_ULIST_NSTABLEVIEW.md`
+- `.agent/architecture/MACOS_ULIST_TEXTKIT2.md`
 - `.agent/architecture/GESTURE_SYSTEM.md`
 - `.agent/architecture/NAVIGATION_SYSTEM.md`
 - `.agent/architecture/PLATFORM_ABSTRACTION.md`
@@ -70,3 +71,4 @@ When contracts conflict, use this priority:
 - `MU*`: mutation model
 - `AO*`: UIKitPlus application state ownership
 - `UL*`: macOS UList / NSTableView runtime contract
+- `UTK*`: macOS UList / TextKit 2 application-row integration

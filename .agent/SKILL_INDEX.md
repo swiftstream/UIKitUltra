@@ -42,7 +42,9 @@ Default maximum active architecture docs: `3`.
 - macOS `UList` / `NSTableView`, row hosting, self-sizing, recycling,
   scrolling, automatic heights, or live resize:
   - Architecture: `MACOS_ULIST_NSTABLEVIEW.md`
-  - Supporting contract: at most one of `RUNTIME_MODEL.md`,
+  - TextKit 2 rows: load `MACOS_ULIST_TEXTKIT2.md`; do not also load a
+    supporting contract without documented context-budget escalation
+  - Other rows: supporting contract is at most one of `RUNTIME_MODEL.md`,
     `LAYOUT_SYSTEM.md`, or `MUTATION_MODEL.md`, selected by the task
   - Skill: `.agent/skills/macos_ulist_skill.md`
 

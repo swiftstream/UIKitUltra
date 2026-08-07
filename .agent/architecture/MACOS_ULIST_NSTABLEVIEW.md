@@ -76,6 +76,10 @@ changes, and never remeasure because of scrolling or recycling.
 TextKit, WebKit, image, editor, and other content systems remain their own
 single layout authority; generic `UList` must not add a parallel engine.
 
+For TextKit 2 rows, load `MACOS_ULIST_TEXTKIT2.md` (`UTK1`–`UTK8`). It owns
+the application-row integration contract without adding TextKit behavior to
+generic `UList`.
+
 ### UL8 — Height changes are targeted
 
 Application-owned legitimate height changes should use stable row identity,

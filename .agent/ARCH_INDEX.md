@@ -27,6 +27,7 @@ Default max active architecture docs: `3`.
   - `.agent/architecture/STATE_SYSTEM.md`
   - `.agent/architecture/LAYOUT_SYSTEM.md`
   - `.agent/architecture/MACOS_ULIST_NSTABLEVIEW.md`
+  - `.agent/architecture/MACOS_ULIST_TEXTKIT2.md`
   - `.agent/architecture/GESTURE_SYSTEM.md`
   - `.agent/architecture/NAVIGATION_SYSTEM.md`
   - `.agent/architecture/RUNTIME_MODEL.md`
@@ -72,6 +73,12 @@ Default max active architecture docs: `3`.
   - add only one supporting contract when required:
     `RUNTIME_MODEL.md` for lifecycle/diffs, `LAYOUT_SYSTEM.md` for constraints,
     or `MUTATION_MODEL.md` for callbacks
+
+- macOS `UList` rows backed by persistent TextKit 2 objects:
+  - `MACOS_ULIST_NSTABLEVIEW.md`
+  - `MACOS_ULIST_TEXTKIT2.md`
+  - with mandatory `LAYER_MODEL.md`, this fills the default three-document
+    budget; load another contract only through documented escalation
 
 - Gesture wrapper/delegation changes:
   - `GESTURE_SYSTEM.md`
@@ -125,3 +132,4 @@ Default max active architecture docs: `3`.
 - `MU*` -> `MUTATION_MODEL.md`
 - `AO*` -> `APPLICATION_STATE_OWNERSHIP.md`
 - `UL*` -> `MACOS_ULIST_NSTABLEVIEW.md`
+- `UTK*` -> `MACOS_ULIST_TEXTKIT2.md`

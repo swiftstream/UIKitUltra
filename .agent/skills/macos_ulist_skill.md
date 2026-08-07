@@ -1,7 +1,8 @@
 # macOS UList / NSTableView Skill
 
 Compact operational checklist. Architecture authority:
-`architecture/MACOS_ULIST_NSTABLEVIEW.md` (`UL1`–`UL10`).
+`architecture/MACOS_ULIST_NSTABLEVIEW.md` (`UL1`–`UL10`), extended by
+`architecture/MACOS_ULIST_TEXTKIT2.md` (`UTK1`–`UTK8`) only for TextKit 2 rows.
 
 ## Load
 
@@ -9,13 +10,16 @@ Compact operational checklist. Architecture authority:
 2. `.agent/ARCH_INDEX.md`
 3. `.agent/architecture/LAYER_MODEL.md`
 4. `MACOS_ULIST_NSTABLEVIEW.md`
-5. `.agent/SOURCE_MAP.md`
-6. At most one supporting contract when needed:
-   - `RUNTIME_MODEL.md` for lifecycle/reuse/diffs;
-   - `LAYOUT_SYSTEM.md` for constraints/height propagation;
-   - `MUTATION_MODEL.md` for update callbacks.
+5. Choose one final architecture document:
+   - TextKit 2 rows: `MACOS_ULIST_TEXTKIT2.md`;
+   - other rows: at most one supporting contract when needed:
+     - `RUNTIME_MODEL.md` for lifecycle/reuse/diffs;
+     - `LAYOUT_SYSTEM.md` for constraints/height propagation;
+     - `MUTATION_MODEL.md` for update callbacks.
+6. `.agent/SOURCE_MAP.md`
 
-Do not bulk-load all three supporting contracts.
+Do not bulk-load supporting contracts or exceed the three-document
+architecture budget without documented escalation.
 
 ## Before Editing
 
@@ -26,6 +30,8 @@ Do not bulk-load all three supporting contracts.
 - verify width changes do not rebuild the whole list [UL6].
 
 Do not modify `_UListCell` from an application-only rendering symptom.
+For TextKit 2 rows, keep measurement/reflow in the application row and follow
+`UTK1`–`UTK8`.
 
 ## Guardrails
 
@@ -41,11 +47,11 @@ width-driven full-list rebuilds [UL3][UL6][UL7].
 
 Run focused/full tests when source changes, then rendered recycling + continuous
 live-resize validation from `UL10`. Scrolling and live resize must be accepted
-together; success in only one mode fails.
+together; success in only one mode fails. TextKit 2 rows also require `UTK8`.
 
 ## Audit
 
-Report with `UL*` tags:
+Report with `UL*` tags and applicable `UTK*` tags:
 
 - final ownership boundary;
 - native width/height ownership preserved;

@@ -65,6 +65,10 @@ native single-line flags. [PA1][PA3][RT1][FC5]
   scrolling, and live resize. Application rows own complete initial content and
   content-specific self-sizing; recycling is never a resize trigger. The full
   contract is `MACOS_ULIST_NSTABLEVIEW.md`. [RT8][UL1][UL4][UL5][UL6]
+- Rich TextKit 2 rows keep one persistent text-system graph, complete initial
+  layout, width-only reflow, targeted native height invalidation, and a narrow
+  partially-clipped viewport refresh. The focused contract is
+  `MACOS_ULIST_TEXTKIT2.md`. [UL7][UL8][UTK1][UTK7]
 - Chronological append plus explicit `scrollToBottom()` is supported.
 - ForEach listeners release with the list, and no AppKit diffable-data-source
   layer was added. [RT8][ST6][PA4]
