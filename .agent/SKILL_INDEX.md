@@ -24,9 +24,12 @@ Default maximum active architecture docs: `3`.
   - Contract: `STATE_SYSTEM.md` when state-backed constants are involved
   - Skill: `.agent/skills/constraint_system_skill.md`
 
-- State and binding updates:
-  - Architecture: `STATE_SYSTEM.md`, `MUTATION_MODEL.md`, `RUNTIME_MODEL.md`
+- State and binding updates, including State-surface classification for every
+  new or materially changed fluent value setter:
+  - Architecture: `STATE_SYSTEM.md`
   - Contract: `FLUENT_CHAIN_CONTRACT.md`
+  - Escalate selectively to `MUTATION_MODEL.md` for bidirectional/re-entrant
+    mutation or `RUNTIME_MODEL.md` for lifecycle/deferred behavior
   - Skill: `.agent/skills/state_binding_skill.md`
 
 - Gesture wrapper/integration updates:

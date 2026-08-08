@@ -22,5 +22,85 @@ final class MacOSWindowDeclarativeTests: XCTestCase {
         XCTAssertTrue(wrapper.toolbar() === wrapper)
         XCTAssertNotNil(wrapper.window.toolbar)
     }
+
+    func testStateBindingsApplyInitialValuesRemainLiveAndPreserveIdentity() {
+        let wrapper = Window()
+        let titleState = State<String>(wrappedValue: "Initial")
+        let mouseMovedState = State<Bool>(wrappedValue: false)
+        let baselineCount = wrapper.stateBindingHolder.statesValues.heldListeners.count
+
+        XCTAssertTrue(wrapper.title(titleState) === wrapper)
+        XCTAssertTrue(wrapper.acceptsMouseMovedEvents(mouseMovedState) === wrapper)
+        XCTAssertEqual(
+            wrapper.stateBindingHolder.statesValues.heldListeners.count,
+            baselineCount + 2
+        )
+        XCTAssertEqual(wrapper.window.title, "Initial")
+        XCTAssertFalse(wrapper.window.acceptsMouseMovedEvents)
+
+        titleState.wrappedValue = "Updated"
+        mouseMovedState.wrappedValue = true
+
+        XCTAssertEqual(wrapper.window.title, "Updated")
+        XCTAssertTrue(wrapper.window.acceptsMouseMovedEvents)
+    }
+
+    func testScalarWindowSettersRemainListenerFree() {
+        let wrapper = Window()
+        let baselineCount = wrapper.stateBindingHolder.statesValues.heldListeners.count
+
+        XCTAssertTrue(
+            wrapper
+                .title("Scalar")
+                .acceptsMouseMovedEvents(false) === wrapper
+        )
+        XCTAssertEqual(
+            wrapper.stateBindingHolder.statesValues.heldListeners.count,
+            baselineCount
+        )
+        XCTAssertEqual(wrapper.window.title, "Scalar")
+        XCTAssertFalse(wrapper.window.acceptsMouseMovedEvents)
+    }
+
+    func testRepeatedWindowBindingsRemainAdditiveUntilTeardown() {
+        let stateA = State<String>(wrappedValue: "A")
+        let stateB = State<String>(wrappedValue: "B")
+
+        weak var weakWrapper: Window?
+        weak var weakTokenA: StateListener?
+        weak var weakTokenB: StateListener?
+
+        autoreleasepool {
+            let wrapper = Window()
+            weakWrapper = wrapper
+
+            _ = wrapper.title(stateA).title(stateB)
+
+            let tokens = Array(wrapper.stateBindingHolder.statesValues.heldListeners.values)
+            guard tokens.count == 2 else {
+                XCTFail("Expected 2 tokens, got \(tokens.count)")
+                return
+            }
+
+            weakTokenA = tokens[0]
+            weakTokenB = tokens[1]
+
+            XCTAssertNotEqual(weakTokenA?.id, weakTokenB?.id)
+            XCTAssertEqual(wrapper.window.title, "B")
+
+            stateA.wrappedValue = "A2"
+            XCTAssertEqual(wrapper.window.title, "A2")
+
+            stateB.wrappedValue = "B2"
+            XCTAssertEqual(wrapper.window.title, "B2")
+        }
+
+        XCTAssertNil(weakWrapper)
+        XCTAssertNil(weakTokenA)
+        XCTAssertNil(weakTokenB)
+
+        stateA.wrappedValue = "AfterA"
+        stateB.wrappedValue = "AfterB"
+    }
 }
 #endif

@@ -65,6 +65,20 @@ Wiring behavior must be one of:
 - intentionally additive with explicit ownership/lifecycle,
 - explicitly documented as unsafe for repeated invocation.
 
+### FC11: Public Setter Overloads Must Be Discoverable
+
+UIKitPlus core fluent value setters use explicit concrete value and
+`State`/`UState` overloads so Xcode exposes both accepted types. A generic
+`Stateable`/`StateValuable` entry point requires a recorded overload-resolution
+and autocomplete review showing that it is clearer than the explicit pair.
+
+### FC12: Every Public Fluent Method Has Per-Overload DocC
+
+Every new or materially changed public fluent overload has a declaration-
+adjacent `///` DocC comment describing its effect and parameters. State
+overloads also document initial application, update direction, repeat-call
+behavior, and lifetime; non-obvious defaults are explained explicitly.
+
 ## Forbidden Patterns
 
 - Returning new instances from chain setters without explicit new-type API contract.
@@ -82,6 +96,7 @@ Wiring behavior must be one of:
 ## Integration Rules
 
 - New chain methods must declare: mutation type, side effects, repeat-call behavior.
+- Enforce FC11 overload discoverability and FC12 per-overload DocC.
 - Binding methods must document synchronization direction (one-way vs two-way).
 - Chain methods crossing into runtime lifecycle behavior must reference `RUNTIME_MODEL.md`.
 - Wiring methods must declare ownership and teardown strategy when installation may repeat.
@@ -95,3 +110,7 @@ Any chain API patch must pass this checklist:
 4. Idempotency policy identified.
 5. Repeat-call listener behavior validated.
 6. Wiring method duplicate-registration strategy validated.
+7. Public signatures remain concrete and autocomplete-friendly, or the FC11
+   generic exception is justified.
+8. Every new or materially changed public overload has accurate per-signature
+   DocC visible to Xcode.

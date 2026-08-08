@@ -221,8 +221,9 @@ Implemented:
 - `State`, `CodableState`, `InnerState`, `String`, `Bool`, `Int`, and `Double` conform.
 - Accepted by commit `2650186`.
 
-StateValuable is currently intended for custom user components and examples.
-UIKitPlus core API migration is deferred.
+StateValuable remains available for custom components with unwieldy overload
+surfaces; UIKitPlus core migration is deferred. New core setters follow ST8,
+and any generic core entry point requires the FC11 exception review.
 ```
 
 Reference:

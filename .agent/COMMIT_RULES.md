@@ -14,6 +14,8 @@ All commits must follow strict prefixes:
 
 - Imperative mood, not past tense.
 - One logical change per commit.
+- Wrap type and API symbol names in Markdown backticks in commit subjects (for
+  example, `UList`, `NSTableView`, and `Window`).
 - No mixed Swift source + governance unless explicitly approved.
 - Docs closure commit may include only `AGENTS.md`, `.agent/**`, and `.gitignore`.
 - `.artifacts/**` must never be committed.

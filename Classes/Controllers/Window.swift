@@ -77,9 +77,34 @@ public class Window: AppBuilderContent {
     }
     
     // MARK: Title
-    
+
+    /// Sets the title displayed by the window.
+    ///
+    /// For a newly created window, place this modifier after initial
+    /// presentation methods when the explicit title must override AppKit's
+    /// default application title.
+    /// - Parameter value: The text to display in the window title bar.
     public func title(_ value: String) -> Self {
         window.title = value
+        return self
+    }
+
+    /// Binds the displayed window title to a string state.
+    ///
+    /// The current value is applied immediately, and later assignments update
+    /// the same window one way. Repeated calls add independent bindings. The
+    /// `Window` retains each listener token, not its source state; a binding
+    /// ends when either object is released or the source removes its listeners.
+    /// For a newly created window, install this binding after initial
+    /// presentation methods when its initial value must override AppKit's
+    /// default application title.
+    /// - Parameter state: The `UState<String>` that supplies the window title.
+    public func title(_ state: UState<String>) -> Self {
+        _ = title(state.wrappedValue)
+        state.listen { [weak self] in
+            _ = self?.title($0)
+        }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -272,6 +297,33 @@ public class Window: AppBuilderContent {
     
     public func allowsToolTipsWhenApplicationIsInactive(_ value: Bool = true) -> Self {
         window.allowsToolTipsWhenApplicationIsInactive = value
+        return self
+    }
+
+    // MARK: Accepts Mouse Moved Events
+
+    /// Sets whether the window receives mouse-moved events.
+    /// - Parameter value: `true` to receive mouse-moved events; otherwise,
+    ///   `false`. The default is `true`.
+    public func acceptsMouseMovedEvents(_ value: Bool = true) -> Self {
+        window.acceptsMouseMovedEvents = value
+        return self
+    }
+
+    /// Binds mouse-moved event acceptance to a Boolean state.
+    ///
+    /// The current value is applied immediately, and later assignments update
+    /// the same window one way. Repeated calls add independent bindings. The
+    /// `Window` retains each listener token, not its source state; a binding
+    /// ends when either object is released or the source removes its listeners.
+    /// - Parameter state: The `UState<Bool>` that controls whether the window
+    ///   receives mouse-moved events.
+    public func acceptsMouseMovedEvents(_ state: UState<Bool>) -> Self {
+        _ = acceptsMouseMovedEvents(state.wrappedValue)
+        state.listen { [weak self] in
+            _ = self?.acceptsMouseMovedEvents($0)
+        }
+        .hold(in: stateBindingHolder)
         return self
     }
     

@@ -52,10 +52,12 @@ Default max active architecture docs: `3`.
   - `RUNTIME_MODEL.md`
   - `MUTATION_MODEL.md`
 
-- State/binding/listener changes:
+- State/binding/listener changes and State-companion assessment for new or
+  materially changed fluent value setters:
   - `STATE_SYSTEM.md`
-  - `MUTATION_MODEL.md`
   - `FLUENT_CHAIN_CONTRACT.md`
+  - add `MUTATION_MODEL.md` only through documented context-budget escalation
+    when bidirectional, re-entrant, or multi-state mutation is in scope
 
 - UIKitPlus application state placement, View/ViewController ownership, child dependency contracts, app-wide environment, runtime/domain owner decisions, ViewModel/PresentationModel evaluation, and fixture ownership:
   - `APPLICATION_STATE_OWNERSHIP.md`

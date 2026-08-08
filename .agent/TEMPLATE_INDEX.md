@@ -18,12 +18,14 @@ Templates are governance scaffolds. They are used to draft safe changes before t
 
 - New state binding integration:
   - `.agent/templates/new_state_binding_integration_template.md`
-  - Use when binding UI or constraints to `State`/`InnerState`.
+  - Use as the primary template for `State`/`InnerState` bindings and ST8
+    setter classification; consult the fluent-extension template only when
+    extension-specific collision analysis is required.
 
 ## Required Contract Checks Before Using Any Template
 
 1. `LAYER_MODEL.md` for layer impact.
-2. `FLUENT_CHAIN_CONTRACT.md` for chain invariants.
-3. `STATE_SYSTEM.md` and `MUTATION_MODEL.md` when listeners/bindings are involved.
-4. `RUNTIME_MODEL.md` when lifecycle/deferred behavior is involved.
-5. `EXTENSION_SYSTEM.md` when introducing or changing extension APIs.
+2. One task-specific domain doc.
+3. One task-specific contract doc.
+4. Any additional architecture doc only through documented context-budget
+   escalation.

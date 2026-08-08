@@ -29,8 +29,9 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
   against the controller's current `view.window`, preserve additive listener
   semantics, and remove selector observers during teardown. [PA1][PA3][FC5][MU3]
 - `Window.swift` — macOS `NSWindow` fluent wrapper; `toolbar(_:)` preserves
-  native optional semantics while `toolbar()` creates a native toolbar.
-  [PA1][FC1][FC6]
+  native optional semantics while `toolbar()` creates a native toolbar;
+  `title` and `acceptsMouseMovedEvents` expose owner-scoped state bindings.
+  [PA1][FC1][FC6][FC11][FC12][ST8]
 - `StatusItem.swift` — macOS status item controller with state binding support.
 - `MenuItem.swift` — macOS menu item with state bindings, closure actions, and
   cycle-free helper ownership. [RT7][PA1][PA3]

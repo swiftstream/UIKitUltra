@@ -13,21 +13,26 @@ All review outputs must include architecture-ID tags (for example: `[ST12][MU04]
 2. Chain Contract Validation
 - check against `.agent/architecture/FLUENT_CHAIN_CONTRACT.md`.
 - verify `Self` chain behavior and reference-semantic assumptions are preserved.
+- verify FC11 overload discoverability and FC12 per-overload DocC.
 
 3. State and Mutation Validation
-- check against `.agent/architecture/STATE_SYSTEM.md` and `.agent/architecture/MUTATION_MODEL.md`.
+- check `STATE_SYSTEM.md`; add `MUTATION_MODEL.md` only when mutation-flow
+  escalation is required.
 - verify propagation ordering assumptions, listener safety, recursion guards, and no hidden sync loops.
+- verify every fluent value setter in scope against ST8, including initial
+  application, listener ownership, repeat behavior, and teardown.
 
 4. Extension Safety Validation
-- check against `.agent/architecture/EXTENSION_SYSTEM.md`.
+- for extension patches, check against `.agent/architecture/EXTENSION_SYSTEM.md`.
 - verify no overload ambiguity, no precedence traps, no undeclared cross-cutting side effects.
 
 5. Runtime Consistency Validation
-- check against `.agent/architecture/RUNTIME_MODEL.md`.
+- when lifecycle/deferred behavior is in scope, check `RUNTIME_MODEL.md`.
 - verify lifecycle-dependent behavior (deferred constraints, observer flows, ForEach diffs) remains coherent.
 
 6. Layout and Platform Validation
-- check against `LAYOUT_SYSTEM.md` and `PLATFORM_ABSTRACTION.md`.
+- check only the impacted `LAYOUT_SYSTEM.md` or `PLATFORM_ABSTRACTION.md`
+  contract, escalating when both are required.
 - verify no implicit platform leakage and no unsafe constraint behavior changes.
 - macOS `UList` / `NSTableView` patches must also satisfy applicable `UL*`
   rules from `MACOS_ULIST_NSTABLEVIEW.md`.
@@ -65,6 +70,8 @@ Existing comments must be preserved unless they are factually obsolete after the
 Reject patch if it introduces:
 - chain contract break,
 - undocumented state propagation change,
+- incomplete ST8 surface or missing non-bindable rationale,
+- FC11 discoverability or FC12 DocC violation,
 - extension conflict risk,
 - runtime lifecycle inconsistency,
 - platform leakage,

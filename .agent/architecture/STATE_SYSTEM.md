@@ -48,6 +48,33 @@ There is no automatic cleanup guarantee unless owning code explicitly provides c
 
 `InnerState<Value, InnerValue>` writes directly through parent key path and maintains projected inner state updates.
 
+### ST8: Bindable Fluent Setters Require a State Surface
+
+Every new or materially changed fluent value setter must be classified during
+planning as either bindable or non-bindable.
+
+A setter is bindable when its argument controls a property that can
+meaningfully change after the chain is built. A bindable UIKitPlus core API
+ships explicit scalar/object and compatible `State`/`UState` overloads in the
+same patch. Omitting the state overload requires an explicit reviewed rationale
+that the input is command-like, event-like, construction-only, or otherwise
+not semantically bindable. Unrelated legacy setters remain out of scope.
+
+The state overload must:
+
+1. apply `wrappedValue` immediately through the scalar/object setter;
+2. propagate future assignments one-way with ordinary `listen`, unless a
+   different direction or `listenDistinct` policy is explicitly documented;
+3. weakly capture a shorter-lived UI/runtime owner and retain the token through
+   `.hold(in: stateBindingHolder)` or
+   `.holdInStateBindingOwnerIfAvailable(...)`;
+4. preserve ST6 additive registration unless deduplication is explicit, and
+   document repeat-call and teardown behavior; and
+5. leave the scalar/object overload listener-free.
+
+Generic `Stateable`/`StateValuable` core setters remain an FC11 exception while
+the migration in `.agent/STATE_VNEXT_PLAN.md` is deferred.
+
 ## Mapping and Binding Semantics
 
 - `map(expression)` creates derived states recalculated on source updates.
@@ -108,6 +135,9 @@ In these contexts, contract text must state:
 
 ## Extension Rules
 
+- Apply ST8 to every new or materially changed fluent value setter before
+  implementation.
+- Document the scalar/object and state overload separately under FC12.
 - Extension methods that attach listeners must document repeat-call behavior.
 - If repeat calls are expected, add explicit guard/dedup strategy.
 - Prefer explicit synchronization boundaries between derivation (`map`) and bidirectional sync.
@@ -124,6 +154,8 @@ In these contexts, contract text must state:
 ## Audit Implications
 
 State-sensitive patches must verify:
+- complete scalar/object + State surface for every bindable setter in scope,
+- immediate initial application through the scalar/object path,
 - mutation order assumptions,
 - recursion guard correctness,
 - listener lifecycle safety,

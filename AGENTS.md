@@ -150,12 +150,14 @@ Local commits are allowed only after ChatGPT audit acceptance.
 
 1. Fluent API Safety:
 - Chainable methods must preserve `Self`-return semantics and composability.
+- Public core setter overloads and their DocC must satisfy FC11 and FC12.
 
 2. Extension Isolation:
 - Extensions must remain domain-scoped and avoid hidden global behavior.
 
 3. No Hidden Side Effects:
 - State mutations and listener wiring must be explicit and auditable.
+- Classify every new or materially changed fluent value setter under ST8.
 
 4. Layout Predictability:
 - Constraint behavior must remain explicit, with no undocumented implicit activation side effects.
