@@ -39,6 +39,11 @@ public class Window: AppBuilderContent {
             window = .init()
         }
     }
+
+    @MainActor
+    init(existing window: NSWindow) {
+        self.window = window
+    }
     
     @discardableResult
     @MainActor
@@ -73,6 +78,38 @@ public class Window: AppBuilderContent {
     
     public func origin(_ value: NSPoint) -> Self {
         window.setFrameOrigin(value)
+        return self
+    }
+
+    // MARK: Frame Autosave
+
+    /// Sets the AppKit name used to persist and restore this window's frame.
+    ///
+    /// AppKit restores the saved frame when the name is installed and keeps
+    /// saving later moves and resizes under the same name. Apply this
+    /// modifier after the default `size`/`center` modifiers so a stored frame
+    /// wins when one exists while a first launch still has a deterministic
+    /// default.
+    /// - Parameter value: A stable autosave key for this window role.
+    @discardableResult
+    public func frameAutosaveName(_ value: NSWindow.FrameAutosaveName) -> Self {
+        _ = window.setFrameAutosaveName(value)
+        return self
+    }
+
+    /// Binds the AppKit frame autosave name to a state.
+    ///
+    /// The current key is applied immediately and later state assignments
+    /// switch the persistence key for the same native window. Repeated calls
+    /// add bindings retained by the window until teardown.
+    /// - Parameter state: The state supplying the stable autosave key.
+    @discardableResult
+    public func frameAutosaveName(_ state: UState<NSWindow.FrameAutosaveName>) -> Self {
+        _ = frameAutosaveName(state.wrappedValue)
+        state.listen { [weak self] in
+            _ = self?.frameAutosaveName($0)
+        }
+        .hold(in: stateBindingHolder)
         return self
     }
     
@@ -121,7 +158,7 @@ public class Window: AppBuilderContent {
         window.titlebarAppearsTransparent = value
         return self
     }
-    
+
     // MARK: Represented URL
     
     public func representedURL(_ value: URL?) -> Self {
@@ -504,16 +541,66 @@ public class Window: AppBuilderContent {
     }
     
     // MARK: Tabbing Mode
-    
+
+    /// Sets the AppKit tabbing mode used when this window is shown.
+    @discardableResult
     public func tabbingMode(_ value: NSWindow.TabbingMode) -> Self {
         window.tabbingMode = value
         return self
     }
 
+    /// Binds AppKit tabbing mode to a state.
+    ///
+    /// The current value is applied immediately and later writes update the
+    /// same window one way. Repeated calls add independent bindings retained
+    /// by the window's state-binding holder until teardown.
+    @discardableResult
+    public func tabbingMode(_ state: UState<NSWindow.TabbingMode>) -> Self {
+        _ = tabbingMode(state.wrappedValue)
+        state.listen { [weak self] in _ = self?.tabbingMode($0) }
+            .hold(in: stateBindingHolder)
+        return self
+    }
+
     // MARK: Tabbing Identifier
-    
+
+    /// Sets the identifier used by AppKit to associate compatible windows.
+    @discardableResult
     public func tabbingIdentifier(_ value: NSWindow.TabbingIdentifier) -> Self {
         window.tabbingIdentifier = value
+        return self
+    }
+
+    /// Binds the AppKit tabbing identifier to a string state. The current
+    /// value is applied immediately; future writes flow one way into the
+    /// window. Repeated calls add bindings retained by the window's
+    /// state-binding holder until teardown.
+    @discardableResult
+    public func tabbingIdentifier(_ state: UState<NSWindow.TabbingIdentifier>) -> Self {
+        _ = tabbingIdentifier(state.wrappedValue)
+        state.listen { [weak self] in _ = self?.tabbingIdentifier($0) }
+            .hold(in: stateBindingHolder)
+        return self
+    }
+
+    // MARK: Appearance
+
+    /// Sets the native appearance used by the window and its system chrome.
+    @discardableResult
+    public func appearance(_ value: NSAppearance?) -> Self {
+        window.appearance = value
+        return self
+    }
+
+    /// Binds the native appearance to an optional appearance state. The
+    /// current value is applied immediately; future writes flow one way into
+    /// the window. Repeated calls add bindings retained by the window's
+    /// state-binding holder until teardown.
+    @discardableResult
+    public func appearance(_ state: UState<NSAppearance?>) -> Self {
+        _ = appearance(state.wrappedValue)
+        state.listen { [weak self] in _ = self?.appearance($0) }
+            .hold(in: stateBindingHolder)
         return self
     }
     

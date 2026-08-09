@@ -60,6 +60,7 @@ open class App: NSApplication, NSApplicationDelegate {
     }
 
     private var _windows: [Window] = []
+    private var _windowTabGroups: [AnyWindowTabGroup] = []
     private var _statusItems: [StatusItem] = []
 
     @AppBuilder open var body: AppBuilderContent { Window() }
@@ -68,6 +69,9 @@ open class App: NSApplication, NSApplicationDelegate {
         switch item {
         case .statusItems(let values): _statusItems.append(contentsOf: values)
         case .windows(let values): _windows.append(contentsOf: values)
+        case .windowTabGroups(let values):
+            _windowTabGroups.append(contentsOf: values)
+            values.forEach { $0.activate() }
         case .items(let items): items.forEach { parseAppBuilderItem($0) }
         case .none: break
         }
@@ -178,9 +182,15 @@ public protocol AppBuilderContent {
 }
 
 public enum AppBuilderItem {
+    /// An empty app-builder branch.
     case none
+    /// Status-item roots retained by the macOS application.
     case statusItems([StatusItem])
+    /// Standalone windows retained by the macOS application.
     case windows([Window])
+    /// Native window-tab groups activated after application launch.
+    case windowTabGroups([AnyWindowTabGroup])
+    /// Nested app-builder branches.
     case items([AppBuilderItem])
 }
 
