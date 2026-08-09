@@ -20,7 +20,7 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Baselines
 
-- macOS swift test baseline: 390 tests, 5 skipped
+- macOS swift test baseline: 405 tests, 5 skipped
 - iOS simulator baseline: 218
 
 - macOS `UTextView` is an AppKit scroll/text wrapper with declarative state, editing, command support, auto-growing height, and maximum-height scrolling.
@@ -34,6 +34,16 @@ This file stores stable governance memory for UIKitPlus agent work.
   happen before attachment and remains correct if the view moves between
   windows. Selector observers are removed during controller teardown.
   [PA1][PA3][FC5][MU3]
+- macOS native project tabs are implemented by the split
+  `MacOS+WindowTabTopology.swift`, `MacOS+WindowTabRuntime.swift`,
+  `MacOS+WindowTab.swift`, `MacOS+WindowTabForEach.swift`, and
+  `MacOS+WindowTabGroup.swift` sources. Metadata/windows are registered
+  eagerly, content controllers materialize on first selection, and a
+  reference-backed `WindowTabTopology` reconciles AppKit
+  reorder/detach/reattach with the caller's source and topology `UState`
+  values. Stable-ID replacement uses an explicit repeatable update handler;
+  the delegate proxy forwards all non-owned AppKit selectors. The focused
+  contract is `MACOS_WINDOW_TABS.md` (`WT-001`–`WT-007`).
 
 ## macOS Text Facts
 

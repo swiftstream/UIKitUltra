@@ -56,6 +56,9 @@ Platform-specific validation:
 - `xcodebuild` only when relevant and available;
 - do not claim iOS/tvOS validation unless actually run.
 - validate changed public fluent APIs against FC11, FC12, and ST8;
+- macOS native window-tab patches also require
+  `swift test --filter MacOSWindowTabsDeclarativeTests` and a full `swift test`;
+  review `MACOS_WINDOW_TABS.md` for WT-001 through WT-007 coverage.
 - macOS `UList` / `NSTableView` source changes also require the rendered
   recycling and live-resize gate in `MACOS_ULIST_NSTABLEVIEW.md` (`UL10`).
 

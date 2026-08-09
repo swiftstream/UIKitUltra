@@ -40,6 +40,13 @@ Default max active architecture docs: `3`.
 - UIKitPlus application architecture:
   - `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
 
+- macOS native window tabs, lazy content, native detach/reattach, topology
+  state, source-array moves, and concrete state-binding overloads:
+  - `.agent/architecture/MACOS_WINDOW_TABS.md` (implementation is split across
+    `MacOS+WindowTabTopology.swift`, `MacOS+WindowTabRuntime.swift`,
+    `MacOS+WindowTab.swift`, `MacOS+WindowTabForEach.swift`, and
+    `MacOS+WindowTabGroup.swift`)
+
 ## Domain Routing
 
 - Declarative protocol and chain API changes:
@@ -135,3 +142,4 @@ Default max active architecture docs: `3`.
 - `AO*` -> `APPLICATION_STATE_OWNERSHIP.md`
 - `UL*` -> `MACOS_ULIST_NSTABLEVIEW.md`
 - `UTK*` -> `MACOS_ULIST_TEXTKIT2.md`
+- `WT*` -> `MACOS_WINDOW_TABS.md`

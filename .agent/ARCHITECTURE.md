@@ -20,6 +20,7 @@ This file is a compact compatibility index for the architecture chunk set.
 - `.agent/architecture/RUNTIME_MODEL.md`
 - `.agent/architecture/MUTATION_MODEL.md`
 - `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
+- `.agent/architecture/MACOS_WINDOW_TABS.md`
 
 ## Architectural Core
 
@@ -72,3 +73,4 @@ When contracts conflict, use this priority:
 - `AO*`: UIKitPlus application state ownership
 - `UL*`: macOS UList / NSTableView runtime contract
 - `UTK*`: macOS UList / TextKit 2 application-row integration
+- `WT*`: macOS native window-tab topology, lazy content, and state invariants

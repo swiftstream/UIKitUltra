@@ -17,6 +17,23 @@ Active governance-tracked work items.
 - Non-scope: `Classes/**`, `Tests/**`, public API, source behavior, push
 - Guardrails: preserve the current native AppKit width/reuse/automatic-height graph; no speculative dual-root, forced-layout, responsive-scrolling, cache, or row-height-engine changes
 
+### MACOS-TABS-001 — Native window tabs with declarative topology
+
+- Status: IMPLEMENTED — source, focused tests, and architecture synchronization
+  complete; native rendered-app acceptance belongs to the consuming Vortegy
+  task
+- Scope: `MacOS+WindowTabTopology.swift`,
+  `MacOS+WindowTabRuntime.swift`, `MacOS+WindowTab.swift`,
+  `MacOS+WindowTabForEach.swift`, `MacOS+WindowTabGroup.swift`,
+  `MacOS+OpenPanel.swift`, `MacOS+Alert.swift`, `Window.swift`, `MacApp.swift`,
+  and focused tests/docs
+- Contract: `architecture/MACOS_WINDOW_TABS.md` (`WT-001`–`WT-007`)
+- Guardrails: use native `NSWindowTabGroup` behavior, keep tab content lazy,
+  preserve source/topology state invariants, keep `ConfigureHandler` one-shot
+  and same-ID metadata changes in the explicit `UpdateHandler`, forward all
+  non-owned window-delegate selectors, expose concrete autocomplete overloads
+  with per-overload DocC, and do not touch `.artifacts` or the Xcode project
+
 ## Blocked
 
 ### AUDIT-001 — Independent audit of 52 local commits before push
@@ -44,7 +61,8 @@ Active governance-tracked work items.
 - Source baseline before this documentation commit: `56b726fbbf9ec6218677a106ff33599a5b1187c3`
 - Expected post-commit branch: `master...origin/master [ahead 1]`
 - Push: LOCKED
-- macOS swift test baseline: 390 tests, 5 skipped
+- macOS swift test baseline: 405 tests, 5 skipped (including the native
+  window-tabs contract suite)
 - iOS simulator baseline: 218
 
 ## Ongoing Maintenance

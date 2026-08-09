@@ -32,6 +32,24 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
   native optional semantics while `toolbar()` creates a native toolbar;
   `title` and `acceptsMouseMovedEvents` expose owner-scoped state bindings.
   [PA1][FC1][FC6][FC11][FC12][ST8]
+- `MacOS+WindowTabTopology.swift` — validated logical group/tab topology and
+  identity-preserving source move descriptions. Contract:
+  `architecture/MACOS_WINDOW_TABS.md`. [PA1][FC1][FC11][WT-001][WT-003]
+- `MacOS+WindowTabRuntime.swift` — type-erased tab runtime protocols and
+  result-builder support. [PA1][FC1][FC2][WT-001][WT-004]
+- `MacOS+WindowTab.swift` — lazy `WindowTab` native window wrapper and the
+  complete `NSWindowTab` metadata surface with concrete state overloads.
+  [PA1][FC1][FC11][FC12][ST8][WT-002][WT-006]
+- `MacOS+WindowTabForEach.swift` — identity-preserving source-array
+  reconciliation, explicit move reporting, and configure/update lifecycle.
+  [PA1][FC1][FC5][FC11][FC12][ST8][RT5][MU2][WT-004]
+- `MacOS+WindowTabGroup.swift` — native group activation, detach/reattach,
+  close/plus delegate proxy, topology reconciliation, native group access, and
+  overview controls. [PA1][FC1][FC2][FC5][FC11][FC12][ST8][WT-001][WT-005][WT-006]
+- `MacOS+OpenPanel.swift` — declarative `NSOpenPanel` wrapper with concrete
+  and state-bound configuration plus modal URL results. [PA1][FC11][FC12][ST8][WT-007]
+- `MacOS+Alert.swift` — declarative `NSAlert` wrapper with concrete and
+  state-bound message configuration plus modal responses. [PA1][FC11][FC12][ST8][WT-007]
 - `StatusItem.swift` — macOS status item controller with state binding support.
 - `MenuItem.swift` — macOS menu item with state bindings, closure actions, and
   cycle-free helper ownership. [RT7][PA1][PA3]
@@ -132,7 +150,7 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 390 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
+Test suite: 405 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
 
 - `MenuItemLifecycleTests.swift` — verifies cycle-free menu item teardown,
   native-menu ownership of closure targets after wrapper release, submenu
@@ -147,6 +165,10 @@ Test suite: 390 tests, 5 skipped (macOS baseline); 218 tests (historical complet
 - `MacOSWindowDeclarativeTests.swift` — verifies toolbar creation, fluent
   identity, and preservation of native `toolbar(nil)` clearing semantics.
   [PA1][FC1][FC6]
+- `MacOSWindowTabsDeclarativeTests.swift` — verifies native-tab topology
+  invariants, lazy materialization, live tab state bindings, identity-preserving
+  source replacement/moves, delegate forwarding, native group/overview access,
+  and open-panel/alert state routing. [WT-001][WT-006][ST8]
 - `MacOSViewControllerWindowNotificationTests.swift` — verifies notification
   filtering by the attached window, pre-attachment registration, payload
   delivery, and additive callback registration. [PA1][PA3][FC5][MU3]
