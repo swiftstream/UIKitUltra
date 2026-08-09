@@ -62,6 +62,33 @@ final class MacOSWindowDeclarativeTests: XCTestCase {
         XCTAssertFalse(wrapper.window.acceptsMouseMovedEvents)
     }
 
+    func testWindowTabConfigurationStateBindingsRemainLive() {
+        let wrapper = Window()
+        let autosaveName = State<NSWindow.FrameAutosaveName>(wrappedValue: "UIKitPlus.WindowTabs")
+        let tabbingMode = State<NSWindow.TabbingMode>(wrappedValue: .preferred)
+        let tabbingIdentifier = State<NSWindow.TabbingIdentifier>(wrappedValue: "UIKitPlus.WindowTabs")
+        let appearance = State<NSAppearance?>(wrappedValue: NSAppearance(named: .darkAqua))
+
+        _ = wrapper
+            .frameAutosaveName(autosaveName)
+            .tabbingMode(tabbingMode)
+            .tabbingIdentifier(tabbingIdentifier)
+            .appearance(appearance)
+
+        XCTAssertEqual(wrapper.window.frameAutosaveName, autosaveName.wrappedValue)
+        XCTAssertEqual(wrapper.window.tabbingMode, .preferred)
+        XCTAssertEqual(wrapper.window.tabbingIdentifier, "UIKitPlus.WindowTabs")
+        XCTAssertEqual(wrapper.window.appearance?.name, .darkAqua)
+
+        tabbingMode.wrappedValue = .disallowed
+        tabbingIdentifier.wrappedValue = "UIKitPlus.WindowTabs.Updated"
+        appearance.wrappedValue = NSAppearance(named: .aqua)
+
+        XCTAssertEqual(wrapper.window.tabbingMode, .disallowed)
+        XCTAssertEqual(wrapper.window.tabbingIdentifier, "UIKitPlus.WindowTabs.Updated")
+        XCTAssertEqual(wrapper.window.appearance?.name, .aqua)
+    }
+
     func testRepeatedWindowBindingsRemainAdditiveUntilTeardown() {
         let stateA = State<String>(wrappedValue: "A")
         let stateB = State<String>(wrappedValue: "B")
