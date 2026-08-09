@@ -50,8 +50,9 @@ public class Color {
     }
     
     private func _setup() {
-        guard !Bundle.main.bundlePath.hasSuffix(".appex") else { return }
-        App.shared.$theme.listen { [weak self] old, new in
+        guard !Bundle.main.bundlePath.hasSuffix(".appex"),
+              let app = NSApp as? App else { return }
+        app.$theme.listen { [weak self] old, new in
             guard old != new else { return }
             guard let self = self else { return }
             switch new {
@@ -66,7 +67,8 @@ public class Color {
     
     public var current: NSColor {
         guard !Bundle.main.bundlePath.hasSuffix(".appex") else { return light }
-        switch App.shared.theme {
+        guard let app = NSApp as? App else { return light }
+        switch app.theme {
         case .dark:
             return dark
         case .light:

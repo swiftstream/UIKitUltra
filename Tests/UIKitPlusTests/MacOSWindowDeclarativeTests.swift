@@ -89,6 +89,25 @@ final class MacOSWindowDeclarativeTests: XCTestCase {
         XCTAssertEqual(wrapper.window.appearance?.name, .aqua)
     }
 
+    func testTitlebarBackgroundBindingsAreChainableAndOwned() {
+        let wrapper = Window()
+        let colorState = State<UColor>(wrappedValue: UColor(NSColor.red))
+        let baselineCount = wrapper.stateBindingHolder.statesValues.heldListeners.count
+
+        XCTAssertTrue(wrapper.titlebarBackground(colorState) === wrapper)
+        XCTAssertEqual(
+            wrapper.stateBindingHolder.statesValues.heldListeners.count,
+            baselineCount + 1
+        )
+
+        colorState.wrappedValue = UColor(NSColor.blue)
+        XCTAssertTrue(wrapper.titlebarBackground(UColor(NSColor.green)) === wrapper)
+        XCTAssertEqual(
+            wrapper.stateBindingHolder.statesValues.heldListeners.count,
+            baselineCount + 1
+        )
+    }
+
     func testRepeatedWindowBindingsRemainAdditiveUntilTeardown() {
         let stateA = State<String>(wrappedValue: "A")
         let stateB = State<String>(wrappedValue: "B")

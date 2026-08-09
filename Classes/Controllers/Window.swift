@@ -23,6 +23,7 @@ public class Window: AppBuilderContent {
     }
 
     lazy var _backgroundColorState: State<UColor> = .init(wrappedValue: UColor.init(window.backgroundColor))
+    private var _titlebarBackgroundColor: UColor?
     
 //    public init (_ viewController: () -> ViewController?) {
 //        if let viewController = viewController() {
@@ -157,6 +158,73 @@ public class Window: AppBuilderContent {
     public func titlebarAppearsTransparent(_ value: Bool = true) -> Self {
         window.titlebarAppearsTransparent = value
         return self
+    }
+
+    // MARK: Titlebar Background
+
+    /// Sets the background color used by AppKit's native title and tab chrome.
+    ///
+    /// The color is applied to the titlebar container that owns the standard
+    /// window buttons, which also covers the native tab strip when AppKit
+    /// groups project windows into one tabbed window.
+    ///
+    /// UIKitPlus uses a best-effort heuristic over AppKit's titlebar view
+    /// hierarchy because AppKit does not expose a public titlebar-background
+    /// setter. That hierarchy is not a stable API contract: use this modifier
+    /// with caution and verify it on every supported macOS release. If the
+    /// color no longer reaches the intended native chrome, please report it at
+    /// https://github.com/MihaelIsaev/UIKitPlus/issues.
+    /// When the process is not hosted by a UIKitPlus `App`, dynamic colors
+    /// resolve to their light variant rather than force-casting `NSApp`.
+    /// - Parameter value: The color to use for the native title/tab chrome.
+    @discardableResult
+    public func titlebarBackground(_ value: UColor) -> Self {
+        _titlebarBackgroundColor?.changeHandler = nil
+        _titlebarBackgroundColor = value
+        applyTitlebarBackground(value.current)
+        value.onChange { [weak self] color in
+            self?.applyTitlebarBackground(color)
+        }
+        return self
+    }
+
+    /// Binds the native title/tab chrome background to a color state.
+    ///
+    /// The current color is applied immediately and later state assignments
+    /// update the same native titlebar. The binding is retained by the window
+    /// until teardown, matching the other state-aware `Window` modifiers.
+    /// The underlying titlebar lookup is heuristic and should be verified on
+    /// every supported macOS release; report regressions at
+    /// https://github.com/MihaelIsaev/UIKitPlus/issues.
+    /// - Parameter state: The `UState<UColor>` that supplies the chrome color.
+    @discardableResult
+    public func titlebarBackground(_ state: UState<UColor>) -> Self {
+        _ = titlebarBackground(state.wrappedValue)
+        state.listen { [weak self] in
+            _ = self?.titlebarBackground($0)
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies a color to the native titlebar container and tab strip.
+    ///
+    /// AppKit creates this container lazily, so a missing standard button is
+    /// intentionally treated as a no-op. The next state update or window
+    /// configuration pass can apply the color once the chrome exists.
+    private func applyTitlebarBackground(_ color: NSColor) {
+        guard var view: NSView? = window.standardWindowButton(.closeButton)
+            else { return }
+
+        // The titlebar button is nested below AppKit's titlebar/tab
+        // containers. Six ancestors reaches the shared native chrome on
+        // current macOS while avoiding the content view itself.
+        for _ in 0..<6 {
+            view = view?.superview
+            view?.wantsLayer = true
+            view?.layer?.backgroundColor = color.cgColor
+            view?.needsDisplay = true
+        }
     }
 
     // MARK: Represented URL

@@ -83,6 +83,26 @@ final class MacOSWindowTabsDeclarativeTests: XCTestCase {
         XCTAssertEqual(merged.groups[0].tabIDs, [1, 2, 3, 4])
     }
 
+    func testTopologyRemovalRetainsActiveGroupUntilItsLastTabCloses() {
+        let firstGroupID = UUID()
+        let secondGroupID = UUID()
+        let topology = WindowTabTopology(
+            groups: [
+                .init(id: firstGroupID, tabIDs: [1, 2], selectedTabID: 1),
+                .init(id: secondGroupID, tabIDs: [3], selectedTabID: 3)
+            ],
+            activeGroupID: firstGroupID
+        )
+
+        let withOneTabRemaining = topology.removing(1)
+        XCTAssertEqual(withOneTabRemaining.activeGroupID, firstGroupID)
+        XCTAssertEqual(withOneTabRemaining.groups.map(\.id), [firstGroupID, secondGroupID])
+
+        let afterLastTabCloses = withOneTabRemaining.removing(2)
+        XCTAssertEqual(afterLastTabCloses.activeGroupID, secondGroupID)
+        XCTAssertEqual(afterLastTabCloses.groups.map(\.id), [secondGroupID])
+    }
+
     func testWindowTabMaterializesOnceAndStateBindingsRemainLive() {
         var materializationCount = 0
         let tab = WindowTab(id: 7) {

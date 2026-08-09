@@ -132,6 +132,8 @@ public struct WindowTabTopology<TabID: Hashable>: Equatable {
     }
 
     /// Returns a topology with a tab removed. An empty group is removed too.
+    /// If the active group still has tabs after the removal, it remains the
+    /// active group so closing a tab cannot move focus to another window.
     public func removing(_ tabID: TabID) -> Self {
         guard let groupIndex = groups.firstIndex(where: { $0.tabIDs.contains(tabID) }) else {
             return self
@@ -149,7 +151,7 @@ public struct WindowTabTopology<TabID: Hashable>: Equatable {
 
         let nextActive: UUID?
         if activeGroupID == group.id {
-            nextActive = nextGroups.first?.id
+            nextActive = remaining.isEmpty ? nextGroups.first?.id : group.id
         } else if let activeGroupID, nextGroups.contains(where: { $0.id == activeGroupID }) {
             nextActive = activeGroupID
         } else {
