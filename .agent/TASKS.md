@@ -61,7 +61,7 @@ Active governance-tracked work items.
 - Source baseline before this documentation commit: `56b726fbbf9ec6218677a106ff33599a5b1187c3`
 - Expected post-commit branch: `master...origin/master [ahead 1]`
 - Push: LOCKED
-- macOS swift test baseline: 405 tests, 5 skipped (including the native
+- macOS swift test baseline: 407 tests, 5 skipped (including the native
   window-tabs contract suite)
 - iOS simulator baseline: 218
 

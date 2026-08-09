@@ -20,7 +20,7 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Baselines
 
-- macOS swift test baseline: 405 tests, 5 skipped
+- macOS swift test baseline: 407 tests, 5 skipped
 - iOS simulator baseline: 218
 
 - macOS `UTextView` is an AppKit scroll/text wrapper with declarative state, editing, command support, auto-growing height, and maximum-height scrolling.
@@ -29,6 +29,10 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 - `Window.toolbar(_:)` preserves native optional semantics: passing `nil` clears
   the toolbar, while `Window.toolbar()` creates a native `NSToolbar`. [PA1][FC1][FC6]
+- `Window.titlebarBackground(_:)` is an explicit best-effort bridge for native
+  title/tab chrome; it follows dynamic `UColor` theme updates under `App`,
+  safely falls back to the light value outside that host, and is not a stable
+  AppKit hierarchy contract. [PA1][PA3][FC12][ST8]
 - macOS `ViewController` window notifications are additive by notification name;
   delivery checks `notification.object === view.window`, so configuration may
   happen before attachment and remains correct if the view moves between

@@ -30,8 +30,11 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
   semantics, and remove selector observers during teardown. [PA1][PA3][FC5][MU3]
 - `Window.swift` — macOS `NSWindow` fluent wrapper; `toolbar(_:)` preserves
   native optional semantics while `toolbar()` creates a native toolbar;
-  `title` and `acceptsMouseMovedEvents` expose owner-scoped state bindings.
-  [PA1][FC1][FC6][FC11][FC12][ST8]
+  `title`, `acceptsMouseMovedEvents`, and the opt-in best-effort
+  `titlebarBackground(_:)` expose owner-scoped state bindings. The titlebar
+  bridge follows dynamic `UColor` theme updates under `App`, safely falling
+  back to the light value outside that host, and is not a stable AppKit
+  hierarchy contract. [PA1][PA3][FC1][FC6][FC11][FC12][ST8]
 - `MacOS+WindowTabTopology.swift` — validated logical group/tab topology and
   identity-preserving source move descriptions. Contract:
   `architecture/MACOS_WINDOW_TABS.md`. [PA1][FC1][FC11][WT-001][WT-003]
@@ -114,7 +117,9 @@ Extension-driven feature composition (the `DeclarativeProtocol+Feature.swift` pa
 - `UIGlassEffect+Declarative.swift` — iOS/iPadOS/tvOS 26+ fluent modifiers for the native `UIGlassEffect` object.
 - `UIGlassContainerEffect+Declarative.swift` — iOS/iPadOS/tvOS 26+ fluent spacing modifier for the native `UIGlassContainerEffect` object.
 - `DeclarativeProtocol+CornerConfiguration.swift` — generic iOS/tvOS 26+ declarative `UIView.cornerConfiguration` modifier.
-- `UIColor+Dynamic.swift` — macOS dynamic-color theme listener.
+- `UIColor+Dynamic.swift` — macOS dynamic-color theme listener; safely skips
+  theme wiring and returns the light variant when `NSApplication` is not a
+  UIKitPlus `App`.
 - `AttrStr+Joined.swift` — attributed string joined composition.
 - `Array+Diff.swift` — collision-safe identity and duplicate matching diff helpers.
 
@@ -150,7 +155,7 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 405 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
+Test suite: 407 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
 
 - `MenuItemLifecycleTests.swift` — verifies cycle-free menu item teardown,
   native-menu ownership of closure targets after wrapper release, submenu
@@ -163,8 +168,8 @@ Test suite: 405 tests, 5 skipped (macOS baseline); 218 tests (historical complet
   AppKit cell flags exposed by `UText.lines(_:)` and `UText.multiline()`.
   [PA1][PA3][RT1][FC1]
 - `MacOSWindowDeclarativeTests.swift` — verifies toolbar creation, fluent
-  identity, and preservation of native `toolbar(nil)` clearing semantics.
-  [PA1][FC1][FC6]
+  identity, preservation of native `toolbar(nil)` clearing semantics, and
+  owner-scoped titlebar background bindings. [PA1][PA3][FC1][FC6][FC11][FC12][ST8]
 - `MacOSWindowTabsDeclarativeTests.swift` — verifies native-tab topology
   invariants, lazy materialization, live tab state bindings, identity-preserving
   source replacement/moves, delegate forwarding, native group/overview access,

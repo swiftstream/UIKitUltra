@@ -54,10 +54,13 @@ scalar metadata updates; state bindings belong in `ConfigureHandler`.
 
 Native drag-out is reconciled as a new logical group while retaining the same
 tab/window/controller object. Native close asks `closeAllowed`; a denied close
-beeps and leaves topology and source state unchanged. A source-array removal is
-an explicit force-close and is allowed to release the tab after the source
-authoritatively removed it. Tab windows set `isReleasedWhenClosed = false`,
-detach their delegate proxy before teardown, and retain tab/window wrappers
+beeps and leaves topology and source state unchanged. Removing a tab from the
+active group preserves that group as active while it still contains another
+tab; only removal of the group's final tab selects the next remaining group.
+A source-array removal is an explicit force-close and is allowed to release the
+tab after the source authoritatively removed it. Tab windows set
+`isReleasedWhenClosed = false`, detach their delegate proxy before teardown,
+and retain tab/window wrappers
 through the current AppKit close callback before releasing them on the next
 main-runloop turn; this prevents AppKit from messaging or releasing a dangling
 wrapper during `windowWillClose`. The proxy owns only close/plus selectors;
@@ -73,8 +76,10 @@ another exact native type without opening `Stateable`/`StateValuable` generic
 constraints. The state overload must apply its current `wrappedValue`
 immediately, listen one-way to future writes, weakly capture the tab/window,
 retain the listener through the owner state-binding holder, and document
-additive repeat-call behavior and teardown. The scalar overload is listener
-free. Frame persistence follows the same pair: `frameAutosaveName(_:)` accepts
+additive repeat-call behavior and teardown. The scalar overload is free of
+`UState` listeners; a dynamic `UColor` scalar may replace one theme callback on
+the color object, matching UIKitPlus's existing color modifiers. Frame
+persistence follows the same pair: `frameAutosaveName(_:)` accepts
 an explicit AppKit autosave key or its exact state, and installing the key
 restores the saved frame while continuing to save later user moves/resizes.
 Configuration-only AppKit properties (`NSOpenPanel.identifier` and
@@ -82,6 +87,13 @@ Configuration-only AppKit properties (`NSOpenPanel.identifier` and
 them while a panel is running. Live panel/alert properties expose the same
 direct/state pair and retain listeners in the UIKitPlus wrapper, not the native
 object.
+
+`Window.titlebarBackground(_:)` is an explicit opt-in convenience for native
+title/tab chrome. When a UIKitPlus `App` owns `NSApplication`, it follows
+`UColor` theme updates; outside that host it safely falls back to the color's
+light value. The native bridge still uses a best-effort titlebar hierarchy
+heuristic rather than a stable public AppKit contract, so supported macOS
+releases must be verified by the caller.
 
 ## WT-007 — Framework wrappers own native presentation plumbing
 
