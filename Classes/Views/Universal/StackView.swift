@@ -210,7 +210,16 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
         self.spacing = state.wrappedValue
         return self
     }
-    
+
+    open override func addArrangedSubview(_ view: UIView) {
+        super.addArrangedSubview(view)
+        if #available(iOS 11.0, *) {
+            if let spacing = view.spacing {
+                self.setCustomSpacing(spacing.wrappedValue, after: view)
+            }
+        }
+    }
+
     func add(item: BodyBuilderItemable) {
         switch item.bodyBuilderItem {
             case .single(let view):
