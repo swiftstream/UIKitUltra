@@ -11,8 +11,8 @@ extension DeclarativeProtocol {
     /// }
     /// ```
     @discardableResult
-    public func apply(_ closure: (V) -> Void) -> Self {
-        closure(declarativeView)
+    public func apply(_ closure: (Self) -> Void) -> Self {
+        closure(self)
         return self
     }
 }
