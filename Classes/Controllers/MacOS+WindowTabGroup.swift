@@ -26,6 +26,18 @@ private final class _WindowTabReconciliationRelay: @unchecked Sendable {
     }
 }
 
+/// The application-level disposition for a native last-tab close request.
+@MainActor
+public enum WindowTabCloseDecision {
+    /// Continue with AppKit's normal tab/window close operation.
+    case allow
+    /// Reject the request and let UIKitPlus provide the standard close beep.
+    case deny
+    /// The application handled the request itself; suppress native closing
+    /// without producing a beep.
+    case handled
+}
+
 /// A native AppKit group with declarative topology and lazy tab content.
 @MainActor
 public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTabGroup, WindowTabGroupRuntime {
@@ -54,6 +66,8 @@ public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTab
     private var activationCompleted = false
     private var pendingNativeReconciliation = false
     private var onNewTabHandler: ((UUID?) -> Void)?
+    private var onLastTabCloseHandler:
+        ((ID, UUID, NSWindow) -> WindowTabCloseDecision)?
     private var requestedTabOverviewVisibility: Bool?
 
     deinit {
@@ -109,6 +123,27 @@ public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTab
         return self
     }
 
+    /// Intercepts a user close request when this is the only tab in its
+    /// logical native group.
+    ///
+    /// Return `.allow` to continue with AppKit's normal close, `.deny` to
+    /// reject the close and beep, or `.handled` when the application has
+    /// replaced the tab itself and the native close must be suppressed. The
+    /// callback runs for the native close button, Command-W, and
+    /// `requestCloseTab(_:)`; source-array removals remain force-close
+    /// operations and do not invoke it.
+    @discardableResult
+    public func onLastTabClose(
+        _ handler: @escaping (
+            _ tabID: ID,
+            _ groupID: UUID,
+            _ window: NSWindow
+        ) -> WindowTabCloseDecision
+    ) -> Self {
+        onLastTabCloseHandler = handler
+        return self
+    }
+
     /// Selects a registered tab and updates the bound topology.
     @discardableResult
     public func selectTab(_ id: ID) -> Self {
@@ -121,12 +156,16 @@ public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTab
     public func requestCloseTab(_ id: ID) -> Self {
         let anyID = AnyHashable(id)
         guard let tab = tabs[anyID] else { return self }
-        guard tab.closeAllowed else {
+        switch closeDecision(window: tab.window) {
+        case .handled:
+            return self
+        case .deny:
             NSSound.beep()
             return self
+        case .allow:
+            tab.window.performClose(nil)
+            return self
         }
-        tab.window.performClose(nil)
-        return self
     }
 
     /// Moves a tab to a target logical group and index.
@@ -664,11 +703,21 @@ public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTab
         }
     }
 
-    fileprivate func shouldClose(window: NSWindow) -> Bool {
+    fileprivate func closeDecision(window: NSWindow) -> WindowTabCloseDecision {
         guard let tab = tabs.first(where: { $0.value.window === window })?.value else {
-            return true
+            return .allow
         }
-        return tab.closeAllowed
+        guard tab.closeAllowed else { return .deny }
+
+        guard let onLastTabCloseHandler,
+              let tabID = tabs.first(where: { $0.value.window === window })?.key.base as? ID,
+              let group = topologyState.wrappedValue.groups.first(where: {
+                  $0.tabIDs.count == 1 && $0.tabIDs.contains(tabID)
+              }) else {
+            return .allow
+        }
+
+        return onLastTabCloseHandler(tabID, group.id, window)
     }
 
     fileprivate func didClose(window: NSWindow) {
@@ -790,10 +839,15 @@ private final class _WindowTabDelegateProxy: NSObject, NSWindowDelegate {
     }
 
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        let allowed = (group as? _WindowTabCloseRuntime)?.shouldClose(window: sender) ?? true
-        guard allowed else {
+        let decision = (group as? _WindowTabCloseRuntime)?.closeDecision(window: sender) ?? .allow
+        switch decision {
+        case .handled:
+            return false
+        case .deny:
             NSSound.beep()
             return false
+        case .allow:
+            break
         }
         return forward?.windowShouldClose?(sender) ?? true
     }
@@ -840,7 +894,7 @@ private final class _WindowTabDelegateProxy: NSObject, NSWindowDelegate {
 
 @MainActor
 private protocol _WindowTabCloseRuntime: AnyObject {
-    func shouldClose(window: NSWindow) -> Bool
+    func closeDecision(window: NSWindow) -> WindowTabCloseDecision
     func didClose(window: NSWindow)
 }
 
