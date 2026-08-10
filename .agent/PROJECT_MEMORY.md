@@ -46,8 +46,10 @@ This file stores stable governance memory for UIKitPlus agent work.
   reference-backed `WindowTabTopology` reconciles AppKit
   reorder/detach/reattach with the caller's source and topology `UState`
   values. Stable-ID replacement uses an explicit repeatable update handler;
-  the delegate proxy forwards all non-owned AppKit selectors. The focused
-  contract is `MACOS_WINDOW_TABS.md` (`WT-001`–`WT-007`).
+  the delegate proxy forwards all non-owned AppKit selectors, and the group
+  exposes the typed `onLastTabClose` decision hook without bypassing native
+  close policy. The focused contract is `MACOS_WINDOW_TABS.md`
+  (`WT-001`–`WT-007`).
 
 ## macOS Text Facts
 

@@ -67,6 +67,16 @@ wrapper during `windowWillClose`. The proxy owns only close/plus selectors;
 `responds(to:)` and Objective-C fast forwarding preserve every other selector
 implemented by the caller's original `NSWindowDelegate`.
 
+`onLastTabClose(_:)` is the public, typed escape hatch for an application that
+must replace a sole tab instead of allowing AppKit to close it. The callback is
+invoked for the native close button, Command-W, and `requestCloseTab(_:)` when
+the tab is the only tab in its logical group. Returning `.allow` continues the
+native close, `.deny` rejects it with the normal beep, and `.handled` suppresses
+native closing because the application performed its own replacement. The
+source-array force-close path never invokes this hook. The group evaluates the
+same decision before `requestCloseTab(_:)` calls `performClose`, so keyboard,
+mouse, and declarative command paths cannot bypass the close invariant.
+
 ## WT-006 — Every bindable fluent setter has an autocomplete-friendly pair
 
 Each new bindable tab/window fluent setter exposes a concrete value overload

@@ -47,8 +47,9 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
   reconciliation, explicit move reporting, and configure/update lifecycle.
   [PA1][FC1][FC5][FC11][FC12][ST8][RT5][MU2][WT-004]
 - `MacOS+WindowTabGroup.swift` — native group activation, detach/reattach,
-  close/plus delegate proxy, topology reconciliation, native group access, and
-  overview controls. [PA1][FC1][FC2][FC5][FC11][FC12][ST8][WT-001][WT-005][WT-006]
+  typed last-tab close decisions, close/plus delegate proxy, topology
+  reconciliation, native group access, and overview controls.
+  [PA1][FC1][FC2][FC5][FC11][FC12][ST8][WT-001][WT-005][WT-006]
 - `MacOS+OpenPanel.swift` — declarative `NSOpenPanel` wrapper with concrete
   and state-bound configuration plus modal URL results. [PA1][FC11][FC12][ST8][WT-007]
 - `MacOS+Alert.swift` — declarative `NSAlert` wrapper with concrete and
