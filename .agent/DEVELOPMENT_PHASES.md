@@ -1,10 +1,12 @@
 # Development Phases
 
-All tasks follow `PLAN -> IMPLEMENT -> AUDIT`.
+UIKitPlus-specific mechanics for the mandatory `PLAN -> IMPLEMENT -> AUDIT` cycle.
+
+High-level workflow authority lives in `WORKFLOW.md`; coordinator/executor roles and independent review gates live in `DEVELOPMENT_ORCHESTRATION.md`; non-trivial iterative research/plans/tasks/reports are externalized according to `ARTIFACTS_WORKFLOW.md`.
 
 ## PLAN
 
-No file mutation in this phase.
+No production/test/stable-governance mutation in this phase. For non-trivial work, planning may create/update only the transient research/plan/audit artifacts authorized by `ARTIFACTS_WORKFLOW.md`.
 
 Required outputs:
 - exact files to edit,

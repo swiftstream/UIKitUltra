@@ -1,6 +1,18 @@
 # Architecture Index
 
-Load this file first. Keep context minimal and layer-aware.
+Authoritative routing and architecture-ID ownership index for UIKitPlus. Keep context minimal and layer-aware.
+
+Operational development authorities are routed separately from technical architecture:
+
+- workflow: `WORKFLOW.md`;
+- coordinator/executor roles and independent review gates: `DEVELOPMENT_ORCHESTRATION.md`;
+- transient research/plan/task/report/handoff mechanics: `ARTIFACTS_WORKFLOW.md`;
+- Git/staging/commit safety: `COMMIT_RULES.md`;
+- progressive loading: `CONTEXT_LOADING_RULES.md`;
+- source navigation: `SOURCE_MAP.md`;
+- lazy durable README/docs/website/publication idea capture: `PUBLIC_CONTENT_IDEAS.md` plus focused `.agent/public-content-ideas/**` shards. Do not load during ordinary development unless the capture check is positive or the task is explicitly public-content work.
+
+Operational workflow/artifact/public-content owners do not consume architecture-doc slots.
 
 ## Loading Protocol
 
@@ -106,6 +118,14 @@ Default max active architecture docs: `3`.
 
 ## Governance and Debt Routing
 
+- Development flow:
+  - `.agent/WORKFLOW.md`
+  - `.agent/DEVELOPMENT_PHASES.md`
+
+- Model-independent LLM/coding-agent orchestration:
+  - `.agent/DEVELOPMENT_ORCHESTRATION.md`
+  - `.agent/ARTIFACTS_WORKFLOW.md`
+
 - Source ownership and navigation:
   - `.agent/SOURCE_MAP.md`
 
@@ -117,6 +137,10 @@ Default max active architecture docs: `3`.
 
 - Validation rules:
   - `.agent/VALIDATION_RULES.md`
+
+- Lazy durable public-content capture:
+  - `.agent/PUBLIC_CONTENT_IDEAS.md`
+  - `.agent/public-content-ideas/**` only after a positive capture check or for explicit public-content work
 
 - Task archive (completed milestones):
   - `.agent/TASKS_ARCHIVE.md`

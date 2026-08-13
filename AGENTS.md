@@ -1,225 +1,98 @@
-# UIKitPlus Agent Governance
+# UIKitPlus - Agent Governance
 
-## 1. Repository Identity
+## Repository Identity
 
-UIKitPlus is a declarative, protocol-oriented UI framework built on top of UIKit/AppKit.
+UIKitPlus is a declarative, protocol-oriented UI framework built on UIKit/AppKit.
 
-Key characteristics:
-- Fluent, chain-based API surface (`Self`-returning modifiers).
-- Extension-driven feature composition (`DeclarativeProtocol+Feature.swift` pattern).
-- Reference-semantic reactive state engine (`State`, `InnerState`, mapped/bound states).
-- Deferred + state-backed layout constraint system (`PreConstraint`, solo/super/relative activation).
-- Cross-platform abstraction via conditional UIKit/AppKit bridges.
-- Ownership-driven application architecture: local UI state belongs to its `UView`/`ViewController`, sibling-shared state to the nearest common composition owner, app-wide environment to `App`, and authoritative runtime state to dedicated domain/runtime owners.
+Core characteristics:
+- fluent `Self`-returning API composition;
+- extension-driven feature growth;
+- reference-semantic reactive state (`State`, `InnerState`, mapped/bound states);
+- deferred/state-backed layout constraints;
+- explicit UIKit/AppKit platform bridges;
+- native-platform behavior as the preferred implementation substrate.
 
-UIKitPlus is **not a game**. There is no deterministic simulation, no Godot, no fixed tick rate, no seeded RNG requirement, and no RenderSnapshot contract.
+Architecture is frozen by default. Contract-changing architecture work requires explicit maintainer approval.
 
-This repository is documentation-governed and architecture-frozen by default.
+## Authority Hierarchy
 
-## 2. Authoritative Documents
+When stable documents conflict, higher authority wins:
 
-Primary entrypoint:
-- `.agent/ARCH_INDEX.md`
+1. `.agent/SYSTEM_RULES.md` - global operational/engineering invariants.
+2. `.agent/WORKFLOW.md`, `.agent/DEVELOPMENT_ORCHESTRATION.md`, `.agent/ARTIFACTS_WORKFLOW.md`, and `.agent/COMMIT_RULES.md` - development/orchestration/artifact/Git workflow.
+3. `.agent/ARCH_INDEX.md` and the owning `.agent/architecture/*.md` files - technical architecture and architecture-ID authority.
+4. `.agent/STYLE_GUIDELINES.md`, `.agent/DSL_SAFETY_RULES.md`, `.agent/EXTENSION_RULES.md`, and applicable focused policy/skill docs - implementation conventions inside architecture boundaries.
+5. `.agent/PROJECT_MEMORY.md` and `.agent/SOURCE_MAP.md` - durable current-state/navigation facts.
+6. `.agent/TASKS.md`, `.agent/TODO.md`, `.agent/TECH_DEBT.md`, `.agent/TASKS_ARCHIVE.md`, and `.agent/STATE_VNEXT_PLAN.md` - active work, future work, debt, history, and deferred State planning.
+7. `.agent/CONTEXT_LOADING_RULES.md`, `.agent/CONTEXT_BUDGET.md`, `.agent/PUBLIC_CONTENT_IDEAS.md`, `.agent/SKILL_INDEX.md`, `.agent/skills/*`, `.agent/TEMPLATE_INDEX.md`, and `.agent/templates/*` - progressive routing and focused operational guidance.
 
-Critical architecture contracts:
-- `.agent/architecture/LAYER_MODEL.md`
-- `.agent/architecture/FLUENT_CHAIN_CONTRACT.md`
-- `.agent/architecture/STATE_SYSTEM.md`
-- `.agent/architecture/EXTENSION_SYSTEM.md`
-- `.agent/architecture/RUNTIME_MODEL.md`
-- `.agent/architecture/MUTATION_MODEL.md`
+`.artifacts/**` is disposable Git-ignored working memory and never stable authority.
 
-Default UIKitPlus application architecture:
-- `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
-  - Read this for application state placement, dependency contracts, View/ViewController ownership, app-wide state, runtime/domain owner boundaries, fixture policy, and ViewModel/PresentationModel decisions.
-  - Its `AO*` invariants are mandatory for UIKitPlus application architecture unless a repository explicitly documents and approves another architecture.
+Architecture owners win on UIKitPlus semantics. Link to owners instead of duplicating full contracts in routing/workflow docs.
 
-Workflow and governance:
-- `.agent/WORKFLOW.md`
-- `.agent/DEVELOPMENT_PHASES.md`
-- `.agent/PATCH_REVIEW_RULES.md`
-- `.agent/SYSTEM_RULES.md`
-- `.agent/COMMIT_RULES.md`
-- `.agent/VALIDATION_RULES.md`
+## Mandatory Development Workflow
 
-Source and debt:
-- `.agent/SOURCE_MAP.md`
-- `.agent/TECH_DEBT.md`
-- `.agent/TASKS.md`
-- `.agent/TASKS_ARCHIVE.md`
+**PLAN -> IMPLEMENT -> AUDIT**
 
-State vNext planning:
-- `.agent/STATE_VNEXT_PLAN.md`
+- Non-trivial work requires current-repository research and a reviewed plan before production mutation.
+- Use `.agent/DEVELOPMENT_PHASES.md` for UIKitPlus-specific phase mechanics.
+- For non-trivial iterative LLM-assisted work, load `.agent/DEVELOPMENT_ORCHESTRATION.md` and `.agent/ARTIFACTS_WORKFLOW.md`.
+- Large/cognitively dense implementation or correction work is decomposed into numbered surgical task files; detailed mechanics stay in those files and the executor receives one short coordinator prompt.
+- Executor reports are evidence, never proof. Independently inspect actual source/diff/Git and relevant architecture owners.
+- If a materially reviewed assumption fails during implementation, stop that path and re-plan rather than silently widening scope.
+- Commit and push are separate explicit gates; passing AUDIT does not authorize either.
 
-Context discipline:
-- `.agent/CONTEXT_LOADING_RULES.md`
-- `.agent/CONTEXT_BUDGET.md`
+## UIKitPlus Engineering Routing
 
-## 3. Mandatory Workflow
+For source/API work:
 
-All tasks must follow:
+1. Use `.agent/ARCH_INDEX.md` to select the relevant architecture owner(s).
+2. Load `.agent/architecture/LAYER_MODEL.md` plus the smallest decision-complete domain/contract set.
+3. Inspect analogous existing UIKitPlus source before designing a new approach.
+4. Preserve the native-first two-stage pattern where applicable: thin declarative native wrapper first, UIKitPlus convenience layer second.
+5. Preserve fluent/reference/state/extension/platform invariants owned by the selected architecture docs.
 
-`PLAN -> IMPLEMENT -> AUDIT -> LOCAL COMMIT`
+Application state-placement work additionally routes through `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md` and its `AO*` invariants.
 
-### Hard Scope Separation
+## Mandatory Context Budget
 
-This governance commit is **documentation-only**.
+Normal work:
+- starts here;
+- loads `ARCH_INDEX.md` for routing;
+- keeps at most 3 active architecture docs by default, including `LAYER_MODEL.md`;
+- loads at most one operational skill by default;
+- uses `SOURCE_MAP.md` before broad source discovery;
+- inspects the smallest relevant source subset.
 
-The following are **not** in scope for this docs closure:
-- Swift source migration
-- Test changes
-- Swift 6 strict concurrency migration (deferred to later)
-- State vNext implementation (deferred to later)
-- 52-commit independent audit (deferred to later)
-- Push to origin
+Operational orchestration/artifact/public-content routers do not consume architecture-doc slots. Public-content shards are lazy and must not be loaded "just in case".
 
-### Architecture-ID Traceability (Mandatory)
+Cross-cutting governance/architecture audits may deliberately exceed the default budget. Full rules: `.agent/CONTEXT_LOADING_RULES.md` and `.agent/CONTEXT_BUDGET.md`.
 
-All workflow artifacts must include architecture ID tags.
-Required tag format example: `[ST12][MU04][FC02]`.
+## Documentation Self-Maintenance
 
-This is mandatory for:
-- PLAN outputs,
-- IMPLEMENT notes,
-- AUDIT outputs,
-- patch review outputs.
+- Stable docs must match current implementation and reviewed architecture.
+- Architecture IDs have one authoritative owner; cite instead of restating alternate full rules.
+- Update only docs whose owned durable fact actually changed.
+- Keep transient execution history, local tool IDs, temporary logs, and task-specific evidence in `.artifacts/**`, not stable governance.
+- If `.artifacts/**` disappears, reconstruct current working context from stable docs + Git + actual source; never invent lost evidence.
 
-Enforcement:
-- planning without architecture-ID grounding is incomplete,
-- artifacts without architecture-ID traceability are incomplete,
-- review outputs without architecture references fail enforcement.
+After meaningful research/design/implementation/correction/audit, perform the lazy capture check owned by `.agent/PUBLIC_CONTENT_IDEAS.md`. Open the bank only when genuinely valuable README/docs/website/release/migration/publication material was discovered, then load only the relevant shard.
 
-### PLAN (no mutation)
+## Git Safety
 
-Must include:
-- target files and expected documentation updates,
-- layer impact (`DSL`, `Runtime`, `Platform`, `Cross-Layer`),
-- fluent-chain compatibility risk,
-- mutation-flow impact,
-- extension-collision risk,
-- state propagation risk,
-- application state-ownership and dependency-surface impact when app code is involved,
-- platform leakage risk.
-- architecture-ID tags for each risk/decision line.
+Follow `.agent/COMMIT_RULES.md`.
 
-### IMPLEMENT
+Preserve unrelated staged, unstaged, and untracked user work. Never stage, commit, amend, reset, restore, clean, stash, rebase/merge, or push unless the maintainer's instruction explicitly authorizes that exact operation/scope.
 
-Rules:
-- implement approved scope only,
-- do not introduce undocumented contracts,
-- do not drift architecture,
-- keep UIKitPlus fluent/reference semantics intact,
-- keep extension composition stable and predictable,
-- keep application state with its natural owner and expose only exact state/value/callback dependencies.
-- implementation notes must include architecture-ID tags for each behavior-affecting change.
+`.artifacts/**` must never be staged or committed. UIKitPlus's project-specific push lock remains in force until its stable prerequisites are satisfied and the maintainer explicitly authorizes push.
 
-### AUDIT
+## Task / Durable State
 
-Must validate:
-- fluent chain contract compliance,
-- state and binding propagation correctness,
-- application state ownership and absence of replacement state bags when relevant,
-- extension collision/precedence safety,
-- runtime lifecycle consistency,
-- layout side-effect safety,
-- documentation synchronization.
-- every audit finding must include architecture-ID tags.
+- `TASKS.md` owns active governance-tracked work.
+- `TASKS_ARCHIVE.md` owns compact completed-task history when worth retaining.
+- `PROJECT_MEMORY.md` owns durable current facts useful beyond immediate source/Git inspection.
+- `TODO.md` owns low-priority future ideas.
+- `TECH_DEBT.md` owns verified debt.
+- `STATE_VNEXT_PLAN.md` owns deferred State vNext planning.
 
-## 4. Push Lock
-
-DO NOT PUSH.
-
-Push to origin is forbidden until governance docs are committed, independent 52-commit audit is accepted, critical regressions are fixed/deferred, Swift 6 / State vNext risks are documented, and the user explicitly authorizes push.
-
-Local commits are allowed only after ChatGPT audit acceptance.
-
-## 5. `.artifacts` Policy
-
-- `.artifacts/**` is transient planning data.
-- `.artifacts/**` must never be committed.
-- Promote durable facts from `.artifacts/` to `.agent/` before discarding.
-- `.artifacts/` is git-ignored via `.gitignore` entry `.artifacts/`.
-
-## 6. Architecture Lock
-
-- Architecture is frozen by default.
-- Any DSL-breaking or contract-changing architecture update requires explicit approval.
-- Agents must refuse silent architecture reinterpretation.
-
-## 7. Non-Negotiable Safety Rules
-
-1. Fluent API Safety:
-- Chainable methods must preserve `Self`-return semantics and composability.
-- Public core setter overloads and their DocC must satisfy FC11 and FC12.
-
-2. Extension Isolation:
-- Extensions must remain domain-scoped and avoid hidden global behavior.
-
-3. No Hidden Side Effects:
-- State mutations and listener wiring must be explicit and auditable.
-- Classify every new or materially changed fluent value setter under ST8.
-
-4. Layout Predictability:
-- Constraint behavior must remain explicit, with no undocumented implicit activation side effects.
-
-5. Platform Boundary Integrity:
-- UIKit/AppKit conditionals must not leak platform-only APIs into shared contracts.
-
-6. Application State Ownership:
-- Do not introduce a ViewModel/PresentationModel by default for UIKitPlus UI state.
-- Local UI state belongs to the nearest `UView`/`ViewController`; sibling-shared state belongs to the nearest common composition owner; app-wide environment belongs to `App`; authoritative runtime/domain state belongs to a justified dedicated owner.
-- Children receive only exact `UState` references, immutable values, or focused callbacks.
-- A renamed context/store/environment object containing unrelated mutable UI state is still a forbidden all-state bag.
-- Follow `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md` and cite `AO*` invariants in application architecture work.
-
-## 8. ChatGPT ↔ Codex Compatibility
-
-This repository supports iterative ChatGPT planning/review and Codex implementation loops.
-
-Required:
-- architecture-grounded prompts,
-- patch-scoped changes,
-- post-patch contract review,
-- `.agent` synchronization after each completed task.
-
-## 9. Token-Efficient Loading Policy
-
-Required loading strategy:
-1. `AGENTS.md`
-2. `.agent/ARCH_INDEX.md`
-3. `.agent/architecture/LAYER_MODEL.md`
-4. one domain architecture doc
-5. one contract doc
-
-For UIKitPlus application state placement or application refactors, the domain architecture doc is:
-- `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
-
-Default maximum active architecture docs: `3`.
-
-Do not bulk-load the entire `.agent` tree unless explicitly required.
-
-## 10. Documentation Synchronization
-
-Task closure is blocked until affected docs are updated.
-
-Minimum sync targets when relevant:
-- `AGENTS.md`
-- `.agent/ARCH_INDEX.md`
-- `.agent/ARCHITECTURE.md`
-- `.agent/architecture/*.md`
-- `.agent/DEVELOPMENT_PHASES.md`
-- `.agent/PATCH_REVIEW_RULES.md`
-- `.agent/SKILL_INDEX.md`
-- `.agent/skills/*.md`
-- `.agent/TEMPLATE_INDEX.md`
-- `.agent/templates/*.md`
-- `.agent/PROJECT_MEMORY.md`
-- `.agent/MODULES.md`
-- `.agent/TASKS.md`
-- `.agent/TASKS_ARCHIVE.md`
-- `.agent/TECH_DEBT.md`
-- `.agent/SOURCE_MAP.md`
-- `.agent/COMMIT_RULES.md`
-- `.agent/VALIDATION_RULES.md`
-- `.agent/STATE_VNEXT_PLAN.md`
-- `.agent/TODO.md`
+Do not use `.artifacts/NEW_CHAT.md` as permanent project memory. It is only transient continuation context for the next coordinator/reviewer conversation.

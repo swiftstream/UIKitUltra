@@ -14,8 +14,8 @@ This file stores stable governance memory for UIKitPlus agent work.
   is `56b726fbbf9ec6218677a106ff33599a5b1187c3`; framework source was unchanged.
 - Local `master` tracks `origin/master`; no push is authorized.
 - Push is locked.
-- Governance docs are being finalized before Swift 6 strict concurrency migration.
-- `.artifacts` is transient and ignored.
+- Stable development orchestration is model-independent and routed through `DEVELOPMENT_ORCHESTRATION.md` plus `ARTIFACTS_WORKFLOW.md` for non-trivial iterative work.
+- `.artifacts/**` is transient, Git-ignored working memory and is reconstructable from stable docs + Git + actual source when missing.
 - State vNext is deferred until after Swift 6 migration.
 
 ## Baselines
@@ -121,16 +121,21 @@ native single-line flags. [PA1][PA3][RT1][FC5]
 
 ## Workflow Memory
 
-- Mandatory phase order: `PLAN -> IMPLEMENT -> AUDIT -> LOCAL COMMIT`.
-- No push until independent audit is accepted and user authorizes.
-- Patch review must validate fluent, state, extension, runtime, and mutation contracts.
-- Task closure requires `.agent` synchronization.
+- Mandatory development cycle: `PLAN -> IMPLEMENT -> AUDIT`; commit and push are separate explicit Git gates.
+- Non-trivial iterative work externalizes research/plans/tasks/reports/corrections under disposable `.artifacts/**`; large work uses numbered surgical task files plus a short coordinator prompt.
+- Executor reports are evidence, not proof; independent source/diff/Git/architecture review is mandatory.
+- When required verification cannot be executed directly, delegate a focused read-only verification task rather than leaving a blind spot.
+- Substantial roadmap milestones require a final independent whole-milestone conformance review before milestone completion/commit gate.
+- No push until current project-specific prerequisites are accepted and the user explicitly authorizes push.
+- Patch review must validate fluent, state, extension, runtime, mutation, and relevant platform contracts.
+- Task closure synchronizes only affected durable `.agent` owners.
 
 ## Documentation Memory
 
-- `ARCH_INDEX.md` is the routing entrypoint.
-- Max active architecture docs defaults to `3`.
+- `ARCH_INDEX.md` is the technical architecture routing entrypoint.
+- Max active architecture docs defaults to `3`; operational orchestration/artifact owners do not consume these slots.
 - Skills/templates are secondary context after architecture loading.
+- `PUBLIC_CONTENT_IDEAS.md` and its shards are durable but lazy candidate communication material, loaded only after a positive capture check or for explicit public-content work.
 
 ## State vNext Memory
 

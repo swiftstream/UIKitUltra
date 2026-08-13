@@ -1,44 +1,54 @@
 # Workflow
 
-UIKitPlus uses a documentation-governed ChatGPT -> Codex -> ChatGPT loop.
+Mandatory development workflow for UIKitPlus.
 
-## Loop
+## PLAN -> IMPLEMENT -> AUDIT
 
+Every non-trivial task follows:
+
+1. **PLAN** - research current facts, define exact scope, relevant architecture owners/IDs, expected mutations, and completion evidence. Externalize substantial research/plan state under `.artifacts/planning/<slug>/` according to `ARTIFACTS_WORKFLOW.md`.
+2. **IMPLEMENT** - execute the reviewed plan without unrelated expansion. Large or multi-behavior work is decomposed into numbered surgical task files before an implementation executor receives it.
+3. **AUDIT** - verify behavior, source, architecture IDs, docs, validation, and Git state with concrete evidence; use focused correction task files when needed; synchronize durable knowledge that actually changed.
+
+Small typo/format-only work may skip a formal artifact plan but still requires scope/result verification.
+
+UIKitPlus-specific PLAN/IMPLEMENT/AUDIT mechanics are in `DEVELOPMENT_PHASES.md`. Model-independent coordinator/executor roles and review gates are in `DEVELOPMENT_ORCHESTRATION.md`. Detailed transient task/report mechanics are in `ARTIFACTS_WORKFLOW.md`.
+
+Commit and push are **not** automatic workflow phases. They are separate explicit Git gates governed by `COMMIT_RULES.md` and maintainer authorization.
+
+## UIKitPlus Development Shape
+
+For new native-backed functionality, preserve the established project rule:
+
+```text
+inspect analogous UIKitPlus implementation
+-> Stage 1: thin declarative UIKit/AppKit wrapper preserving native semantics
+-> Stage 2: UIKitPlus conveniences using established library mechanisms
+-> focused validation
+-> independent architecture/source audit
 ```
-PLAN -> IMPLEMENT -> AUDIT -> LOCAL COMMIT -> NO PUSH
-```
 
-1. ChatGPT or developer defines task intent and scope.
-2. Codex performs architecture-grounded planning.
-3. Codex implements approved scope.
-4. Patch/output is reviewed against architecture contracts.
-5. Documentation is synchronized before closure.
-6. Local commit after audit acceptance.
-7. No push.
+Do not introduce a replacement lifecycle/layout/state/coordination model merely because it seems cleaner in isolation. New engineering approaches require the explicit review/approval owned by `SYSTEM_RULES.md` and relevant architecture owners.
 
-## Execution Rules
+## Iterative LLM-Assisted Work
 
-- Planning precedes mutation.
-- Implementation prompt must list allowed/forbidden files.
-- Implementation remains patch-minimal and architecture-safe.
-- Audit must inspect actual git state and diffs.
-- OpenCode reports are not accepted without ChatGPT direct audit.
-- No task closes without `.agent` sync.
-- PLAN, IMPLEMENT notes, AUDIT, and review outputs must include architecture-ID tags (for example: `[ST12][MU04][FC02]`).
-- No push until independent 52-commit audit is accepted.
-- Docs-only tasks must not edit Swift source.
-- Source tasks must sync docs when durable facts change.
+For non-trivial iterative work, load `DEVELOPMENT_ORCHESTRATION.md` and `ARTIFACTS_WORKFLOW.md`.
 
-## Traceability Enforcement
+- Detailed mechanics, allowlists, architecture IDs, verification, and stop conditions live in numbered task files.
+- The executor coordinator prompt stays short and drives autonomous task-by-task execution with append-only reporting.
+- Executor reports are evidence inputs, never proof. Independent review inspects actual files, Git state/diff, direct callers, architecture owners, and relevant validation.
+- Audit findings become a new focused numbered correction wave rather than one giant correction prompt.
+- When the coordinator lacks a required execution/runtime/UI/native capability, use a focused read-only verification task rather than leaving a blind spot.
+- Substantial roadmap milestones receive the independent whole-milestone conformance gate defined by `DEVELOPMENT_ORCHESTRATION.md` before they are marked complete.
 
-- Architecture-aware task flow is invalid without architecture-ID grounding.
-- Workflow artifacts without architecture-ID traceability are incomplete.
-- Review artifacts without architecture references fail enforcement.
+## Documentation Synchronization
 
-## Entrypoint Order
+Update stable documentation only when a task changes a durable fact, architecture rule, task/debt state, source/navigation ownership, or workflow rule.
 
-1. `AGENTS.md`
-2. `.agent/ARCH_INDEX.md`
-3. `.agent/architecture/LAYER_MODEL.md`
+Do not touch unrelated docs merely because a generic checklist exists. Link to the authoritative owner instead of duplicating full contracts.
 
-Then load only task-relevant docs.
+After meaningful research/design/implementation/correction/audit, perform the lazy public-content capture check owned by `PUBLIC_CONTENT_IDEAS.md`. If no genuinely valuable README/docs/website/release/migration/publication material appeared, do not open the bank. If the check is positive, append only to the relevant shard while the context is fresh.
+
+## Git Safety
+
+Follow `COMMIT_RULES.md`. Preserve unrelated user work. Never stage, commit, or push merely because PLAN/IMPLEMENT/AUDIT passed.
