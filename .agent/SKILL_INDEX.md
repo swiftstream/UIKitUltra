@@ -51,6 +51,16 @@ Default maximum active architecture docs: `3`.
     `LAYOUT_SYSTEM.md`, or `MUTATION_MODEL.md`, selected by the task
   - Skill: `.agent/skills/macos_ulist_skill.md`
 
+- General rendered UIKit/AppKit/UIKitPlus diagnosis when visibility, clipping,
+  native ownership, viewport reach, resize behavior, or actual rendered
+  boundaries are ambiguous from source/logs/geometry alone:
+  - Architecture: keep the primary owner already selected for the defect;
+    add at most one supporting contract only when needed to interpret evidence
+  - Skill: `.agent/skills/visual_ui_diagnostics_skill.md`
+  - Use this as a dedicated diagnostic/verification-step skill. It replaces the
+    implementation skill for that step rather than being loaded as a second
+    operational skill.
+
 ## Governance Routing
 
 - Source ownership:

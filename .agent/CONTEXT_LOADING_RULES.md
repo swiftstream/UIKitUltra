@@ -20,7 +20,7 @@ For normal work:
 4. Load `architecture/LAYER_MODEL.md`.
 5. Load only the domain/contract architecture docs needed to reach a decision, keeping the default total at 3.
 6. Load `STYLE_GUIDELINES.md`, `DSL_SAFETY_RULES.md`, and/or `EXTENSION_RULES.md` only when the edit type needs them; these policy docs do not replace architecture owners.
-7. Use `SKILL_INDEX.md` only when a concrete operational procedure applies; load at most one skill by default.
+7. Use `SKILL_INDEX.md` only when a concrete operational procedure applies; load at most one skill by default. A dedicated verification step may switch from the implementation skill to `visual_ui_diagnostics_skill.md`; do not keep both loaded merely because the parent task used an implementation skill.
 8. Use `SOURCE_MAP.md` before broad source discovery, then inspect only the exact source/test/project files required.
 9. Treat `PUBLIC_CONTENT_IDEAS.md` and `.agent/public-content-ideas/**` as lazy communication context, not normal development context. First perform the capture check from current work. Only if positive, or if the task explicitly concerns README/public docs/website docs/release notes/migration guides/articles/posts, load the router and exactly the relevant shard(s). These files do not consume architecture-doc slots.
 10. Load `.artifacts/**` only for the active planning/execution/audit/handoff step. Do not bulk-load all task files; an executor reads the next numbered task immediately before execution.
