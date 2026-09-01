@@ -62,7 +62,7 @@ swift test --filter <focused-test>
 Platform-specific rules:
 - use `xcodebuild` only when relevant and available;
 - do not claim iOS/tvOS/macOS rendered/native validation unless actually run/observed;
-- when rendered presence, clipping, viewport reach, native ownership, resize behavior, or actual visual boundaries are ambiguous on any UI surface, use `.agent/skills/visual_ui_diagnostics_skill.md` to obtain objective screenshot/recording plus native/runtime geometry evidence rather than extending log-only inference;
+- when rendered presence, clipping, viewport reach, native ownership, resize behavior, or actual visual boundaries are ambiguous on any UI surface, use `.agent/skills/uikitplus-visual-ui-diagnostics/SKILL.md` to obtain objective screenshot/recording plus native/runtime geometry evidence rather than extending log-only inference;
 - changed public fluent APIs must be audited against the relevant `FC*`/`ST*`/other architecture IDs selected by `ARCH_INDEX.md`;
 - macOS native window-tab patches require the focused window-tab contract validation and full package validation appropriate to current source;
 - macOS `UList`/`NSTableView` changes must satisfy the rendered recycling/live-resize gate owned by `MACOS_ULIST_NSTABLEVIEW.md` when that contract requires it.
@@ -73,7 +73,7 @@ Green tests/builds are evidence, not architecture proof. Independent source/diff
 
 If the coordinator/reviewer cannot directly run a required command or rendered/native check, use the focused read-only verification delegation defined by `DEVELOPMENT_ORCHESTRATION.md` and `ARTIFACTS_WORKFLOW.md`.
 
-For delegated rendered-UI diagnosis, use `visual_ui_diagnostics_skill.md` as the operational skill for that verification step and keep temporary instrumentation out of the real tracked repository whenever the task is read-only.
+For delegated rendered-UI diagnosis, use `.agent/skills/uikitplus-visual-ui-diagnostics/SKILL.md` as the operational skill for that verification step and keep temporary instrumentation out of the real tracked repository whenever the task is read-only.
 
 Do not silently downgrade required evidence because the current tool surface lacks the capability.
 

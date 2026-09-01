@@ -17,12 +17,12 @@ Default maximum active architecture docs: `3`.
 - View composition and builder integration:
   - Architecture: `VIEW_COMPOSITION.md`, `RUNTIME_MODEL.md`, `MUTATION_MODEL.md`
   - Contract: `FLUENT_CHAIN_CONTRACT.md`
-  - Skill: `.agent/skills/view_composition_skill.md`
+  - Skill: `.agent/skills/view-composition/SKILL.md`
 
 - Constraint and layout DSL updates:
   - Architecture: `LAYOUT_SYSTEM.md`, `RUNTIME_MODEL.md`, `MUTATION_MODEL.md`
   - Contract: `STATE_SYSTEM.md` when state-backed constants are involved
-  - Skill: `.agent/skills/constraint_system_skill.md`
+  - Skill: `.agent/skills/constraint-system/SKILL.md`
 
 - State and binding updates, including State-surface classification for every
   new or materially changed fluent value setter:
@@ -30,17 +30,17 @@ Default maximum active architecture docs: `3`.
   - Contract: `FLUENT_CHAIN_CONTRACT.md`
   - Escalate selectively to `MUTATION_MODEL.md` for bidirectional/re-entrant
     mutation or `RUNTIME_MODEL.md` for lifecycle/deferred behavior
-  - Skill: `.agent/skills/state_binding_skill.md`
+  - Skill: `.agent/skills/state-binding/SKILL.md`
 
 - Gesture wrapper/integration updates:
   - Architecture: `GESTURE_SYSTEM.md`, `MUTATION_MODEL.md`, `PLATFORM_ABSTRACTION.md`
   - Contract: `EXTENSION_SYSTEM.md` and `FLUENT_CHAIN_CONTRACT.md`
-  - Skill: `.agent/skills/gesture_integration_skill.md`
+  - Skill: `.agent/skills/gesture-integration/SKILL.md`
 
 - Navigation flow updates:
   - Architecture: `NAVIGATION_SYSTEM.md`, `RUNTIME_MODEL.md`, `PLATFORM_ABSTRACTION.md`
   - Contract: `FLUENT_CHAIN_CONTRACT.md`
-  - Skill: `.agent/skills/navigation_flow_skill.md`
+  - Skill: `.agent/skills/navigation-flow/SKILL.md`
 
 - macOS `UList` / `NSTableView`, row hosting, self-sizing, recycling,
   scrolling, automatic heights, or live resize:
@@ -49,14 +49,14 @@ Default maximum active architecture docs: `3`.
     supporting contract without documented context-budget escalation
   - Other rows: supporting contract is at most one of `RUNTIME_MODEL.md`,
     `LAYOUT_SYSTEM.md`, or `MUTATION_MODEL.md`, selected by the task
-  - Skill: `.agent/skills/macos_ulist_skill.md`
+  - Skill: `.agent/skills/macos-ulist/SKILL.md`
 
 - General rendered UIKit/AppKit/UIKitPlus diagnosis when visibility, clipping,
   native ownership, viewport reach, resize behavior, or actual rendered
   boundaries are ambiguous from source/logs/geometry alone:
   - Architecture: keep the primary owner already selected for the defect;
     add at most one supporting contract only when needed to interpret evidence
-  - Skill: `.agent/skills/visual_ui_diagnostics_skill.md`
+  - Skill: `.agent/skills/uikitplus-visual-ui-diagnostics/SKILL.md`
   - Use this as a dedicated diagnostic/verification-step skill. It replaces the
     implementation skill for that step rather than being loaded as a second
     operational skill.

@@ -8,7 +8,7 @@ Use this template for `DeclarativeProtocol+Feature.swift` additions.
 2. `FLUENT_CHAIN_CONTRACT.md`
 3. `EXTENSION_SYSTEM.md`
 
-Load `STATE_SYSTEM.md` plus `state_binding_skill.md` for a bindable value setter
+Load `STATE_SYSTEM.md` plus `.agent/skills/state-binding/SKILL.md` for a bindable value setter
 and any other domain/mutation contract only through documented context-budget
 escalation.
 
