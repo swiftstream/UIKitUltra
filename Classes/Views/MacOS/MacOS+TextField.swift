@@ -2,6 +2,68 @@
 import Foundation
 import AppKit
 
+fileprivate class _UTextFieldInsetCell: NSTextFieldCell, _MacOSInsettableCell {
+    private var insets = _MacOSControlInsets.zero
+
+    var _macOSControlInsets: _MacOSControlInsets { insets }
+
+    override init(textCell string: String) {
+        super.init(textCell: string)
+    }
+
+    required init(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    func _setMacOSControlInsets(_ insets: _MacOSControlInsets) {
+        self.insets = insets
+    }
+
+    override func drawInterior(withFrame cellFrame: NSRect, in controlView: NSView) {
+        guard !insets.isZero else {
+            super.drawInterior(withFrame: cellFrame, in: controlView)
+            return
+        }
+        super.drawInterior(withFrame: insets.contentFrame(for: cellFrame), in: controlView)
+    }
+
+    override func edit(
+        withFrame rect: NSRect,
+        in controlView: NSView,
+        editor textObj: NSText,
+        delegate: Any?,
+        event: NSEvent?
+    ) {
+        guard !insets.isZero else {
+            super.edit(withFrame: rect, in: controlView, editor: textObj, delegate: delegate, event: event)
+            return
+        }
+        super.edit(withFrame: insets.contentFrame(for: rect), in: controlView, editor: textObj, delegate: delegate, event: event)
+    }
+
+    override func select(
+        withFrame rect: NSRect,
+        in controlView: NSView,
+        editor textObj: NSText,
+        delegate: Any?,
+        start selStart: Int,
+        length selLength: Int
+    ) {
+        guard !insets.isZero else {
+            super.select(withFrame: rect, in: controlView, editor: textObj, delegate: delegate, start: selStart, length: selLength)
+            return
+        }
+        super.select(withFrame: insets.contentFrame(for: rect), in: controlView, editor: textObj, delegate: delegate, start: selStart, length: selLength)
+    }
+
+    override func cellSize(forBounds rect: NSRect) -> NSSize {
+        guard !insets.isZero else {
+            return super.cellSize(forBounds: rect)
+        }
+        return insets.expandedSize(super.cellSize(forBounds: insets.contentFrame(for: rect)))
+    }
+}
+
 @MainActor
 open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UTextField { self }
@@ -9,6 +71,11 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
     public lazy var properties = P()
     lazy var _properties = PropertiesInternal()
     fileprivate lazy var _formatter = _Formatter(self)
+
+    override open class var cellClass: AnyClass? {
+        get { _UTextFieldInsetCell.self }
+        set {}
+    }
     
     @UIKitPlus.State public var height: CGFloat = 0
     @UIKitPlus.State public var width: CGFloat = 0
@@ -102,6 +169,110 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         translatesAutoresizingMaskIntoConstraints = false
         delegate = _innerDelegate
         formatter = _formatter
+    }
+
+    /// Sets the four native text content edges directly. Repeated equal calls are idempotent and listener-free; native text, placeholder, formatter, delegate, and field-editor behavior remain AppKit-owned. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func textInsets(_ insets: NSEdgeInsets) -> Self {
+        _setMacOSControlInsets(.init(insets))
+        return self
+    }
+
+    /// Sets equal horizontal and vertical native text content edges. The arguments are intentionally unlabeled; repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func textInsets(_ horizontal: CGFloat, _ vertical: CGFloat) -> Self {
+        textInsets(top: vertical, left: horizontal, right: horizontal, bottom: vertical)
+    }
+
+    /// Sets the same native text content edge on all sides. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func textInsets(_ value: CGFloat) -> Self {
+        textInsets(value, value)
+    }
+
+    /// Sets each native text content edge explicitly. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func textInsets(top: CGFloat = 0, left: CGFloat = 0, right: CGFloat = 0, bottom: CGFloat = 0) -> Self {
+        _setMacOSControlInsets(.init(top: top, left: left, right: right, bottom: bottom))
+        return self
+    }
+
+    /// Applies the current edge State immediately and follows future values one-way. Repeated State calls add holder-owned bindings until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register a State listener.
+    @discardableResult
+    public func textInsets(_ state: State<NSEdgeInsets>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        textInsets(state.wrappedValue)
+        state.listen { [weak self] value in
+            self?.textInsets(value)
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current horizontal and vertical States immediately and follows each future value one-way on its own axis. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register State listeners.
+    @discardableResult
+    public func textInsets(_ horizontal: State<CGFloat>, _ vertical: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        textInsets(horizontal.wrappedValue, vertical.wrappedValue)
+        horizontal.listen { [weak self] value in
+            self?._updateMacOSControlInsets {
+                $0.left = value
+                $0.right = value
+            }
+        }
+        .hold(in: stateBindingHolder)
+        vertical.listen { [weak self] value in
+            self?._updateMacOSControlInsets {
+                $0.top = value
+                $0.bottom = value
+            }
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current uniform State immediately and follows future values one-way on all four edges. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register a State listener.
+    @discardableResult
+    public func textInsets(_ state: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        textInsets(state.wrappedValue)
+        state.listen { [weak self] value in
+            self?.textInsets(value)
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current four edge States immediately and follows each future value one-way on its own edge. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register State listeners.
+    @discardableResult
+    public func textInsets(top: State<CGFloat>, left: State<CGFloat>, right: State<CGFloat>, bottom: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        textInsets(top: top.wrappedValue, left: left.wrappedValue, right: right.wrappedValue, bottom: bottom.wrappedValue)
+        top.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.top = value }
+        }
+        .hold(in: stateBindingHolder)
+        left.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.left = value }
+        }
+        .hold(in: stateBindingHolder)
+        right.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.right = value }
+        }
+        .hold(in: stateBindingHolder)
+        bottom.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.bottom = value }
+        }
+        .hold(in: stateBindingHolder)
+        return self
     }
     
     @discardableResult

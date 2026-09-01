@@ -1,10 +1,55 @@
 #if os(macOS)
 import AppKit
 
+fileprivate final class _UPopUpButtonInsetCell: NSPopUpButtonCell, _MacOSInsettableCell {
+    private var insets = _MacOSControlInsets.zero
+
+    var _macOSControlInsets: _MacOSControlInsets { insets }
+
+    override init(textCell string: String, pullsDown: Bool) {
+        super.init(textCell: string, pullsDown: pullsDown)
+    }
+
+    required init(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    func _setMacOSControlInsets(_ insets: _MacOSControlInsets) {
+        self.insets = insets
+    }
+
+    override func drawInterior(withFrame cellFrame: NSRect, in controlView: NSView) {
+        guard !insets.isZero else {
+            super.drawInterior(withFrame: cellFrame, in: controlView)
+            return
+        }
+        super.drawInterior(withFrame: insets.contentFrame(for: cellFrame), in: controlView)
+    }
+
+    override func cellSize(forBounds rect: NSRect) -> NSSize {
+        guard !insets.isZero else {
+            return super.cellSize(forBounds: rect)
+        }
+        return insets.expandedSize(super.cellSize(forBounds: insets.contentFrame(for: rect)))
+    }
+}
+
 open class UPopUpButton: NSPopUpButton, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UPopUpButton { self }
     public lazy var properties = Properties<UPopUpButton>()
     lazy var _properties = PropertiesInternal()
+
+    override open class var cellClass: AnyClass? {
+        get { _UPopUpButtonInsetCell.self }
+        set {}
+    }
+
+    open override var intrinsicContentSize: NSSize {
+        guard let insets = _macOSControlInsetsValue, !insets.isZero else {
+            return super.intrinsicContentSize
+        }
+        return insets.expandedSize(super.intrinsicContentSize)
+    }
     
     @UIKitPlus.State public var height: CGFloat = 0
     @UIKitPlus.State public var width: CGFloat = 0
@@ -64,6 +109,110 @@ open class UPopUpButton: NSPopUpButton, AnyDeclarativeProtocol, DeclarativeProto
         translatesAutoresizingMaskIntoConstraints = false
         target = self
         action = #selector(pushHandler)
+    }
+
+    /// Sets the four native content edges directly. Repeated equal calls are idempotent and listener-free while native popup selection, arrow, menu, and tracking behavior remain owned by AppKit. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func contentInsets(_ insets: NSEdgeInsets) -> Self {
+        _setMacOSControlInsets(.init(insets))
+        return self
+    }
+
+    /// Sets equal horizontal and vertical native content edges. The arguments are intentionally unlabeled; repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func contentInsets(_ horizontal: CGFloat, _ vertical: CGFloat) -> Self {
+        contentInsets(top: vertical, left: horizontal, right: horizontal, bottom: vertical)
+    }
+
+    /// Sets the same native content edge on all sides. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func contentInsets(_ value: CGFloat) -> Self {
+        contentInsets(value, value)
+    }
+
+    /// Sets each native content edge explicitly. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    @discardableResult
+    public func contentInsets(top: CGFloat = 0, left: CGFloat = 0, right: CGFloat = 0, bottom: CGFloat = 0) -> Self {
+        _setMacOSControlInsets(.init(top: top, left: left, right: right, bottom: bottom))
+        return self
+    }
+
+    /// Applies the current edge State immediately and follows future values one-way. Repeated State calls add holder-owned bindings until the popup is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register a State listener.
+    @discardableResult
+    public func contentInsets(_ state: State<NSEdgeInsets>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(state.wrappedValue)
+        state.listen { [weak self] value in
+            self?.contentInsets(value)
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current horizontal and vertical States immediately and follows each future value one-way on its own axis. Repeated bindings are additive and holder-owned until the popup is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register State listeners.
+    @discardableResult
+    public func contentInsets(_ horizontal: State<CGFloat>, _ vertical: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(horizontal.wrappedValue, vertical.wrappedValue)
+        horizontal.listen { [weak self] value in
+            self?._updateMacOSControlInsets {
+                $0.left = value
+                $0.right = value
+            }
+        }
+        .hold(in: stateBindingHolder)
+        vertical.listen { [weak self] value in
+            self?._updateMacOSControlInsets {
+                $0.top = value
+                $0.bottom = value
+            }
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current uniform State immediately and follows future values one-way on all four edges. Repeated bindings are additive and holder-owned until the popup is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register a State listener.
+    @discardableResult
+    public func contentInsets(_ state: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(state.wrappedValue)
+        state.listen { [weak self] value in
+            self?.contentInsets(value)
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current four edge States immediately and follows each future value one-way on its own edge. Repeated bindings are additive and holder-owned until the popup is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register State listeners.
+    @discardableResult
+    public func contentInsets(top: State<CGFloat>, left: State<CGFloat>, right: State<CGFloat>, bottom: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(top: top.wrappedValue, left: left.wrappedValue, right: right.wrappedValue, bottom: bottom.wrappedValue)
+        top.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.top = value }
+        }
+        .hold(in: stateBindingHolder)
+        left.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.left = value }
+        }
+        .hold(in: stateBindingHolder)
+        right.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.right = value }
+        }
+        .hold(in: stateBindingHolder)
+        bottom.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.bottom = value }
+        }
+        .hold(in: stateBindingHolder)
+        return self
     }
     
     open override func layout() {

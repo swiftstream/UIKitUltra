@@ -1,10 +1,140 @@
 #if os(macOS)
 import AppKit
 
+struct _MacOSControlInsets: Equatable {
+    var top: CGFloat
+    var left: CGFloat
+    var right: CGFloat
+    var bottom: CGFloat
+
+    static let zero = Self(top: 0, left: 0, right: 0, bottom: 0)
+
+    init(top: CGFloat, left: CGFloat, right: CGFloat, bottom: CGFloat) {
+        self.top = top
+        self.left = left
+        self.right = right
+        self.bottom = bottom
+    }
+
+    init(_ insets: NSEdgeInsets) {
+        self.init(top: insets.top, left: insets.left, right: insets.right, bottom: insets.bottom)
+    }
+
+    var isZero: Bool {
+        self == .zero
+    }
+
+    var nsEdgeInsets: NSEdgeInsets {
+        .init(top: top, left: left, bottom: bottom, right: right)
+    }
+
+    func contentFrame(for frame: NSRect) -> NSRect {
+        .init(
+            x: frame.minX + left,
+            y: frame.minY + bottom,
+            width: max(0, frame.width - left - right),
+            height: max(0, frame.height - top - bottom)
+        )
+    }
+
+    func expandedSize(_ size: NSSize) -> NSSize {
+        .init(width: size.width + left + right, height: size.height + top + bottom)
+    }
+}
+
+@MainActor
+protocol _MacOSInsettableCell: AnyObject {
+    var _macOSControlInsets: _MacOSControlInsets { get }
+    func _setMacOSControlInsets(_ insets: _MacOSControlInsets)
+}
+
+extension _MacOSInsettableCell {
+    func _macOSContentFrame(for frame: NSRect) -> NSRect {
+        _macOSControlInsets.contentFrame(for: frame)
+    }
+
+    func _macOSExpandedSize(_ size: NSSize) -> NSSize {
+        _macOSControlInsets.expandedSize(size)
+    }
+}
+
+extension NSControl {
+    var _macOSControlInsetsValue: _MacOSControlInsets? {
+        (cell as? _MacOSInsettableCell)?._macOSControlInsets
+    }
+
+    @discardableResult
+    func _setMacOSControlInsets(_ insets: _MacOSControlInsets) -> Bool {
+        guard let insettableCell = cell as? _MacOSInsettableCell else {
+            return false
+        }
+        guard insettableCell._macOSControlInsets != insets else {
+            return true
+        }
+
+        insettableCell._setMacOSControlInsets(insets)
+        invalidateIntrinsicContentSize(for: insettableCell as! NSCell)
+        needsDisplay = true
+        needsLayout = true
+        return true
+    }
+
+    @discardableResult
+    func _updateMacOSControlInsets(_ update: (inout _MacOSControlInsets) -> Void) -> Bool {
+        guard var insets = _macOSControlInsetsValue else {
+            return false
+        }
+        update(&insets)
+        return _setMacOSControlInsets(insets)
+    }
+}
+
+fileprivate final class _UButtonInsetCell: NSButtonCell, _MacOSInsettableCell {
+    private var insets = _MacOSControlInsets.zero
+
+    var _macOSControlInsets: _MacOSControlInsets { insets }
+
+    override init(textCell string: String) {
+        super.init(textCell: string)
+    }
+
+    override init(imageCell image: NSImage?) {
+        super.init(imageCell: image)
+    }
+
+    required init(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    func _setMacOSControlInsets(_ insets: _MacOSControlInsets) {
+        self.insets = insets
+    }
+
+    override func drawInterior(withFrame cellFrame: NSRect, in controlView: NSView) {
+        guard !insets.isZero else {
+            super.drawInterior(withFrame: cellFrame, in: controlView)
+            return
+        }
+        super.drawInterior(withFrame: insets.contentFrame(for: cellFrame), in: controlView)
+    }
+
+    override func cellSize(forBounds rect: NSRect) -> NSSize {
+        guard !insets.isZero else {
+            return super.cellSize(forBounds: rect)
+        }
+        return insets.expandedSize(super.cellSize(forBounds: insets.contentFrame(for: rect)))
+    }
+}
+
 open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UButton { self }
     public lazy var properties = Properties<UButton>()
     lazy var _properties = PropertiesInternal()
+
+    override open class var cellClass: AnyClass? {
+        get { _UButtonInsetCell.self }
+        set {}
+    }
     
     @UIKitPlus.State public var height: CGFloat = 0
     @UIKitPlus.State public var width: CGFloat = 0
@@ -109,6 +239,110 @@ open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         }
 
         updateTrackingAreas()
+    }
+
+    /// Sets the four native content edges directly. Repeated equal calls are idempotent and listener-free; a supplied non-inset-capable native window-button cell is preserved and this call is a documented no-op.
+    @discardableResult
+    public func contentInsets(_ insets: NSEdgeInsets) -> Self {
+        _setMacOSControlInsets(.init(insets))
+        return self
+    }
+
+    /// Sets equal horizontal and vertical native content edges. The arguments are intentionally unlabeled; repeated equal calls are idempotent and listener-free, and supplied non-inset-capable native cells are preserved as a no-op.
+    @discardableResult
+    public func contentInsets(_ horizontal: CGFloat, _ vertical: CGFloat) -> Self {
+        contentInsets(top: vertical, left: horizontal, right: horizontal, bottom: vertical)
+    }
+
+    /// Sets the same native content edge on all sides. Repeated equal calls are idempotent and listener-free; supplied non-inset-capable native cells are preserved as a no-op.
+    @discardableResult
+    public func contentInsets(_ value: CGFloat) -> Self {
+        contentInsets(value, value)
+    }
+
+    /// Sets each native content edge explicitly. Repeated equal calls are idempotent and listener-free; supplied non-inset-capable native cells are preserved as a documented no-op.
+    @discardableResult
+    public func contentInsets(top: CGFloat = 0, left: CGFloat = 0, right: CGFloat = 0, bottom: CGFloat = 0) -> Self {
+        _setMacOSControlInsets(.init(top: top, left: left, right: right, bottom: bottom))
+        return self
+    }
+
+    /// Applies the current edge State immediately and follows future values one-way. Repeated State calls add holder-owned bindings; unsupported supplied native cells install no listener and remain unchanged.
+    @discardableResult
+    public func contentInsets(_ state: State<NSEdgeInsets>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(state.wrappedValue)
+        state.listen { [weak self] value in
+            self?.contentInsets(value)
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current horizontal and vertical States immediately and follows each future value one-way on its own axis. Repeated bindings are additive and holder-owned; unsupported supplied native cells install no listeners.
+    @discardableResult
+    public func contentInsets(_ horizontal: State<CGFloat>, _ vertical: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(horizontal.wrappedValue, vertical.wrappedValue)
+        horizontal.listen { [weak self] value in
+            self?._updateMacOSControlInsets {
+                $0.left = value
+                $0.right = value
+            }
+        }
+        .hold(in: stateBindingHolder)
+        vertical.listen { [weak self] value in
+            self?._updateMacOSControlInsets {
+                $0.top = value
+                $0.bottom = value
+            }
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current uniform State immediately and follows future values one-way on all four edges. Repeated bindings are additive and holder-owned; unsupported supplied native cells install no listener.
+    @discardableResult
+    public func contentInsets(_ state: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(state.wrappedValue)
+        state.listen { [weak self] value in
+            self?.contentInsets(value)
+        }
+        .hold(in: stateBindingHolder)
+        return self
+    }
+
+    /// Applies the current four edge States immediately and follows each future value one-way on its own edge. Repeated bindings are additive and holder-owned; unsupported supplied native cells install no listeners.
+    @discardableResult
+    public func contentInsets(top: State<CGFloat>, left: State<CGFloat>, right: State<CGFloat>, bottom: State<CGFloat>) -> Self {
+        guard _macOSControlInsetsValue != nil else {
+            return self
+        }
+        contentInsets(top: top.wrappedValue, left: left.wrappedValue, right: right.wrappedValue, bottom: bottom.wrappedValue)
+        top.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.top = value }
+        }
+        .hold(in: stateBindingHolder)
+        left.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.left = value }
+        }
+        .hold(in: stateBindingHolder)
+        right.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.right = value }
+        }
+        .hold(in: stateBindingHolder)
+        bottom.listen { [weak self] value in
+            self?._updateMacOSControlInsets { $0.bottom = value }
+        }
+        .hold(in: stateBindingHolder)
+        return self
     }
     
     open override func layout() {

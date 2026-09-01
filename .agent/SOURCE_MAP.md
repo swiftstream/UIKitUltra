@@ -156,8 +156,6 @@ Core state engine and data structures:
 
 ### Tests/UIKitPlusTests/**
 
-Test suite: 407 tests, 5 skipped (macOS baseline); 218 tests (historical complete iOS XCTest baseline).
-
 - `MenuItemLifecycleTests.swift` — verifies cycle-free menu item teardown,
   native-menu ownership of closure targets after wrapper release, submenu
   action lifetime, and external `NSMenu` identity preservation. [RT7][PA1][PA3]
@@ -178,6 +176,9 @@ Test suite: 407 tests, 5 skipped (macOS baseline); 218 tests (historical complet
 - `MacOSViewControllerWindowNotificationTests.swift` — verifies notification
   filtering by the attached window, pre-attachment registration, payload
   delivery, and additive callback registration. [PA1][PA3][FC5][MU3]
+- `MacOSControlContentInsetsTests.swift` — focused native construction,
+  geometry, fluent mapping, State ownership, and supplied-cell compatibility
+  coverage for macOS controls. [LC1][LC3][PA1][PA3][PA5][FC1][FC2][FC5][FC6][FC11][FC12][ST6][ST8]
 
 ### Glass Effect Ownership and Validation
 
