@@ -18,7 +18,7 @@ public protocol Identable: Hashable, AnyIdentable {
 }
 
 extension Identable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(self[keyPath: Self.idKey])
     }
     
@@ -28,5 +28,9 @@ extension Identable {
 
     public func identValue() -> AnyHashable {
         AnyHashable(self[keyPath: Self.idKey])
+    }
+    
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.identHash() == rhs.identHash()
     }
 }
