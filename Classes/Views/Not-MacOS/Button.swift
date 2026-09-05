@@ -49,15 +49,39 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
             super.setTitle(title, for: state)
         }, completion: nil)
     }
-    
+
     open override func setAttributedTitle(_ title: NSAttributedString?, for state: UIControl.State) {
-        guard let transition = titleChangeTransition else {
-            super.setAttributedTitle(title, for: state)
-            return
+        if #available(iOS 14.0, *) {
+            guard let transition = titleChangeTransition else {
+                super.setAttributedTitle(title, for: state)
+                return
+            }
+            UIView.transition(with: self, duration: 0.25, options: transition, animations: {
+                super.setAttributedTitle(title, for: state)
+            }, completion: nil)
         }
-        UIView.transition(with: self, duration: 0.25, options: transition, animations: {
-            super.setAttributedTitle(title, for: state)
-        }, completion: nil)
+        else {
+            let color = self.titleColor(for: .normal) ?? .white
+            guard let transition = titleChangeTransition else {
+                if let title = title {
+                    let mutable = NSMutableAttributedString(attributedString: title)
+                    mutable.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: mutable.length))
+                    super.setAttributedTitle(mutable, for: state)
+                } else {
+                    super.setAttributedTitle(title, for: state)
+                }
+                return
+            }
+            UIView.transition(with: self, duration: 0.25, options: transition, animations: {
+                if let title = title {
+                    let mutable = NSMutableAttributedString(attributedString: title)
+                    mutable.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: mutable.length))
+                    super.setAttributedTitle(mutable, for: state)
+                } else {
+                    super.setAttributedTitle(title, for: state)
+                }
+            }, completion: nil)
+        }
     }
     
     @discardableResult
@@ -232,7 +256,23 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     // MARK: Title Color
-    
+    open override func setTitleColor(_ color: UIColor?, for state: State) {
+        if #available(iOS 14.0, *) {
+            super.setTitleColor(color, for: state)
+        }
+        else {
+            let color = color ?? .white
+            if  let attributedString = attributedTitle(for: state) {
+                let mutable = NSMutableAttributedString(attributedString: attributedString)
+                mutable.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: mutable.length))
+                super.setAttributedTitle(mutable, for: state)
+            }
+            else {
+                super.setTitleColor(color, for: state)
+            }
+        }
+    }
+
     @discardableResult
     public func color(_ color: UIColor, _ state: UIControl.State = .normal) -> Self {
         setTitleColor(color, for: state)
