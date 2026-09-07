@@ -17,10 +17,10 @@ Primary implementation reference for Swift 6 strict concurrency:
 - `SwifDroid/droid/Sources/Droid/State.swift`
 
 Primary implementation reference for listener lifecycle improvements:
-- current UIKitPlus `Classes/Structs/State.swift`
-- current UIKitPlus `Classes/Structs/StateListener.swift`
-- current UIKitPlus `Classes/Structs/StatesHolder.swift`
-- current UIKitPlus `Classes/Protocols/StateBindingOwner.swift`
+- current UIKitPlus `Sources/Core/State.swift`
+- current UIKitPlus `Sources/Core/StateListener.swift`
+- current UIKitPlus `Sources/Core/StatesHolder.swift`
+- current UIKitPlus `Sources/Kit/Protocols/StateBindingOwner.swift`
 
 ---
 

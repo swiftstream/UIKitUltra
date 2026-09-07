@@ -9,9 +9,6 @@
     <img src="https://img.shields.io/badge/iOS-12%2B-brightgreen.svg" alt="iOS 12 or newer">
     <img src="https://img.shields.io/badge/macOS-10.15%2B-brightgreen.svg" alt="macOS 10.15 or newer">
     <img src="https://img.shields.io/badge/iPadOS+Catalyst-✓-brightgreen.svg" alt="iPadOS and Catalyst support">
-    <a href="https://cocoapods.org/pods/UIKit-Plus">
-        <img src="https://img.shields.io/cocoapods/v/UIKit-Plus.svg" alt="Cocoapod">
-    </a>
     <a href="https://discord.gg/q5wCPYv">
         <img src="https://img.shields.io/discord/612561840765141005" alt="Swift.Stream">
     </a>
@@ -51,13 +48,7 @@ In Xcode 26+, choose `File -> Add Package Dependencies` and enter:
 https://github.com/MihaelIsaev/UIKitPlus
 ```
 
-### CocoaPods
-
-The podspec is maintained for Swift 6 projects. Until a matching Swift 6 tag is published, consume the current branch explicitly:
-
-```ruby
-pod 'UIKit-Plus', :git => 'https://github.com/MihaelIsaev/UIKitPlus.git', :branch => 'master'
-```
+Swift Package Manager is the supported dependency-manager installation path for the current UIKitPlus release line.
 
 SwiftUI-backed previews are availability-gated. Xcode 26 weak-links later-availability system frameworks automatically, so current projects do not need a manual `-weak_framework SwiftUI` linker flag.
 
@@ -76,7 +67,7 @@ mkdir -p ~/Library/Developer/Xcode/Templates
 cp -R "Templates/Project Templates" ~/Library/Developer/Xcode/Templates/
 ```
 
-Restart Xcode, choose `File -> New -> Project`, and select the required UIKitPlus template. Add UIKitPlus to the generated target with Swift Package Manager or CocoaPods.
+Restart Xcode, choose `File -> New -> Project`, and select the required UIKitPlus template. Add UIKitPlus to the generated target with Swift Package Manager.
 
 The templates do not embed a package reference because Xcode project-template metadata cannot reliably declare an external local or remote Swift package dependency. To add UIKitPlus with Swift Package Manager:
 

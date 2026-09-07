@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -475,3 +476,4 @@ private final class WeakStateListenerBox {
         self.listener = listener
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import Foundation
 import XCTest
 @testable import UIKitPlus
@@ -311,3 +312,4 @@ final class GestureOwnerAdoptionTests: XCTestCase {
         XCTAssertEqual(unrelatedHolder.statesValues.heldListeners.count, 1)
     }
 }
+#endif

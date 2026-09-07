@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
 import XCTest
@@ -35,4 +36,5 @@ final class MacOSTextDeclarativeTests: XCTestCase {
         XCTAssertFalse(cell.isScrollable)
     }
 }
+#endif
 #endif

@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -101,3 +102,4 @@ final class StateOptionalMergeTests: XCTestCase {
         XCTAssertLessThanOrEqual(valueChanges, 1)
     }
 }
+#endif

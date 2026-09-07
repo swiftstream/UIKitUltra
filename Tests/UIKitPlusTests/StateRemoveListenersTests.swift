@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -158,3 +159,4 @@ final class StateRemoveListenersTests: XCTestCase {
         XCTAssertEqual(calls, 1)
     }
 }
+#endif

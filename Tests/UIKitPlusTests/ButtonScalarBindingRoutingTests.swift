@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import Foundation
 import XCTest
 @testable import UIKitPlus
@@ -202,5 +203,6 @@ final class ButtonScalarBindingRoutingTests: XCTestCase {
     }
 }
 
+#endif
 #endif
 #endif

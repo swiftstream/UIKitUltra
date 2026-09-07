@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
 import XCTest
@@ -152,4 +153,5 @@ final class MacOSVisualEffectsDeclarativeTests: XCTestCase {
         XCTAssertFalse(container.subviews.first is UView)
     }
 }
+#endif
 #endif

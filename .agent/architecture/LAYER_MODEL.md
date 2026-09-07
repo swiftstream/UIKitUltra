@@ -20,7 +20,9 @@ This model prevents architectural drift and forces explicit cross-layer impact a
 
 - DSL Layer defines fluent API surface and composition contracts.
 - Runtime Layer defines state propagation, constraint application, lifecycle-timed activation, and mutation flows.
-- Platform Layer defines UIKit/AppKit conditionals and bridge aliases.
+- Platform Layer defines current UIKit/AppKit conditionals and bridge aliases,
+  plus physical backend ownership/selection boundaries for future native
+  GTK/Qt/WinUI implementations. [NB4]
 
 ### LC2: Cross-Layer Docs Are Mandatory for Shared Contracts
 
@@ -39,8 +41,8 @@ Any task touching more than one layer is a cross-layer task and must include exp
 
 Primary artifacts:
 - `DeclarativeProtocol`
-- protocol-based fluent APIs in `Classes/Protocols/*`
-- extension surface in `Classes/Extensions/DeclarativeProtocol+*.swift`
+- protocol-based fluent APIs in `Sources/Kit/Protocols/*`
+- extension surface in `Sources/Kit/Extensions/DeclarativeProtocol+*.swift`
 - result builders (`BodyBuilder`, `GesturesBuilder`)
 
 ### Runtime Layer
@@ -53,12 +55,25 @@ Primary artifacts:
 - `ForEach` diff/subscription update path
 - gesture tracker/delegator callback pipelines
 
+M1 physically moves the proven portable State nucleus into the SwiftPM `UIKitPlusCore`
+target. That target is an implementation/package boundary inside the existing
+Runtime Layer; it does not create a fourth conceptual architecture layer.
+[NB4]
+
 ### Platform Layer
 
 Primary artifacts:
 - conditional aliases and wrappers (`BaseView`, `UColor`, `UFont`, `UGestureRecognizer`, `_STV`)
 - UIKit/AppKit split implementations
 - platform-specific navigation/controller wrappers
+- internal backend target boundaries `UIKitPlusGTK`, `UIKitPlusQt`, and
+  `UIKitPlusWinUI`, which remain behavior-empty in M1
+- compile-time backend selection/facade routing in
+  `Sources/Kit/Exports/BackendSelection.swift`
+
+The existing Apple wrappers remain current production platform artifacts.
+Future non-Apple controls remain governed by `NATIVE_BACKENDS.md` and must not
+be inferred from the mere existence of package targets. [NB2][NB4][NB12]
 
 ## Dependency Direction
 

@@ -48,6 +48,7 @@ Default max active architecture docs: `3`.
 
 - Platform layer:
   - `.agent/architecture/PLATFORM_ABSTRACTION.md`
+  - `.agent/architecture/NATIVE_BACKENDS.md` for implemented M1 backend target/selection boundaries plus accepted Linux/Windows native-backend topology, owned bindings/generator architecture, backend dependency isolation, markup posture, and support-gating rules
 
 - UIKitPlus application architecture:
   - `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
@@ -116,6 +117,11 @@ Default max active architecture docs: `3`.
   - `LAYER_MODEL.md`
   - impacted domain doc(s)
 
+- Native Linux/Windows backend topology, implemented `UIKitPlusCore`/backend package boundaries, backend selection, owned binding/generator work, native-markup posture, or backend dependency isolation:
+  - `NATIVE_BACKENDS.md`
+  - `LAYER_MODEL.md`
+  - add `PLATFORM_ABSTRACTION.md` or the impacted domain owner only when the task changes those contracts
+
 ## Governance and Debt Routing
 
 - Development flow:
@@ -167,3 +173,4 @@ Default max active architecture docs: `3`.
 - `UL*` -> `MACOS_ULIST_NSTABLEVIEW.md`
 - `UTK*` -> `MACOS_ULIST_TEXTKIT2.md`
 - `WT*` -> `MACOS_WINDOW_TABS.md`
+- `NB*` -> `NATIVE_BACKENDS.md`

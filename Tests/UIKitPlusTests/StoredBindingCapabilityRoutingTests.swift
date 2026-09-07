@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import Foundation
 import XCTest
 @testable import UIKitPlus
@@ -564,4 +565,5 @@ private final class WeakRef {
     weak var value: AnyObject?
     init(_ value: AnyObject) { self.value = value }
 }
+#endif
 #endif

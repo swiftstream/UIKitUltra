@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 //___FILEHEADER___
 
 #if os(macOS)
@@ -115,4 +116,5 @@ final class App: UIKitPlus.App {
     }
 }
 
+#endif
 #endif

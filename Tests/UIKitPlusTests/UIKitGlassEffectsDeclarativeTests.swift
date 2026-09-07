@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 #if os(iOS) || os(tvOS)
 import UIKit
 import XCTest
@@ -135,4 +136,5 @@ final class UIKitGlassEffectsDeclarativeTests: XCTestCase {
         XCTAssertTrue(view._properties.notAppliedPreConstraintsRelative.isEmpty)
     }
 }
+#endif
 #endif

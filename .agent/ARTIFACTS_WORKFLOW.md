@@ -18,7 +18,114 @@ Therefore:
 - `.artifacts/**` remains ignored by Git;
 - plans/reports/task files are evidence and execution instructions, not permanent product authority;
 - after meaningful durable changes, synchronize the correct stable `.agent/**` owner rather than relying on an artifact forever;
-- if artifacts disappear, reconstruct only what current Git/source/stable docs support. Never invent lost historical evidence.
+- if artifacts disappear, reconstruct only what current Git/source/stable docs support. Never invent lost historical evidence;
+- keep exactly one clearly active research/plan/task lineage for the current substantial objective. When a maintainer-authorized course correction invalidates an old lineage, consolidate or remove obsolete executor entry points rather than leaving several plausible active prompts side by side;
+- build products, dependency checkouts, disposable package/source clones, compiler workspaces, native build trees, CMake/MSBuild intermediates, index stores, caches, generated dependency trees, and other reproducible machine output are **temporary execution material**, not archival evidence;
+- before closing a research/implementation/correction/verification/audit lineage, preserve only the smallest evidence needed to prove its conclusions, then remove reproducible heavy machine output owned by that lineage;
+- do not copy an existing `.artifacts/**` tree into a disposable build workspace. Copy only the exact source/configuration inputs required by the probe.
+
+## Mandatory End-of-Prompt Build / Temp Cleanup
+
+Every local execution agent that creates disposable machine output MUST clean up that output **before its final response**, regardless of whether the prompt ends in `PASS`, `CLEAN`, `BLOCKED`, `STOP`, `INCOMPLETE`, or another terminal result.
+
+Cleanup is part of prompt completion. It is not optional follow-up maintenance for the coordinator or maintainer.
+
+This rule applies to **every** local prompt that creates temporary build/runtime material, including a single probe or verification task even when the rest of `ARTIFACTS_WORKFLOW.md` would not otherwise be needed for a trivial task.
+
+### What must be cleaned
+
+Before the final response, inspect every prompt-owned temporary location used during execution and remove reproducible residue created by that prompt, including when applicable:
+
+- `.build/`, `build/`, `Build/`, `CMakeFiles/`, CMake caches, MSBuild/intermediate/output trees, DerivedData-like trees, object files, generated binaries, symbol/debug output, index stores, and compiler caches created inside `.artifacts/**` or another disposable workspace;
+- dependency/package checkouts, NuGet restore trees, SwiftPM checkout/build trees, generated bindings, cloned external repositories, fixture repositories, temporary virtual environments, package-manager scratch, and source snapshots created only for the prompt;
+- Unix-like prompt-local work under `/tmp` or another explicitly disposable temp root;
+- Windows prompt-local work under `%TEMP%` or another explicitly disposable temp root;
+- native UI/runtime probe directories, copied app bundles/packages, generated XAML/C++/Swift intermediates, screenshots duplicated outside the canonical evidence location, and other replayable machine output;
+- superseded raw-command directories or duplicate logs after the smallest canonical evidence set has been retained.
+
+The default rule is:
+
+```text
+prompt-owned + reproducible + disposable => delete before final response
+```
+
+### What should be preserved
+
+Preserve only evidence intentionally required by the active artifact/evidence contract, normally the smallest set of:
+
+- textual execution reports;
+- raw command/runtime logs that are needed for causal or integrity proof;
+- compact manifests, hashes, provenance records, metadata dumps, and source snippets/snapshots specifically frozen as evidence;
+- screenshots/recordings required to prove rendered/native behavior;
+- another exact artifact explicitly required by a frozen audit contract.
+
+Do **not** preserve an entire build tree merely because one file inside it was useful evidence. First extract/copy the required small evidence into the canonical artifact location, record required hashes/provenance, then delete the reproducible build tree.
+
+If a binary or other large generated file itself is explicitly required as frozen evidence, preserve only that exact file and record why it cannot be reduced to a textual/hash/provenance record. This is an exception, not the default.
+
+### Immediate per-probe / per-task cleanup
+
+Do not wait until a long multi-step prompt ends to accumulate gigabytes of disposable output.
+
+After each discrete probe, verification run, or numbered task finishes and its required evidence has been extracted, delete that step's prompt-owned build/temp tree **before moving to the next independent step**.
+
+A temporary tree may survive between steps only when a later step in the **same prompt** explicitly reuses it. In that case:
+
+```text
+create once
+→ reuse only for the declared dependent steps
+→ extract final required evidence
+→ delete immediately after the last reuse
+→ never leave it behind at final response
+```
+
+For example, a Windows WinUI fixture may be intentionally reused by an immediately following UI Automation provenance step, but its generated build/output tree must be removed as soon as the final dependent step has captured the required logs/hashes/screenshots. The same rule applies to Linux GTK/Qt scratch and SwiftPM/CMake probe workspaces.
+
+### Reusable project-local build-state exception
+
+Do not delete build/cache state intentionally created in the actual project as reusable project state for later work. A canonical example is the root SwiftPM `.build/` that normal project work is expected to reuse.
+
+This exception is based on **location + intended reuse**, not merely on the directory name:
+
+```text
+repository-root reusable .build/                 => may preserve
+.artifacts/**/<scratch>/.build/                   => delete
+/tmp/<prompt-workspace>/.build/                   => delete
+%TEMP%\<prompt-workspace>\.build\               => delete
+disposable clone/workspace build output          => delete
+```
+
+Do not move prompt-local build output into the repository merely to avoid cleanup.
+
+### Multi-host ownership rule
+
+Cleanup must happen on the host where the prompt created the material.
+
+For multi-host UIKitPlus work, each local executor is responsible for its own host-local scratch before completion. In particular, Unix-like `/tmp` work and Windows `%TEMP%` work must not be left for a later coordinator session merely because canonical reports live in the shared `.artifacts/**` tree.
+
+Shared `.artifacts/**` should contain evidence, prompts, reports, and compact retained inputs — not persistent host build caches. If a probe must temporarily build beneath `.artifacts/**`, extract the required evidence and remove the heavy build residue immediately after the probe.
+
+### Safety and proof of cleanup
+
+Cleanup must be narrowly owned and non-destructive:
+
+- remove only paths the prompt created or whose disposable ownership was independently established;
+- never use broad destructive cleanup against an unknown temp root;
+- never delete user-authored source/evidence, unrelated temp data, reusable project caches, or untracked user work merely because it is large;
+- never use Git `clean`, reset, checkout, restore, stash, or another Git mutation as a substitute for prompt-local filesystem cleanup unless that exact Git operation was separately authorized.
+
+Every executor/auditor/verification prompt that can create substantial build/temp output MUST restate this cleanup requirement in its completion contract.
+
+The final local-agent response must include a compact cleanup disposition, for example:
+
+```text
+prompt-local build/temp cleanup: PASS
+preserved heavy generated artifacts: none
+```
+
+If any large generated artifact is intentionally preserved, name it and state the evidence/reuse reason. A prompt must not claim `PASS`/`CLEAN` while known disposable prompt-owned build output remains.
+
+If cleanup cannot be completed because the required host connector/session becomes unavailable, the agent must STOP rather than silently declaring completion, identify the known prompt-owned paths that may remain, and clean them immediately when the required host access is restored.
 
 ## Mandatory Use for Non-Trivial Iterative Work
 
@@ -284,6 +391,8 @@ append report after each task
 continue automatically after PASS
 stop on blocker
 Git mutation prohibitions
+per-probe/per-task disposable build-temp cleanup
+final cleanup disposition
 compact final report shape
 ```
 

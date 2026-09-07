@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import Foundation
 import XCTest
 @testable import UIKitPlus
@@ -234,4 +235,5 @@ final class StatusItemStateBindingRoutingTests: XCTestCase {
         XCTAssertEqual(item.item.button?.toolTip, "ScalarTip")
     }
 }
+#endif
 #endif

@@ -15,11 +15,79 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
 
 ## Entry Points
 
-- `Package.swift` — SwiftPM package manifest.
+- `Package.swift` — SwiftPM package manifest. M1 now keeps the single public
+  `UIKitPlus` library product while defining collision-resistant internal
+  `UIKitPlusCore`, `UIKitPlusGTK`, `UIKitPlusQt`, and `UIKitPlusWinUI` targets.
+  Linux selection uses additive `UIKitPlusGTK` / `UIKitPlusQt` traits plus
+  explicit diagnostics in the public facade; Windows attaches
+  `UIKitPlusWinUI` conditionally. These are structural
+  boundaries only, not Linux/Windows UI support claims. [NB1][NB4][NB6][NB7][NB12]
 
 ## Source Layout
 
-### Classes/Controllers/**
+### Sources/Core/**
+
+M1 portable runtime nucleus. The target currently contains exactly:
+
+- `ExpressableState.swift`
+- `OrderedRegistrations.swift`
+- `State.swift`
+- `StateListener.swift`
+- `StatesHolder.swift`
+
+These files are toolkit-independent and directly import only Foundation.
+The physical SwiftPM target/module is `UIKitPlusCore`; the shorter `Core`
+directory name is only source-layout organization, not a public module name.
+`UIKitPlusCore` is not a new conceptual architecture layer.
+[NB4]
+
+### Sources/GTK/**
+
+- `BackendMarker.swift` — behavior-empty M1 GTK backend compile marker.
+
+GTK/libadwaita production controls, bindings, generator output, and runtime
+support are not implemented in M1. [NB4][NB10][NB12]
+
+### Sources/Qt/**
+
+- `BackendMarker.swift` — behavior-empty M1 Qt backend compile marker.
+
+Qt/KF6 production controls, bindings, generator output, and runtime support are
+not implemented in M1. [NB4][NB10][NB12]
+
+### Sources/WinUI/**
+
+- `BackendMarker.swift` — behavior-empty M1 WinUI backend compile marker.
+
+M1 Task07 separately proved an owned source-first Windows ARM64
+SwiftPM-to-NuGet/MSBuild/C++/WinRT integration mechanism, but no production
+WinUI control implementation or native bridge source is added here yet.
+[NB4][NB11][NB12]
+
+### Sources/Kit/Exports/**
+
+- `BackendSelection.swift` — M1 public-facade backend selection boundary.
+  Linux requires explicit `UIKitPlusGTK` or `UIKitPlusQt` trait selection and emits
+  deliberate diagnostics for both/neither; Windows publicly re-exports the
+  internal `UIKitPlusWinUI` dependency while ordinary consumers continue to use
+  only `import UIKitPlus`. [NB1][NB7]
+
+### Legacy Apple ownership
+
+The existing UIKit/AppKit implementation now lives under `Sources/Kit/**` and
+remains the current production UI implementation. M1 made Apple source scoping explicit where
+required; for example `Sources/Kit/Views/Universal/BaseView.swift` compiles only on
+macOS/iOS/tvOS. GTK/Qt/WinUI must not reuse those aliases as a fake universal
+widget hierarchy. [PA6][NB2][NB4]
+
+`Classes/**` was the legacy pre-M1 physical source root. It has now been retired
+in favor of `Sources/Kit/**`. The shorter `Kit` directory name is an internal
+physical-layout choice; the public Swift module/target remains `UIKitPlus`.
+CocoaPods distribution itself is no longer a supported UIKitPlus installation
+surface; the former root `UIKit-Plus.podspec` has been removed and Swift Package
+Manager is the maintained package-distribution path.
+
+### Sources/Kit/Controllers/**
 
 - `Menu.swift` — macOS `NSMenu` wrapper; UIKitPlus-created menus use private
   `_NSMenu` storage to retain declarative `MenuItem` action owners for the
@@ -58,7 +126,7 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
 - `MenuItem.swift` — macOS menu item with state bindings, closure actions, and
   cycle-free helper ownership. [RT7][PA1][PA3]
 
-### Classes/Views/Universal/**
+### Sources/Kit/Views/Universal/**
 
 Cross-platform views shared between UIKit and AppKit:
 
@@ -68,7 +136,7 @@ Cross-platform views shared between UIKit and AppKit:
 - `ActivityIndicator.swift` — `UActivityView` (UIKit/tvOS) and `UActivityIndicator` (macOS).
 - `BarButtonItemView.swift` — `UBarButtonItem` with owner scaffolding.
 
-### Classes/Views/Not-MacOS/**
+### Sources/Kit/Views/Not-MacOS/**
 
 UIKit-only views (guarded by `#if !os(macOS)`):
 
@@ -85,7 +153,7 @@ UIKit-only views (guarded by `#if !os(macOS)`):
 - `Collection.swift` — `UCollection` reversed-state binding.
 - `List.swift` — `UList` reversed-state binding.
 
-### Classes/Views/MacOS/**
+### Sources/Kit/Views/MacOS/**
 
 macOS-only views (guarded by `#if os(macOS)`):
 
@@ -108,7 +176,7 @@ macOS-only views (guarded by `#if os(macOS)`):
 - `MacOS+GlassEffectView.swift` — macOS 26+ native `UGlassEffectView: NSGlassEffectView` declarative Glass host.
 - `MacOS+VisualEffectView.swift` — macOS native `UVisualEffectView: NSVisualEffectView` legacy effect host.
 
-### Classes/Extensions/**
+### Sources/Kit/Extensions/**
 
 Extension-driven feature composition (the `DeclarativeProtocol+Feature.swift` pattern):
 
@@ -124,7 +192,7 @@ Extension-driven feature composition (the `DeclarativeProtocol+Feature.swift` pa
 - `AttrStr+Joined.swift` — attributed string joined composition.
 - `Array+Diff.swift` — collision-safe identity and duplicate matching diff helpers.
 
-### Classes/Protocols/**
+### Sources/Kit/Protocols/**
 
 Protocol-oriented abstractions:
 
@@ -136,19 +204,21 @@ Protocol-oriented abstractions:
 - `ControlStateable.swift`, `BezelStyleable.swift` — stored capability bindings.
 - `Hiddenable.swift` — hidden state listener.
 
-### Classes/Structs/**
+### Sources/Kit/Structs/**
 
-Core state engine and data structures:
+Apple-side and public-facade-adjacent data structures that remain outside the
+portable `UIKitPlusCore` target. The State engine itself moved to `Sources/Core/**` in
+M1 and must not be routed back through this section.
 
-- `State.swift` — `State<Value>` property wrapper, merge/map internals.
-- `StateListener.swift` — `StateListener` token and lifecycle.
-- `StatesHolder.swift` — `StatesHolder` / `TempStatesHolder` listener ownership.
+State-adjacent files that still live here include:
+
 - `InnerState.swift` — parent projection listener.
-- `ExpressableState.swift` — source forwarding.
 - `CodableState.swift` — projected value forwarding.
-- `ParagraphStyle.swift` — 20 state-to-property merge listeners.
+- `StateStringBuilder.swift` — State-aware string builder support.
+- `StateValuable.swift` — UIKitPlus-side State value protocol/extensions that
+  remain part of the public source-compatibility surface.
 
-### Classes/Objects/**
+### Sources/Kit/Objects/**
 
 - `AttributedString.swift` — attributed string with color state listener and `AnyString.onUpdate`.
 - `PreConstraint.swift` — deferred layout constraint with self-owned `StateListener`.
@@ -191,7 +261,10 @@ Core state engine and data structures:
 
 ## Key Ownership Notes
 
-- `State.swift`, `StateListener.swift`, `StatesHolder.swift`, `StateBindingOwner.swift` — core state engine.
+- `Sources/Core/State.swift`, `Sources/Core/StateListener.swift`, and
+  `Sources/Core/StatesHolder.swift` own the portable core State engine;
+  `Sources/Kit/Protocols/StateBindingOwner.swift` remains the UIKitPlus-side
+  listener-ownership bridge.
 - `PreConstraint.swift` — self-owned `StateListener` pattern (completed in milestone 6).
 - `Identable.swift` — identity conformance for diff.
 - `Array+Diff.swift` — collision-safe identity and duplicate matching (completed in milestone 7).

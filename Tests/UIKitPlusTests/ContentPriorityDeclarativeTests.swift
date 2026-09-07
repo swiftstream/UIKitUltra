@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
 #else
@@ -80,3 +81,4 @@ final class ContentPriorityDeclarativeTests: XCTestCase {
         XCTAssertTrue(view._properties.stateBindingHolder.statesValues.heldListeners.isEmpty)
     }
 }
+#endif

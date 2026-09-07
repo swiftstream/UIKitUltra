@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
 import XCTest
@@ -751,4 +752,5 @@ final class MacOSControlContentInsetsTests: XCTestCase {
         XCTAssertTrue(secureCell.echosBullets)
     }
 }
+#endif
 #endif

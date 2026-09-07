@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -294,4 +295,5 @@ final class MenuItemLifecycleTests: XCTestCase {
         XCTAssertEqual(menu.items.count, 0)
     }
 }
+#endif
 #endif

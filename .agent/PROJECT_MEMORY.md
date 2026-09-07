@@ -4,8 +4,8 @@ This file stores stable governance memory for UIKitPlus agent work.
 
 ## Repository Identity
 
-- UIKitPlus is a declarative UIKit/AppKit DSL framework.
-- Core contract root is `DeclarativeProtocol` with reference semantics.
+- UIKitPlus is currently implemented as a declarative UIKit/AppKit DSL framework; G2 accepted future real-native GTK/libadwaita, Qt/KF6, and WinUI backend architecture under `architecture/NATIVE_BACKENDS.md`, and M1 has now implemented/audited the structural multi-backend package foundation without claiming non-Apple production UI support.
+- Core contract root remains `DeclarativeProtocol` with reference semantics. The SwiftPM `UIKitPlusCore` target is a physical portability boundary for the initial proven State nucleus, not a universal native-view hierarchy or new conceptual architecture layer.
 - Public API growth is extension-driven.
 
 ## Current State
@@ -17,6 +17,34 @@ This file stores stable governance memory for UIKitPlus agent work.
 - Stable development orchestration is model-independent and routed through `DEVELOPMENT_ORCHESTRATION.md` plus `ARTIFACTS_WORKFLOW.md` for non-trivial iterative work.
 - `.artifacts/**` is transient, Git-ignored working memory and is reconstructable from stable docs + Git + actual source when missing.
 - State vNext is deferred until after Swift 6 migration.
+- M1 structural native-backend foundation is implemented/audited: one public
+  `UIKitPlus` product; internal `UIKitPlusCore`, `UIKitPlusGTK`, `UIKitPlusQt`,
+  and `UIKitPlusWinUI` targets; explicit Linux UIKitPlusGTK/UIKitPlusQt trait selection; conditional
+  Windows backend attachment; Apple-scoped legacy UI source; no non-Apple
+  production controls/support claim yet.
+- `UIKitPlusCore` currently contains exactly `ExpressableState.swift`,
+  `OrderedRegistrations.swift`, `State.swift`, `StateListener.swift`, and
+  `StatesHolder.swift`, with Foundation-only direct imports.
+- Physical backend source directories intentionally stay concise as
+  `Sources/Core`, `Sources/GTK`, `Sources/Qt`, and `Sources/WinUI`; collision
+  resistance is provided by the namespaced SwiftPM module names above.
+- The public `UIKitPlus` target has been moved out of the legacy pre-M1
+  `Classes/**` root into `Sources/Kit/**`. `Kit` is intentionally only a concise
+  physical directory name; the public module/target remains `UIKitPlus`, and
+  no semantic/API change is implied by the move.
+- CocoaPods distribution is no longer supported by UIKitPlus. The repository's
+  legacy `UIKit-Plus.podspec` was removed and public installation guidance now
+  uses Swift Package Manager only. The release that first ships this removal
+  must include an explicit migration note: CocoaPods installation is no longer
+  supported and users should migrate to Swift Package Manager. The rationale
+  should accurately describe CocoaPods as being in maintenance mode with
+  CocoaPods Trunk moving to permanent read-only for new Podspec publication,
+  rather than claiming the entire CocoaPods infrastructure had already gone
+  offline before that actually occurs.
+- M1 Task07 selected and executable-proved a package-owned source-first Windows
+  ARM64 NuGet/MSBuild/C++/WinRT bridge workflow consumed through only
+  `import UIKitPlus`. Production WinUI controls and durable native bridge
+  source remain future implementation work.
 
 ## Baselines
 
@@ -117,7 +145,7 @@ native single-line flags. [PA1][PA3][RT1][FC5]
 2. Fluent APIs are `Self`-returning in-place mutations.
 3. State engine is reference-based (`State`, `InnerState`) with synchronous listener dispatch.
 4. Constraint system uses deferred pre-constraint queues plus activation on superview availability.
-5. Platform abstraction is explicit and conditional (`#if os(macOS)` / non-macOS variants).
+5. Platform abstraction is explicit and compile-time scoped. Current production uses UIKit/AppKit; accepted future GTK/Qt/WinUI topology, owned binding generation, dependency isolation, native-markup posture, and support gates are owned by `architecture/NATIVE_BACKENDS.md`. Runtime backend guessing and a synthetic universal renderer are forbidden.
 
 ## Workflow Memory
 

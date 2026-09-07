@@ -8,13 +8,13 @@ Active governance-tracked work items.
 
 - Status: COMPLETE — governance docs audited and committed locally
 - Scope: `AGENTS.md`, `.agent/**`, `.gitignore`
-- Non-scope: `Classes/**`, `Tests/**`, Swift 6 migration, State vNext implementation, push
+- Non-scope: `Sources/Kit/**`, `Tests/**`, Swift 6 migration, State vNext implementation, push
 
 ### ULIST-DOC-001 — Define macOS UList/NSTableView golden runtime contract
 
 - Status: COMPLETE — documentation and ChatGPT audit accepted; framework source unchanged
 - Scope: `MACOS_ULIST_NSTABLEVIEW.md`, routing, runtime facts, validation, patch review, source map, memory, and operational skill
-- Non-scope: `Classes/**`, `Tests/**`, public API, source behavior, push
+- Non-scope: `Sources/Kit/**`, `Tests/**`, public API, source behavior, push
 - Guardrails: preserve the current native AppKit width/reuse/automatic-height graph; no speculative dual-root, forced-layout, responsive-scrolling, cache, or row-height-engine changes
 
 ### MACOS-TABS-001 — Native window tabs with declarative topology
@@ -46,7 +46,7 @@ Active governance-tracked work items.
 
 - Status: BLOCKED on AUDIT-001
 - Depends on: governance commit + 52-commit audit accepted
-- Scope: `Classes/**` Swift 6 strict concurrency annotations
+- Scope: `Sources/Kit/**` Swift 6 strict concurrency annotations
 - Reference: `.agent/STATE_VNEXT_PLAN.md` §5
 
 ### STATE-001 — State vNext after Swift 6 baseline

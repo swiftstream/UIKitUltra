@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -69,3 +70,4 @@ final class StateReleaseWithHolderTests: XCTestCase {
         XCTAssertEqual(derived.wrappedValue, 15)
     }
 }
+#endif

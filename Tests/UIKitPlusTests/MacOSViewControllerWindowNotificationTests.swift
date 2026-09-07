@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
 import XCTest
@@ -64,4 +65,5 @@ final class MacOSViewControllerWindowNotificationTests: XCTestCase {
         XCTAssertEqual(receivedNotification?.userInfo?["test"] as? String, "payload")
     }
 }
+#endif
 #endif

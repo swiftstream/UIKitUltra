@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -303,3 +304,4 @@ final class StateSwifDroidParityExistingAPITests: XCTestCase {
         XCTAssertEqual(countB, 1)
     }
 }
+#endif

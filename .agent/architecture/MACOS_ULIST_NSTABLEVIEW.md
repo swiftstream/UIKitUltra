@@ -3,7 +3,7 @@
 ## Metadata
 - Layer: Cross-Layer
 - Depends On: Runtime, Layout, Platform
-- Source: `Classes/Views/MacOS/MacOS+List.swift`
+- Source: `Sources/Kit/Views/MacOS/MacOS+List.swift`
 - IDs: `UL1`–`UL10`
 
 ## Purpose

@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -192,3 +193,4 @@ final class ArrayDiffIdentityTests: XCTestCase {
         XCTAssertEqual(modifiedIndexes, [0, 1])
     }
 }
+#endif

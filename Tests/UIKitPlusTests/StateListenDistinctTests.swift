@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -172,3 +173,4 @@ final class StateListenDistinctTests: XCTestCase {
 private struct SampleStateValue: Equatable {
     var title: String
 }
+#endif

@@ -64,6 +64,7 @@ This bank does not consume architecture-doc slots.
 Current shards:
 
 - `public-content-ideas/NATIVE_PLATFORM_INTEGRATION.md` - native-first UIKit/AppKit integration stories, declarative wrappers, native topology/lifecycle preservation, platform-feature mapping, and native validation evidence.
+- `public-content-ideas/PACKAGING_MIGRATIONS.md` - dependency-manager support changes, package-layout migrations, release-note requirements, and user migration guidance.
 
 Create a new shard only when a topic becomes independently useful enough that adding it to an existing shard would create context noise. Prefer stable topic names over one file per small idea.
 

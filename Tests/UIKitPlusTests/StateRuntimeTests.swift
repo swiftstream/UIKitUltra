@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 import Foundation
 @testable import UIKitPlus
@@ -1989,3 +1990,4 @@ final class StateRuntimeTests: XCTestCase {
         _ = listener
     }
 }
+#endif

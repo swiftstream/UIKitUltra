@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 //___FILEHEADER___
 
 import UIKitPlus
@@ -22,3 +23,4 @@ final class MainViewController: ViewController {
         }
     }
 }
+#endif

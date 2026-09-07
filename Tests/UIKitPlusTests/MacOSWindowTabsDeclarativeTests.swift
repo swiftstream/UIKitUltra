@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
 import UniformTypeIdentifiers
@@ -314,4 +315,5 @@ final class MacOSWindowTabsDeclarativeTests: XCTestCase {
         XCTAssertTrue(alert.alert.showsHelp)
     }
 }
+#endif
 #endif

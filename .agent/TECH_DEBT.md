@@ -129,8 +129,8 @@ Do not update this file for:
 - Severity: Low
 - Area: List / Collection
 - Files:
-  - `Classes/Views/Not-MacOS/List.swift`
-  - `Classes/Views/Not-MacOS/Collection.swift`
+  - `Sources/Kit/Views/Not-MacOS/List.swift`
+  - `Sources/Kit/Views/Not-MacOS/Collection.swift`
 - Issue:
   - Dynamic hidden-row behavior was identified as deferred in the listener audit.
   - Currently not runtime-reachable with existing concrete conformers.
@@ -147,7 +147,7 @@ Do not update this file for:
 - Severity: Low
 - Area: MenuItem / Controller
 - Files:
-  - `Classes/Controllers/MenuItem.swift`
+  - `Sources/Kit/Controllers/MenuItem.swift`
 - Issue:
   - MenuItem lifecycle baseline was completed (milestone 5M).
   - If MenuItem gains additional StateListener tokens in the future, routing must be re-evaluated.
@@ -165,7 +165,7 @@ Do not update this file for:
 - Severity: Low
 - Area: AttributedString / Composition
 - Files:
-  - `Classes/Extensions/AttrStr+Joined.swift`
+  - `Sources/Kit/Extensions/AttrStr+Joined.swift`
 - Issue:
   - `AttrStr.Joined` child-only recomposition was identified as needing targeted tests before any repair.
   - Current behavior is documented but not tested.

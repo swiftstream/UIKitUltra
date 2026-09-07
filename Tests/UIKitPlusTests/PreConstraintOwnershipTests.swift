@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 @testable import UIKitPlus
 
@@ -173,3 +174,4 @@ final class PreConstraintOwnershipTests: XCTestCase {
         XCTAssertNil(weakState)
     }
 }
+#endif

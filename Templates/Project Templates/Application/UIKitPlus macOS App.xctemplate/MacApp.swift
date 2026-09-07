@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 //___FILEHEADER___
 
 import AppKit
@@ -112,3 +113,4 @@ final class App: UIKitPlus.App {
         }
     }
 }
+#endif

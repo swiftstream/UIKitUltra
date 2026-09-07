@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS) || os(tvOS)
 //___FILEHEADER___
 
 #if !os(macOS)
@@ -13,4 +14,5 @@ final class App: BaseApp {
     }
 }
 
+#endif
 #endif

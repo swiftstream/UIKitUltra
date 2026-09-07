@@ -7,7 +7,28 @@
 
 ## Purpose
 
-Define how UIKitPlus unifies UIKit/AppKit while preserving explicit platform-specific behavior.
+Define how UIKitPlus currently unifies UIKit/AppKit while preserving explicit platform-specific behavior, and route accepted future native Linux/Windows backend architecture through `NATIVE_BACKENDS.md` without pretending those backends are already implemented.
+
+The current production implementation remains Apple-backed. The accepted expansion architecture adds GTK/libadwaita, Qt/KF6, and WinUI as future real-native backend families under the `NB*` invariants; it does not reinterpret existing Apple aliases as a universal toolkit model.
+
+## Current M1 Structural Boundary
+
+M1 makes the package/platform boundary physically explicit without claiming
+non-Apple UI support:
+
+- `Package.swift` defines internal `UIKitPlusCore`, `UIKitPlusGTK`,
+  `UIKitPlusQt`, and `UIKitPlusWinUI` targets behind the single public
+  `UIKitPlus` product;
+- Linux backend selection is compile-time explicit through SwiftPM traits and
+  `Sources/Kit/Exports/BackendSelection.swift` diagnostics;
+- Windows selects `UIKitPlusWinUI` with a platform-conditional dependency;
+- `Sources/Kit/Views/Universal/BaseView.swift` is explicitly guarded to
+  macOS/iOS/tvOS and still aliases only `NSView` / `UIView`;
+- GTK/Qt/WinUI targets are structural skeletons only in M1.
+
+The M1 package structure therefore scopes the existing Apple abstraction; it
+does not broaden `BaseView` or other UIKit/AppKit aliases into non-Apple types.
+[NB1][NB4][NB6][NB7][NB12]
 
 ## Glass Effect Mapping
 
@@ -25,9 +46,12 @@ Define how UIKitPlus unifies UIKit/AppKit while preserving explicit platform-spe
 
 Platform surface differences are represented explicitly with compile-time conditionals, not runtime guessing.
 
-### PA2: Shared Aliases Anchor Cross-Platform DSL
+### PA2: Shared Apple Aliases Anchor the Current Apple DSL
 
-Core aliases (`BaseView`, `UColor`, etc.) provide shared entry points for DSL/runtime code.
+Aliases such as `BaseView`, `UColor`, and related UIKit/AppKit bridge types are
+shared entry points inside the current Apple implementation. They are not a
+universal GTK/Qt/WinUI abstraction contract. Non-Apple backends follow their
+own real native objects under `NATIVE_BACKENDS.md`. [NB2][NB4]
 
 ### PA3: Platform-Specific APIs Stay Scoped
 
@@ -72,6 +96,15 @@ When callers need control beyond the default native mapping, UIKitPlus should
 provide a clean, optional, composable public declarative API through which the
 caller explicitly selects or configures that behavior. The default path remains
 simple, native, and predictable.
+
+### PA6: Non-Apple Native Backends Follow `NB*` Architecture
+
+GTK/libadwaita, Qt/KF6, and WinUI work is governed by `NATIVE_BACKENDS.md`.
+Those backends must preserve real host-native objects and explicit backend
+ownership rather than stretching the current UIKit/AppKit aliases into a fake
+universal widget hierarchy. M1 has now explicitly scoped the Apple
+`BaseView`/UIKit/AppKit mappings to Apple compilation while leaving non-Apple
+backend targets structurally separate and behavior-empty. [NB1][NB2][NB4][NB9][NB12]
 
 ## Forbidden Patterns
 
