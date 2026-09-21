@@ -8,7 +8,7 @@ Architecture authority for `WindowTab`, `WindowTabForEach`, and
 
 ## WT-001 — AppKit group is the presentation primitive
 
-Project tabs are represented by AppKit `NSWindow` tab groups. UIKitPlus owns
+Project tabs are represented by AppKit `NSWindow` tab groups. UIKitUltra owns
 the declarative topology and lifecycle bridge, but it does not replace the
 native tab bar with a horizontal button list. Native AppKit reorder, drag-out,
 reattach, close, plus, and overview behavior remain the interaction surface.
@@ -21,7 +21,7 @@ group first selects that tab. `materialize()` is idempotent and retains the
 existing controller, so switching, detaching, and reattaching a tab preserve
 its local scroll, draft, selection, and responder state. Removing a source item
 is the explicit release boundary for that controller. During materialization
-UIKitPlus also preserves the window's existing AppKit frame; installing a
+UIKitUltra also preserves the window's existing AppKit frame; installing a
 content controller must never resize or recenter a tab that is already
 presented or restored from autosave. The wrapper covers every mutable
 `NSWindowTab` property: title, attributed title, tooltip, and accessory view.
@@ -88,18 +88,18 @@ immediately, listen one-way to future writes, weakly capture the tab/window,
 retain the listener through the owner state-binding holder, and document
 additive repeat-call behavior and teardown. The scalar overload is free of
 `UState` listeners; a dynamic `UColor` scalar may replace one theme callback on
-the color object, matching UIKitPlus's existing color modifiers. Frame
+the color object, matching UIKitUltra's existing color modifiers. Frame
 persistence follows the same pair: `frameAutosaveName(_:)` accepts
 an explicit AppKit autosave key or its exact state, and installing the key
 restores the saved frame while continuing to save later user moves/resizes.
 Configuration-only AppKit properties (`NSOpenPanel.identifier` and
 `directoryURL`) intentionally remain scalar-only because AppKit may overwrite
 them while a panel is running. Live panel/alert properties expose the same
-direct/state pair and retain listeners in the UIKitPlus wrapper, not the native
+direct/state pair and retain listeners in the UIKitUltra wrapper, not the native
 object.
 
 `Window.titlebarBackground(_:)` is an explicit opt-in convenience for native
-title/tab chrome. When a UIKitPlus `App` owns `NSApplication`, it follows
+title/tab chrome. When a UIKitUltra `App` owns `NSApplication`, it follows
 `UColor` theme updates; outside that host it safely falls back to the color's
 light value. The native bridge still uses a best-effort titlebar hierarchy
 heuristic rather than a stable public AppKit contract, so supported macOS
@@ -107,7 +107,7 @@ releases must be verified by the caller.
 
 ## WT-007 — Framework wrappers own native presentation plumbing
 
-`OpenPanel` and `Alert` provide the UIKitPlus-first native folder-picker and
+`OpenPanel` and `Alert` provide the UIKitUltra-first native folder-picker and
 quit-confirmation boundary used by applications. They expose the relevant
 AppKit configuration, result, action, and presentation surfaces, with concrete
 value/state overloads for mutable live properties and scalar-only

@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define the root declarative contract that anchors UIKitPlus fluent APIs to concrete view/controller objects.
+Define the root declarative contract that anchors UIKitUltra fluent APIs to concrete view/controller objects.
 
 ## Invariants
 

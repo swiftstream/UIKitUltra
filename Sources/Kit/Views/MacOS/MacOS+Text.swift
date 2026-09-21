@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 /// aka `NSLabel`
 open class UText: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolInternal {

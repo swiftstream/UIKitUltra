@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 @available(*, deprecated, renamed: "UTextView")
 public typealias TextView = UTextView
@@ -447,7 +447,7 @@ extension UTextView: _Typeable {
         _properties.typingInterval = v
     }
     
-    func _observeTypingState(_ v: UIKitPlus.State<Bool>) {
+    func _observeTypingState(_ v: Ultra.State<Bool>) {
         _properties.isTypingState.listen { [weak v] in
             guard let v = v else { return }
             guard v.wrappedValue != $0 else { return }
@@ -461,7 +461,7 @@ extension UTextView: _Typeable {
 }
 
 extension UTextView: _Colorable {
-    var _colorState: UIKitPlus.State<UIColor> { properties.textColorState }
+    var _colorState: Ultra.State<UIColor> { properties.textColorState }
     
     func _setColor(_ v: UIColor?) {
         textColor = v

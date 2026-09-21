@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 #if !os(tvOS)
 
 @available(*, deprecated, renamed: "USlider")
@@ -14,27 +14,27 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public lazy var properties = Properties<USlider>()
     lazy var _properties = PropertiesInternal()
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -84,10 +84,10 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         return self
     }
     
-    var bindValue: UIKitPlus.State<Float>?
+    var bindValue: Ultra.State<Float>?
     
     @discardableResult
-    public func value(_ binding: UIKitPlus.State<Float>) -> Self {
+    public func value(_ binding: Ultra.State<Float>) -> Self {
         bindValue = binding
         binding.listen { [weak self] in self?.value($0) }
             .hold(in: stateBindingHolder)
@@ -102,7 +102,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func minimumValue(_ binding: UIKitPlus.State<Float>) -> Self {
+    public func minimumValue(_ binding: Ultra.State<Float>) -> Self {
         binding.listen { [weak self] in self?.minimumValue($0) }
             .hold(in: stateBindingHolder)
 
@@ -116,7 +116,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func maximumValue(_ binding: UIKitPlus.State<Float>) -> Self {
+    public func maximumValue(_ binding: Ultra.State<Float>) -> Self {
         binding.listen { [weak self] in self?.maximumValue($0) }
             .hold(in: stateBindingHolder)
 
@@ -130,7 +130,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func minimumValueImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
+    public func minimumValueImage(_ binding: Ultra.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.minimumValueImage($0) }
             .hold(in: stateBindingHolder)
 
@@ -144,7 +144,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func maximumValueImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
+    public func maximumValueImage(_ binding: Ultra.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.maximumValueImage($0) }
             .hold(in: stateBindingHolder)
 
@@ -158,7 +158,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func isContinuous(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func isContinuous(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.isContinuous($0) }
             .hold(in: stateBindingHolder)
 
@@ -178,7 +178,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func minimumTrackTintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func minimumTrackTintColor(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.minimumTrackTintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -186,7 +186,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func minimumTrackTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func minimumTrackTintColor(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.minimumTrackTintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -206,7 +206,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func maximumTrackTintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func maximumTrackTintColor(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.maximumTrackTintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -214,7 +214,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func maximumTrackTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func maximumTrackTintColor(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.maximumTrackTintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -234,7 +234,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func thumbTintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func thumbTintColor(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.thumbTintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -242,7 +242,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func thumbTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func thumbTintColor(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.thumbTintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -262,7 +262,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func tintColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func tintColor(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.tintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -270,7 +270,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func tintColor(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func tintColor(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.tintColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -284,7 +284,7 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func thumbImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
+    public func thumbImage(_ binding: Ultra.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.thumbImage($0) }
             .hold(in: stateBindingHolder)
 

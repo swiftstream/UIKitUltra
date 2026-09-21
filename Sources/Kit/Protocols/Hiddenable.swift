@@ -14,7 +14,7 @@ public protocol Hiddenable {
     func hidden(_ value: Bool) -> Self
     
     @discardableResult
-    func hidden(_ binding: UIKitPlus.State<Bool>) -> Self
+    func hidden(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -31,7 +31,7 @@ extension Hiddenable {
     }
     
     @discardableResult
-    public func hidden(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func hidden(_ binding: Ultra.State<Bool>) -> Self {
         if let owner = self as? _StateBindingOwner {
             binding.listen { [weak owner] in
                 (owner as? Self)?.hidden($0)

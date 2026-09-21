@@ -231,7 +231,7 @@ extension UCollection: UIScrollViewDelegate {
     }
     
     @discardableResult
-    public func scrollPosition(_ binding: UIKitPlus.State<CGPoint>) -> Self {
+    public func scrollPosition(_ binding: Ultra.State<CGPoint>) -> Self {
         scrollPosition = binding
         return self
     }

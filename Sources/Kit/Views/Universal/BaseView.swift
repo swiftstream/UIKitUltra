@@ -9,3 +9,9 @@ import UIKit
 public typealias BaseView = UIView
 #endif
 #endif
+
+#if os(Linux) && ULTRA_GTK_BACKEND
+import UltraGTK
+
+public typealias BaseView = GTKView
+#endif

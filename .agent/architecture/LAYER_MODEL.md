@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define the authoritative 3-layer architecture used to reason about UIKitPlus changes:
+Define the authoritative 3-layer architecture used to reason about UIKitUltra changes. Active source uses the final UIKitUltra/Ultra* identity scheme; historical M1 evidence below may retain `UIKitPlus*` names where that is the historically accurate identity:
 1. DSL Layer
 2. Runtime Layer
 3. Platform Layer
@@ -20,9 +20,7 @@ This model prevents architectural drift and forces explicit cross-layer impact a
 
 - DSL Layer defines fluent API surface and composition contracts.
 - Runtime Layer defines state propagation, constraint application, lifecycle-timed activation, and mutation flows.
-- Platform Layer defines current UIKit/AppKit conditionals and bridge aliases,
-  plus physical backend ownership/selection boundaries for future native
-  GTK/Qt/WinUI implementations. [NB4]
+- Platform Layer defines UIKit/AppKit conditionals and bridge aliases plus physical backend ownership/selection boundaries for GTK, Qt, Win, Android, and TUI. GUI backends preserve real native object authority; TUI owns its retained terminal object/render runtime under `NATIVE_BACKENDS.md`. [NB2][NB4][NB17][NB18]
 
 ### LC2: Cross-Layer Docs Are Mandatory for Shared Contracts
 
@@ -55,9 +53,7 @@ Primary artifacts:
 - `ForEach` diff/subscription update path
 - gesture tracker/delegator callback pipelines
 
-M1 physically moves the proven portable State nucleus into the SwiftPM `UIKitPlusCore`
-target. That target is an implementation/package boundary inside the existing
-Runtime Layer; it does not create a fourth conceptual architecture layer.
+Historical M1 evidence records the proven portable State nucleus moving into the then-current SwiftPM `UIKitPlusCore` target. The active target is now `UltraCore`. This implementation/package boundary remains inside the existing Runtime Layer; it does not create a fourth conceptual architecture layer.
 [NB4]
 
 ### Platform Layer
@@ -66,14 +62,26 @@ Primary artifacts:
 - conditional aliases and wrappers (`BaseView`, `UColor`, `UFont`, `UGestureRecognizer`, `_STV`)
 - UIKit/AppKit split implementations
 - platform-specific navigation/controller wrappers
-- internal backend target boundaries `UIKitPlusGTK`, `UIKitPlusQt`, and
-  `UIKitPlusWinUI`, which remain behavior-empty in M1
+- historical M1 backend target boundaries used `UIKitPlusGTK`, `UIKitPlusQt`,
+  and `UIKitPlusWinUI`; current UIKitUltra root-owned runtime targets are
+  `UltraQtRuntime` and `UltraWinRuntime`, with public overlays `UltraQt` and
+  `UltraWin`. The GTK native foundation is the external sibling
+  package/product/module `UltraGTK`, conditionally attached to `Ultra` on
+  Linux by trait `UltraGTK`; there is no production root-owned
+  `UltraGTKRuntime` / `UltraGTKCore` split. Android/TUI module identities
+  remain `UltraAndroid` and `UltraTUI`. [NB4]
+- current post-H3 state is that GTK native-foundation ownership has been cut
+  over to external `UltraGTK` and the UIKitUltra public Linux façade remains in
+  `Sources/Kit/**`; broad Qt/Win/Android/TUI production implementation remains
+  future/parallel-lane work
 - compile-time backend selection/facade routing in
   `Sources/Kit/Exports/BackendSelection.swift`
 
-The existing Apple wrappers remain current production platform artifacts.
+The existing Apple wrappers remain the broad production platform surface.
 Future non-Apple controls remain governed by `NATIVE_BACKENDS.md` and must not
-be inferred from the mere existence of package targets. [NB2][NB4][NB12]
+be inferred from the mere existence of package targets. Support claims remain
+gated by NB12. This M2 GTK slice does not create a fourth conceptual
+architecture layer. [NB2][NB4][NB12]
 
 ## Dependency Direction
 
@@ -103,7 +111,7 @@ A change is cross-layer when it modifies:
 
 ## Forbidden Patterns
 
-- Treating UIKitPlus as SwiftUI-style value-semantic builder architecture.
+- Treating UIKitUltra as SwiftUI-style value-semantic builder architecture.
 - Introducing undocumented cross-layer behavior.
 - Changing runtime-layer semantics from DSL-layer API changes without contract updates.
 - Embedding platform-specific behavior in shared DSL methods without explicit conditional guards.

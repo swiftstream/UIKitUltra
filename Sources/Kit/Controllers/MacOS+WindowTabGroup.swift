@@ -32,7 +32,7 @@ private final class _WindowTabReconciliationRelay: @unchecked Sendable {
 public enum WindowTabCloseDecision {
     /// Continue with AppKit's normal tab/window close operation.
     case allow
-    /// Reject the request and let UIKitPlus provide the standard close beep.
+    /// Reject the request and let Ultra provide the standard close beep.
     case deny
     /// The application handled the request itself; suppress native closing
     /// without producing a beep.
@@ -96,7 +96,7 @@ public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTab
         installTopologyListener()
     }
 
-    /// Installs the group into UIKitPlus `AppBuilder` and materializes its native windows.
+    /// Installs the group into Ultra `AppBuilder` and materializes its native windows.
     public func activate() {
         guard !activationCompleted else { return }
         activationCompleted = true
@@ -237,7 +237,7 @@ public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTab
 
     /// The active AppKit tab group, when the logical active group is native.
     ///
-    /// This is a read-only escape hatch for AppKit APIs that UIKitPlus does
+    /// This is a read-only escape hatch for AppKit APIs that Ultra does
     /// not reinterpret. Use the topology modifiers for membership, ordering,
     /// and selection changes so the caller-owned state remains authoritative.
     public var activeNativeGroup: NSWindowTabGroup? {
@@ -811,7 +811,7 @@ public final class WindowTabGroup<ID: Hashable>: AppBuilderContent, AnyWindowTab
 
 }
 
-/// A type-erased app-builder item retained by `UIKitPlus.App`.
+/// A type-erased app-builder item retained by `Ultra.App`.
 @MainActor
 public protocol AnyWindowTabGroup: AnyObject {
     /// Activates the group's native windows and observers.

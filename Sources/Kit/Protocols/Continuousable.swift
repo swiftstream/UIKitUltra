@@ -14,7 +14,7 @@ public protocol Continuousable: AnyObject {
     func continuous(_ value: Bool) -> Self
     
     @discardableResult
-    func continuous(_ binding: UIKitPlus.State<Bool>) -> Self
+    func continuous(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -31,7 +31,7 @@ extension Continuousable {
     }
     
     @discardableResult
-    public func continuous(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func continuous(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.continuous($0)
         }

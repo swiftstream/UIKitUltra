@@ -1,6 +1,6 @@
 # Native Platform Integration Public Content Ideas
 
-Focused idea bank for README/docs/publication material about UIKitPlus extending native UIKit/AppKit behavior instead of replacing it with parallel hidden engines.
+Focused idea bank for README/docs/publication material about UIKitUltra extending native UIKit/AppKit behavior instead of replacing it with parallel hidden engines.
 
 Do not load this shard during ordinary development. Read/update it only after a positive public-content capture check or when preparing public documentation/content.
 
@@ -11,14 +11,14 @@ Good for: README | website docs | article | short post
 
 ### Why users should care
 
-A useful UIKitPlus story is that declarative convenience does not require abandoning UIKit/AppKit's native semantics. The framework's preferred pattern is to expose the real native capability through a thin declarative wrapper first, then add UIKitPlus-specific fluent/state conveniences using mechanisms already established by the library.
+A useful UIKitUltra story is that declarative convenience does not require abandoning UIKit/AppKit's native semantics. The framework's preferred pattern is to expose the real native capability through a thin declarative wrapper first, then add UIKitUltra-specific fluent/state conveniences using mechanisms already established by the library.
 
 That gives users a declarative API while keeping native lifecycle, layout, sizing, reuse, windowing, and platform behavior recognizable and debuggable.
 
 ### Candidate visual
 
 ```text
-UIKitPlus fluent/declarative API
+UIKitUltra fluent/declarative API
           │
           ▼
 small explicit wrapper / binding layer
@@ -50,7 +50,7 @@ Concrete repository examples include native `NSTableView`-backed `UList`, native
 
 ### Publication caveat
 
-This is a stable architecture/development philosophy, not a claim that every UIKitPlus feature has identical native coverage on every Apple platform. Public examples must state the actual platform/validation status of the concrete feature being shown.
+This is a stable architecture/development philosophy, not a claim that every UIKitUltra feature has identical native coverage on every Apple platform. Public examples must state the actual platform/validation status of the concrete feature being shown.
 
 ## Declarative macOS window tabs without replacing AppKit topology
 
@@ -59,7 +59,7 @@ Good for: README | website docs | article | release notes | short post
 
 ### Why users should care
 
-UIKitPlus can expose native macOS project/window tab behavior declaratively while still letting AppKit own the native tab-group mechanics. The implementation keeps declarative metadata/topology synchronized with native reorder, detach, and reattach behavior, materializes tab content lazily, and preserves native delegate behavior instead of introducing a parallel fake tab system.
+UIKitUltra can expose native macOS project/window tab behavior declaratively while still letting AppKit own the native tab-group mechanics. The implementation keeps declarative metadata/topology synchronized with native reorder, detach, and reattach behavior, materializes tab content lazily, and preserves native delegate behavior instead of introducing a parallel fake tab system.
 
 This is a strong example of the framework's native-first rule applied to a lifecycle-heavy feature.
 
@@ -84,7 +84,7 @@ Useful story points to preserve:
 - metadata/windows register eagerly;
 - content controllers materialize on first selection;
 - native reorder/detach/reattach is reconciled with caller source/topology state;
-- the delegate proxy forwards selectors UIKitPlus does not own;
+- the delegate proxy forwards selectors UIKitUltra does not own;
 - `WindowTabGroup.onLastTabClose` exposes a typed decision hook without bypassing native close policy.
 
 ### Evidence / provenance
@@ -110,14 +110,14 @@ Good for: README | website docs | release notes | article | short post
 
 ### Why users should care
 
-UIKitPlus maps modern Glass effects to the platform's native objects instead of building a synthetic look-alike view/effect layer. That keeps behavior aligned with Apple's platform implementation and illustrates how UIKitPlus adds declarative configuration without taking ownership away from the native rendering system.
+UIKitUltra maps modern Glass effects to the platform's native objects instead of building a synthetic look-alike view/effect layer. That keeps behavior aligned with Apple's platform implementation and illustrates how UIKitUltra adds declarative configuration without taking ownership away from the native rendering system.
 
 A particularly useful engineering detail is that validation follows the installed native effect/configuration rather than assuming object identity survives `UIVisualEffectView` installation.
 
 ### Candidate visual
 
 ```text
-UIKitPlus Glass configuration
+UIKitUltra Glass configuration
         │
         ├─ macOS 26+ -> NSGlassEffectView
         │
@@ -140,4 +140,4 @@ Stable memory records successful focused runtime probes on iOS/iPadOS/tvOS 26.2,
 
 ### Publication caveat
 
-`validated` here refers to the focused native/runtime evidence already recorded by UIKitPlus stable project memory. This governance task did not verify release/shipped status. Public content must preserve the platform caveats and must not imply universal Apple-platform validation.
+`validated` here refers to the focused native/runtime evidence already recorded by UIKitUltra stable project memory. This governance task did not verify release/shipped status. Public content must preserve the platform caveats and must not imply universal Apple-platform validation.

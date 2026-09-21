@@ -8,7 +8,7 @@
 
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 extension UIViewController {
     public func attach(to window: UIWindow?) {

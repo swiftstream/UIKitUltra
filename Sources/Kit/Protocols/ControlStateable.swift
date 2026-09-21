@@ -8,7 +8,7 @@ public protocol ControlStateable: AnyObject {
     func state(_ value: NSControl.StateValue) -> Self
     
     @discardableResult
-    func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self
+    func state(_ binding: Ultra.State<NSControl.StateValue>) -> Self
 }
 
 @MainActor
@@ -22,7 +22,7 @@ protocol _ControlStateable: ControlStateable {
 @MainActor
 extension ControlStateable {
     @discardableResult
-    public func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self {
+    public func state(_ binding: Ultra.State<NSControl.StateValue>) -> Self {
         guard let s = self as? _ControlStateable else { return self }
         s._stateState = binding
         s._setState(binding.wrappedValue)
@@ -46,7 +46,7 @@ extension ControlStateable {
 @MainActor
 extension _ControlStateable {
     @discardableResult
-    public func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self {
+    public func state(_ binding: Ultra.State<NSControl.StateValue>) -> Self {
         _stateState = binding
         _setState(binding.wrappedValue)
         binding.listen { [weak self] in

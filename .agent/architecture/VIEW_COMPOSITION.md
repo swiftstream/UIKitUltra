@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Specify how UIKitPlus composes views declaratively while preserving object identity and runtime update wiring.
+Specify how UIKitUltra composes views declaratively while preserving object identity and runtime update wiring.
 
 ## Invariants
 
@@ -34,11 +34,11 @@ Platform `UList` implementations consume `BodyBuilderItem` sections and map
 modifications update only affected native rows rather than rebuilding the
 complete list composition tree.
 
-Native row ownership remains platform-owned. Row roots are real UIKitPlus
+Native row ownership remains platform-owned. Row roots are real UIKitUltra
 views. On macOS, every top-level declarative row view is pinned to the native
 row wrapper's leading and trailing edges, and the wrapper is pinned to the
 native cell edges. This forms one native constraint graph from the AppKit-owned
-column and cell width down to the declarative row content. UIKitPlus does not
+column and cell width down to the declarative row content. UIKitUltra does not
 maintain a second resize, animation, or row-height engine. No second
 snapshot/diff engine is introduced. The macOS `.plain` table style supplies no
 implicit row padding, so a row's visual insets are explicit constraints owned

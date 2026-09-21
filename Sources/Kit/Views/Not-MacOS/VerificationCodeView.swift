@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 @available(*, deprecated, renamed: "UVerificationCodeView")
 public typealias VerificationCodeView = UVerificationCodeView

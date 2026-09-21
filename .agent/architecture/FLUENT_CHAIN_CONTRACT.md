@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define the non-negotiable contract for UIKitPlus fluent APIs.
+Define the non-negotiable contract for UIKitUltra fluent APIs.
 
 ## Invariants
 
@@ -17,7 +17,7 @@ Chainable methods must return `Self`.
 
 ### FC2: Mutation Model Invariant
 
-UIKitPlus fluent APIs mutate existing reference objects in place. They do not create immutable copies.
+UIKitUltra fluent APIs mutate existing reference objects in place. They do not create immutable copies.
 
 ### FC3: Reference-Semantic Identity
 
@@ -67,7 +67,7 @@ Wiring behavior must be one of:
 
 ### FC11: Public Setter Overloads Must Be Discoverable
 
-UIKitPlus core fluent value setters use explicit concrete value and
+UIKitUltra core fluent value setters use explicit concrete value and
 `State`/`UState` overloads so Xcode exposes both accepted types. A generic
 `Stateable`/`StateValuable` entry point requires a recorded overload-resolution
 and autocomplete review showing that it is clearer than the explicit pair.
@@ -84,7 +84,7 @@ behavior, and lifetime; non-obvious defaults are explained explicitly.
 - Returning new instances from chain setters without explicit new-type API contract.
 - Silent object replacement inside fluent chain methods.
 - Undocumented additive listener behavior in frequently repeated chains.
-- Claiming SwiftUI value-view semantics for UIKitPlus chain APIs.
+- Claiming SwiftUI value-view semantics for UIKitUltra chain APIs.
 
 ## Anti-Pattern Examples
 

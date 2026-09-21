@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 open class UVisualEffectView: NSVisualEffectView, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UVisualEffectView { self }

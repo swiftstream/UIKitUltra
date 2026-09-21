@@ -4,7 +4,7 @@ import AppKit
 #else
 import UIKit
 #endif
-import UIKitPlusCore
+import UltraCore
 
 open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UView { self }

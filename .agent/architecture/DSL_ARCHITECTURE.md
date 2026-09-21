@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define the architecture of UIKitPlus as a fluent declarative DSL built on protocol conformance and extension composition.
+Define the architecture of UIKitUltra as a fluent declarative DSL built on protocol conformance and extension composition.
 
 ## Invariants
 

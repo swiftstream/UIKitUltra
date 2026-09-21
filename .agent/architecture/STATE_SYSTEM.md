@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define UIKitPlus state as a reference-based reactive engine used by fluent APIs, constraints, gestures, and composition updates.
+Define UIKitUltra state as a reference-based reactive engine used by fluent APIs, constraints, gestures, and composition updates.
 
 ## Invariants
 
@@ -54,7 +54,7 @@ Every new or materially changed fluent value setter must be classified during
 planning as either bindable or non-bindable.
 
 A setter is bindable when its argument controls a property that can
-meaningfully change after the chain is built. A bindable UIKitPlus core API
+meaningfully change after the chain is built. A bindable UIKitUltra core API
 ships explicit scalar/object and compatible `State`/`UState` overloads in the
 same patch. Omitting the state overload requires an explicit reviewed rationale
 that the input is command-like, event-like, construction-only, or otherwise
@@ -164,7 +164,7 @@ State-sensitive patches must verify:
 ## State vNext corrective status
 
 - SwifDroid is the canonical reference for the State API shape.
-- UIKitPlus must preserve its local improvements:
+- UIKitUltra must preserve its local improvements:
   - `public typealias UState = State`
   - `removeListeners()`
   - `listenDistinct(...)` on `Stateable`
@@ -175,5 +175,5 @@ State-sensitive patches must verify:
   - `CodableState`
   - `StateBindingOwner`
 - The previous `SharedState`/`SwiftState` extraction track is invalid and stopped.
-- `/Users/imike/Development/State` must not be rebuilt until UIKitPlus State is finalized.
-- UIKitPlus must not depend on `/Users/imike/Development/State` until that package is rebuilt and validated.
+- `/Users/imike/Development/State` must not be rebuilt until UIKitUltra State is finalized.
+- UIKitUltra must not depend on `/Users/imike/Development/State` until that package is rebuilt and validated.

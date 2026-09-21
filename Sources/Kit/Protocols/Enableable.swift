@@ -14,7 +14,7 @@ public protocol Enableable: AnyObject {
     func enabled(_ value: Bool) -> Self
     
     @discardableResult
-    func enabled(_ binding: UIKitPlus.State<Bool>) -> Self
+    func enabled(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -29,7 +29,7 @@ extension Enableable {
     }
     
     @discardableResult
-    public func enabled(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func enabled(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.enabled($0)
         }

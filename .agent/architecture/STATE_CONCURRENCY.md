@@ -6,11 +6,11 @@ Deferred.
 
 ## Decision
 
-Do not apply SwifDroid-style `@MainActor`, `Value: Sendable`, `Sendable`, or `@unchecked Sendable` changes to UIKitPlus State in the immediate corrective path.
+Do not apply SwifDroid-style `@MainActor`, `Value: Sendable`, `Sendable`, or `@unchecked Sendable` changes to UIKitUltra State in the immediate corrective path.
 
 ## Rationale
 
-A4 showed that UIKitPlus already builds and tests cleanly under Swift 6 strict concurrency because the package uses `swift-tools-version:6.2`.
+A4 showed that UIKitUltra already builds and tests cleanly under Swift 6 strict concurrency because the package uses `swift-tools-version:6.2`.
 
 The experimental probes showed:
 
@@ -22,11 +22,11 @@ The experimental probes showed:
 
 ## Current position
 
-SwifDroid's concurrency envelope is a known difference from UIKitPlus.
+SwifDroid's concurrency envelope is a known difference from UIKitUltra.
 
-UIKitPlus will preserve its current unconstrained `State<Value>` model for now.
+UIKitUltra will preserve its current unconstrained `State<Value>` model for now.
 
-This decision can be revisited only after UIKitPlus parity work is complete and with a dedicated migration plan.
+This decision can be revisited only after UIKitUltra parity work is complete and with a dedicated migration plan.
 
 ## Non-goals
 

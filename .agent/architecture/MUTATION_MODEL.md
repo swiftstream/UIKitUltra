@@ -31,7 +31,7 @@ Deferred mutation exists in declared runtime paths (for example, pre-constraint 
 
 ### MU4: No Implicit Global Batch Engine
 
-UIKitPlus does not provide an implicit repository-wide mutation transaction engine. `beginTrigger`/`endTrigger` are explicit hooks, not automatic batching.
+UIKitUltra does not provide an implicit repository-wide mutation transaction engine. `beginTrigger`/`endTrigger` are explicit hooks, not automatic batching.
 
 ## Ordering Guarantees
 

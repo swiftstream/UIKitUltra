@@ -1,14 +1,14 @@
-# UIKitPlus State vNext Plan
+# UIKitUltra Shared State vNext Plan
 
-Status: `IN PROGRESS — S1-S5 accepted`
+Status: `IN PROGRESS — shared standalone State package direction accepted; extraction/migration not implemented`
 
 Owner scope: `GLOBAL STATE ARCHITECTURE DEBT`
 
 Primary frameworks:
-- UIKitPlus
+- UIKitUltra (canonical public Swift module/product `Ultra`; legacy `UIKitPlus` wording retained deeper in this long-lived plan records pre-rename decisions/evidence and must not be read as current product/module identity)
 - SwifDroid
 - SwifWeb
-- standalone `State` package
+- standalone `State` package — accepted canonical destination: `https://github.com/MihaelIsaev/State`
 
 Primary user-facing reference:
 - SwifDroid `docs/state.md`
@@ -17,16 +17,16 @@ Primary implementation reference for Swift 6 strict concurrency:
 - `SwifDroid/droid/Sources/Droid/State.swift`
 
 Primary implementation reference for listener lifecycle improvements:
-- current UIKitPlus `Sources/Core/State.swift`
-- current UIKitPlus `Sources/Core/StateListener.swift`
-- current UIKitPlus `Sources/Core/StatesHolder.swift`
-- current UIKitPlus `Sources/Kit/Protocols/StateBindingOwner.swift`
+- current UIKitUltra `Sources/Core/State.swift`
+- current UIKitUltra `Sources/Core/StateListener.swift`
+- current UIKitUltra `Sources/Core/StatesHolder.swift`
+- current UIKitUltra `Sources/Kit/Protocols/StateBindingOwner.swift`
 
 ---
 
 ## 1. Purpose
 
-This document records the detailed future plan for repairing and unifying `@State` in UIKitPlus.
+This document records the detailed future plan for repairing and unifying `@State` in UIKitUltra.
 
 This is not an immediate implementation task.
 
@@ -136,7 +136,7 @@ The exact final declaration may differ after ADR review, but the direction is ma
 
 ## 3. Current Known UIKitPlus Deviations from Desired DX
 
-This section records differences between current UIKitPlus and the SwifDroid `docs/state.md` developer experience.
+This section records differences between current UIKitUltra and the SwifDroid `docs/state.md` developer experience.
 
 **S1-S5 are now resolved.** Items 3.1–3.5 are implemented/accepted. S6 remains the next State vNext planning task.
 
@@ -156,7 +156,7 @@ $selectedCountry.listenDistinct { oldValue, newValue in
 }
 ```
 
-Current UIKitPlus status:
+Current UIKitUltra status:
 
 ```text
 Implemented:
@@ -213,7 +213,7 @@ TitleView().text("Hello")
 TitleView().text($titleText)
 ```
 
-Current UIKitPlus status:
+Current UIKitUltra status:
 
 ```text
 Implemented:
@@ -296,7 +296,7 @@ Desired DX:
 value.removeListeners()
 ```
 
-Current UIKitPlus status:
+Current UIKitUltra status:
 
 ```text
 Implemented:
@@ -337,7 +337,7 @@ TextView("Hey")
     })
 ```
 
-Current UIKitPlus status:
+Current UIKitUltra status:
 
 ```text
 Implemented:
@@ -775,12 +775,12 @@ SwifWeb: DOM/Web binding adapters
 Recommended order:
 
 1. Finish UIKitPlus governance docs commit.
-2. Run independent 52-commit audit.
+2. Run and accept the current independent local-commit audit required by the live push delta.
 3. Migrate UIKitPlus to Swift 6 strict concurrency.
-4. Write State ADR comparing SwifDroid, UIKitPlus, SwifWeb, and standalone State.
-5. Implement State vNext in standalone State package.
+4. Run a focused source/conformance audit comparing current UIKitUltra/UIKitPlus, SwifDroid, SwifWeb, and standalone State implementations and freeze the canonical behavior set.
+5. Implement State vNext directly in the maintainer-owned standalone `State` package (`https://github.com/MihaelIsaev/State`).
 6. Add compatibility shims where needed.
-7. Migrate one framework first, likely SwifDroid or UIKitPlus depending on audit result.
+7. Migrate one framework first according to dependency/validation readiness; Android production work must not establish a permanent second State runtime while this migration is pending.
 8. Migrate remaining frameworks.
 9. Update all docs, especially `state.md`, to describe the shared external DX.
 
@@ -860,7 +860,7 @@ All examples must use the same conceptual API.
 
 ## 8. Required Audits Before State vNext Implementation
 
-### 8.1 UIKitPlus 52-commit audit
+### 8.1 UIKitPlus current local-commit audit
 
 Do not push `origin/master` until this is complete.
 
@@ -939,8 +939,8 @@ migration feasibility
 Do not push UIKitPlus `master` to `origin` until all of the following are complete:
 
 1. governance docs committed locally;
-2. independent 52-commit audit completed and accepted;
-3. critical regressions from the 52-commit audit either fixed or explicitly deferred;
+2. independent audit of the current local push delta completed and accepted;
+3. critical regressions from the current local-commit audit either fixed or explicitly deferred;
 4. State vNext migration risk documented;
 5. Swift 6 strict-concurrency migration plan accepted.
 
@@ -998,7 +998,7 @@ State vNext is not complete until:
 | S4 CombinedState3...7 | Accepted | 10583f7 + d6be11c | additive multi-state mapping + lifecycle tests |
 | S5 holdIfOwned cleanup | Accepted | holdifowned-audit.md + 92f9163 + 5b4c30b + ff3628c + 531e93c + 561ae57 + 2f5b880 + f7546bb + 4fb53a1 + 3a0af89 + 930181d + c83b9f9 + 9733831 | obsolete helper removed; Classes/Tests zero |
 | S6 State concurrency envelope ADR/probe | Accepted | state-concurrency-envelope-adr.md + state-concurrency-diagnostic-probe.md | Option C accepted first; strict build/test pass; no immediate State implementation required |
-| S7 shared State package ADR | **Pending** | — | later |
+| S7 shared State package extraction/conformance plan | **Architecture destination accepted; implementation pending** | `https://github.com/MihaelIsaev/State` | standalone package is canonical destination; compare current implementations before mutation |
 
 ---
 
@@ -1010,13 +1010,15 @@ S6 ADR/probe is complete. Current strict-concurrency diagnostics do not force
 State implementation work: both strict build and strict test pass, with zero
 State-related diagnostics.
 
-Recommended next step is to choose one of:
+The shared-package destination is no longer an open architecture choice: the maintainer-owned standalone `State` repository is the accepted canonical target.
 
-1. **S7 — shared State package ADR** if the goal is cross-framework architecture.
-2. **Strict-concurrency warning cleanup** if the goal is to remove the remaining
-   non-State warnings.
-3. **Release/readiness audit** if the goal is to summarize S1-S6 before the next
-   larger State vNext track.
+Recommended next State-specific step, when State work is activated, is:
+
+1. **S7 — shared State conformance/extraction audit and implementation plan** comparing UIKitUltra/UIKitPlus, SwifDroid, SwifWeb, and the standalone State package.
+2. Implement the accepted canonical behavior in the standalone package.
+3. Migrate consuming frameworks under their own reviewed/audited waves.
+
+Strict-concurrency warning cleanup and release/readiness auditing remain orthogonal tasks rather than alternatives to the accepted package destination.
 
 Do not implement `@MainActor State`, `Value: Sendable`, or `@unchecked Sendable`
 unless a future diagnostic or explicit API decision requires it.

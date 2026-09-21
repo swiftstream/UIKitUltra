@@ -2,7 +2,7 @@
 #if os(macOS)
 import Foundation
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 fileprivate class _UTextFieldInsetCell: NSTextFieldCell, _MacOSInsettableCell {
     private var insets = _MacOSControlInsets.zero
@@ -79,27 +79,27 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         set {}
     }
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
     fileprivate weak var outsideDelegate: TextFieldDelegate?
     
@@ -127,7 +127,7 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         text(localized)
     }
     
-    public init<A: AnyString>(_ state: UIKitPlus.State<A>) {
+    public init<A: AnyString>(_ state: Ultra.State<A>) {
         super.init(frame: .zero)
         _setup()
         text(state)
@@ -173,33 +173,33 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         formatter = _formatter
     }
 
-    /// Sets the four native text content edges directly. Repeated equal calls are idempotent and listener-free; native text, placeholder, formatter, delegate, and field-editor behavior remain AppKit-owned. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    /// Sets the four native text content edges directly. Repeated equal calls are idempotent and listener-free; native text, placeholder, formatter, delegate, and field-editor behavior remain AppKit-owned. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell and this call is a no-op.
     @discardableResult
     public func textInsets(_ insets: NSEdgeInsets) -> Self {
         _setMacOSControlInsets(.init(insets))
         return self
     }
 
-    /// Sets equal horizontal and vertical native text content edges. The arguments are intentionally unlabeled; repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    /// Sets equal horizontal and vertical native text content edges. The arguments are intentionally unlabeled; repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell and this call is a no-op.
     @discardableResult
     public func textInsets(_ horizontal: CGFloat, _ vertical: CGFloat) -> Self {
         textInsets(top: vertical, left: horizontal, right: horizontal, bottom: vertical)
     }
 
-    /// Sets the same native text content edge on all sides. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    /// Sets the same native text content edge on all sides. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell and this call is a no-op.
     @discardableResult
     public func textInsets(_ value: CGFloat) -> Self {
         textInsets(value, value)
     }
 
-    /// Sets each native text content edge explicitly. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell and this call is a no-op.
+    /// Sets each native text content edge explicitly. Repeated equal calls are idempotent and listener-free. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell and this call is a no-op.
     @discardableResult
     public func textInsets(top: CGFloat = 0, left: CGFloat = 0, right: CGFloat = 0, bottom: CGFloat = 0) -> Self {
         _setMacOSControlInsets(.init(top: top, left: left, right: right, bottom: bottom))
         return self
     }
 
-    /// Applies the current edge State immediately and follows future values one-way. Repeated State calls add holder-owned bindings until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register a State listener.
+    /// Applies the current edge State immediately and follows future values one-way. Repeated State calls add holder-owned bindings until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell, makes no inset change, and does not register a State listener.
     @discardableResult
     public func textInsets(_ state: State<NSEdgeInsets>) -> Self {
         guard _macOSControlInsetsValue != nil else {
@@ -213,7 +213,7 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         return self
     }
 
-    /// Applies the current horizontal and vertical States immediately and follows each future value one-way on its own axis. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register State listeners.
+    /// Applies the current horizontal and vertical States immediately and follows each future value one-way on its own axis. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell, makes no inset change, and does not register State listeners.
     @discardableResult
     public func textInsets(_ horizontal: State<CGFloat>, _ vertical: State<CGFloat>) -> Self {
         guard _macOSControlInsetsValue != nil else {
@@ -237,7 +237,7 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         return self
     }
 
-    /// Applies the current uniform State immediately and follows future values one-way on all four edges. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register a State listener.
+    /// Applies the current uniform State immediately and follows future values one-way on all four edges. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell, makes no inset change, and does not register a State listener.
     @discardableResult
     public func textInsets(_ state: State<CGFloat>) -> Self {
         guard _macOSControlInsetsValue != nil else {
@@ -251,7 +251,7 @@ open class UTextField: NSTextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         return self
     }
 
-    /// Applies the current four edge States immediately and follows each future value one-way on its own edge. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, UIKitPlus preserves that cell, makes no inset change, and does not register State listeners.
+    /// Applies the current four edge States immediately and follows each future value one-way on its own edge. Repeated bindings are additive and holder-owned until the text field is released. If the active AppKit cell has been replaced with a non-inset-capable cell, Ultra preserves that cell, makes no inset change, and does not register State listeners.
     @discardableResult
     public func textInsets(top: State<CGFloat>, left: State<CGFloat>, right: State<CGFloat>, bottom: State<CGFloat>) -> Self {
         guard _macOSControlInsetsValue != nil else {
@@ -940,7 +940,7 @@ extension UTextField: _TextAligmentable {
 }
 
 extension UTextField: _TextBindable {
-    func _setTextBind<A: AnyString>(_ binding: UIKitPlus.State<A>?) {
+    func _setTextBind<A: AnyString>(_ binding: Ultra.State<A>?) {
         _properties.textChangeListeners.append({ new in
             binding?.wrappedValue = A.make(new)
         })
@@ -973,7 +973,7 @@ extension UTextField: _Typeable {
         _properties.typingInterval = v
     }
     
-    func _observeTypingState(_ v: UIKitPlus.State<Bool>) {
+    func _observeTypingState(_ v: Ultra.State<Bool>) {
         _properties.isTypingState.listen { [weak v] in
             guard let v = v else { return }
             guard v.wrappedValue != $0 else { return }

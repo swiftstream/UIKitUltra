@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 struct _MacOSControlInsets: Equatable {
     var top: CGFloat
@@ -138,27 +138,27 @@ open class UButton: NSButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         set {}
     }
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
     lazy var _stateState: State<NSControl.StateValue> = .init(wrappedValue: state)
     lazy var _bezelStyleState: State<NSButton.BezelStyle> = .init(wrappedValue: bezelStyle)

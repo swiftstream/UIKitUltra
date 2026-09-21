@@ -6,7 +6,7 @@ import AppKit
 import UIKit
 #endif
 
-fileprivate let loaderQueue = DispatchQueue(label: "com.uikitplus.imageloader")
+fileprivate let loaderQueue = DispatchQueue(label: "com.uikitultra.imageloader")
 
 private let cache = ImagesCache()
 

@@ -3,7 +3,7 @@
 import AppKit
 import UniformTypeIdentifiers
 
-/// A declarative wrapper around `NSOpenPanel` for UIKitPlus-first macOS flows.
+/// A declarative wrapper around `NSOpenPanel` for Ultra-first macOS flows.
 @MainActor
 public final class OpenPanel {
     /// The native panel owned by this wrapper.
@@ -30,7 +30,7 @@ public final class OpenPanel {
     /// Sets the delegate used for native URL validation and selection events.
     ///
     /// Delegates are lifecycle/configuration objects rather than value state;
-    /// UIKitPlus therefore preserves AppKit's weak, scalar delegate property
+    /// Ultra therefore preserves AppKit's weak, scalar delegate property
     /// instead of inventing a state overload.
     @discardableResult
     public func delegate(_ value: (any NSOpenSavePanelDelegate)?) -> Self {

@@ -1,21 +1,21 @@
-# UIKitPlus Application State Ownership Architecture
+# UIKitUltra Application State Ownership Architecture
 
 ## Metadata
 
 - **Short name:** Application State Ownership (`ASO`)
 - **Architecture ID namespace:** `AO*`
-- **Scope:** applications built with UIKitPlus
+- **Scope:** applications built with UIKitUltra
 - **Layer:** application architecture / cross-layer guidance
 - **Depends on:** `STATE_SYSTEM.md`, `VIEW_COMPOSITION.md`, `RUNTIME_MODEL.md`, `MUTATION_MODEL.md`, `PLATFORM_ABSTRACTION.md`
 - **Primary artifacts:** `UView`, `ViewController`, `App`, `UState`/`State`, focused callbacks, immutable data values, dedicated runtime/domain owners
 
 ## 1. Definition
 
-Application State Ownership is the default architecture for UIKitPlus applications.
+Application State Ownership is the default architecture for UIKitUltra applications.
 
 Its central rule is:
 
-> Mutable state lives with the nearest object that naturally owns its lifetime, authority, and invariants. UIKitPlus views bind directly to that state. Shared dependencies are passed explicitly as exact `UState` references, immutable values, or focused callbacks. A separate ViewModel/PresentationModel layer is not introduced by default.
+> Mutable state lives with the nearest object that naturally owns its lifetime, authority, and invariants. UIKitUltra views bind directly to that state. Shared dependencies are passed explicitly as exact `UState` references, immutable values, or focused callbacks. A separate ViewModel/PresentationModel layer is not introduced by default.
 
 ASO is an ownership architecture rather than a mandatory layer acronym. It defines:
 
@@ -24,26 +24,26 @@ ASO is an ownership architecture rather than a mandatory layer acronym. It defin
 - how state is exposed to child components;
 - how user actions return to the owner;
 - when an application-wide or domain/runtime owner is justified;
-- how UIKitPlus reference-semantic state participates in composition and lifecycle;
+- how UIKitUltra reference-semantic state participates in composition and lifecycle;
 - how to avoid presentation containers, service locators, duplicate stores, and hidden dependency graphs.
 
-ASO is compatible with UIKit/AppKit view controllers, UIKitPlus declarative composition, ordinary data models, services, repositories, sessions, documents, provider runtimes, and persistence layers. It does not forbid models. It forbids creating an intermediate presentation object merely because a screen contains mutable UI state.
+ASO is compatible with UIKit/AppKit view controllers, UIKitUltra declarative composition, ordinary data models, services, repositories, sessions, documents, provider runtimes, and persistence layers. It does not forbid models. It forbids creating an intermediate presentation object merely because a screen contains mutable UI state.
 
 ## 2. Why this architecture exists
 
-UIKitPlus is not SwiftUI and does not build disposable value-view trees. Its views and controllers are real reference-semantic UIKit/AppKit objects. `State<Value>`/`UState<Value>` is also reference-semantic. A UIKitPlus component can therefore own mutable state for exactly as long as that component exists and can pass the same state object to children without copying it.
+UIKitUltra is not SwiftUI and does not build disposable value-view trees. Its views and controllers are real reference-semantic UIKit/AppKit objects. `State<Value>`/`UState<Value>` is also reference-semantic. A UIKitUltra component can therefore own mutable state for exactly as long as that component exists and can pass the same state object to children without copying it.
 
 A default ViewModel layer often adds no useful boundary in this environment when it:
 
 - mirrors fields already owned by a view or controller;
 - exposes all screen state to every child;
-- contains UIKit/AppKit/UIKitPlus types;
+- contains UIKit/AppKit/UIKitUltra types;
 - forwards user actions without domain invariants;
 - becomes a presentation-state bag;
 - obscures the real lifetime owner;
 - encourages a later God object containing networking, persistence, session, and tool behavior.
 
-ASO uses UIKitPlus's native strengths instead:
+ASO uses UIKitUltra's native strengths instead:
 
 - real object identity;
 - explicit composition;
@@ -59,14 +59,14 @@ ASO aims to provide:
 
 1. **Obvious ownership:** a reader can locate the owner of mutable state from the source hierarchy.
 2. **Minimal dependency surfaces:** child components receive only what they use.
-3. **Direct reactive composition:** UIKitPlus views bind to owner states without mirrored presentation stores.
+3. **Direct reactive composition:** UIKitUltra views bind to owner states without mirrored presentation stores.
 4. **Correct lifetimes:** state normally dies with its natural owner unless a longer-lived owner is explicitly chosen.
 5. **Replaceable presentation fixtures:** UI prototypes cannot accidentally become domain architecture.
 6. **Incremental complexity:** domain/runtime layers appear only when real behavior justifies them.
 7. **Native platform alignment:** UIKit/AppKit objects retain their normal lifecycle and authority.
 8. **Testable boundaries:** exact state references, immutable values, and callbacks can be supplied to previews and focused tests.
 9. **No hidden global graph:** dependencies remain visible in initializers, properties, or typed global owners.
-10. **Framework-consistent code:** application architecture follows UIKitPlus reference and mutation semantics.
+10. **Framework-consistent code:** application architecture follows UIKitUltra reference and mutation semantics.
 
 ## 4. Non-goals
 
@@ -247,7 +247,7 @@ actor ProviderRun {
 }
 ```
 
-UIKitPlus views bind to exact exposed states or focused operations:
+UIKitUltra views bind to exact exposed states or focused operations:
 
 ```swift
 UText(Session.profile.$name)
@@ -289,7 +289,7 @@ A child receives only the `UState` references, immutable values, and callbacks i
 
 ### AO5: No default presentation layer
 
-Do not create a ViewModel/PresentationModel solely to move UI state out of a UIKitPlus view or controller.
+Do not create a ViewModel/PresentationModel solely to move UI state out of a UIKitUltra view or controller.
 
 ### AO6: App scope is intentional
 
@@ -387,7 +387,7 @@ ASO does not require a single global reducer, but flow must be explicit.
 
 - owner creates/retains state;
 - owner passes the same state reference or a mapped derivation to consumers;
-- consumers bind UIKitPlus properties declaratively;
+- consumers bind UIKitUltra properties declaratively;
 - native UIKit/AppKit objects render the resulting state.
 
 ```text
@@ -497,13 +497,13 @@ Avoid wrapping every service call in a ViewModel that only forwards parameters a
 
 ### UI code
 
-Prefer `@UState` for mutable UI/application state in UIKitPlus application code. `UState` is the application-facing alias of the reference-semantic `State` engine.
+Prefer `@UState` for mutable UI/application state in UIKitUltra application code. `UState` is the application-facing alias of the reference-semantic `State` engine.
 
 ```swift
 @UState private var selected = false
 ```
 
-Pass the projected/reference state expected by the active UIKitPlus API and repository conventions.
+Pass the projected/reference state expected by the active UIKitUltra API and repository conventions.
 
 ### Domain/runtime code
 
@@ -529,7 +529,7 @@ A stateful collection used by `UForEach` has one owner. Children render values o
 
 ## 12. Lifecycle and memory rules
 
-ASO inherits UIKitPlus `State` listener semantics: registration is additive and not automatically idempotent.
+ASO inherits UIKitUltra `State` listener semantics: registration is additive and not automatically idempotent.
 
 Required:
 
@@ -546,7 +546,7 @@ Ownership migration is incomplete if state moves but listener ownership becomes 
 
 ## 13. Concurrency and side effects
 
-UIKitPlus UI state is normally main-thread/main-actor owned.
+UIKitUltra UI state is normally main-thread/main-actor owned.
 
 Rules:
 
@@ -738,7 +738,7 @@ Do not create a repository/store/interactor for local UI state with no independe
 
 ## 19. Relationship to other architectures
 
-ASO is not presented as universally superior. It is the default architecture that matches UIKitPlus semantics and the maintainer's application style.
+ASO is not presented as universally superior. It is the default architecture that matches UIKitUltra semantics and the maintainer's application style.
 
 | Architecture | Primary organizing idea | ASO relationship |
 |---|---|---|
@@ -747,7 +747,7 @@ ASO is not presented as universally superior. It is the default architecture tha
 | MVP | Presenter mediates passive view interactions | ASO allows views/controllers to own local state and focused actions directly. A mediator is added only when coordination complexity justifies an independent owner. |
 | VIPER/Clean Architecture | Strict role/module separation | ASO begins with fewer layers and introduces boundaries for real domain, I/O, security, persistence, or independent lifetime. It can coexist with clean domain boundaries without creating presentation boilerplate. |
 | Redux/TCA | Central store, actions, reducers, unidirectional updates | ASO uses decentralized natural ownership and reference-semantic state. A reducer/store may still be a valid runtime owner for a domain that genuinely benefits from those invariants. |
-| SwiftUI Environment/Observable | Ambient environment and observable object graphs | ASO keeps UIKitPlus dependencies explicit and reference-based. App-wide state may be typed global environment, but local state is not injected ambiently. |
+| SwiftUI Environment/Observable | Ambient environment and observable object graphs | ASO keeps UIKitUltra dependencies explicit and reference-based. App-wide state may be typed global environment, but local state is not injected ambiently. |
 | Coordinator pattern | Navigation flow ownership | Coordinators may be used for complex navigation lifetime. They must not become generic presentation-state bags. |
 
 ## 20. When a dedicated state object is justified
@@ -796,7 +796,7 @@ Never delete a central model first and then improvise dependencies. Migrate owne
 
 ## 22. Review checklist
 
-For every UIKitPlus application patch, reviewers should ask:
+For every UIKitUltra application patch, reviewers should ask:
 
 ### Ownership
 

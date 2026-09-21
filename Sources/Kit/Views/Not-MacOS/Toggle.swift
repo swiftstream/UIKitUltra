@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 #if !os(tvOS)
 
 open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
@@ -9,36 +9,36 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public lazy var properties = Properties<UToggle>()
     lazy var _properties = PropertiesInternal()
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
-    var binding: UIKitPlus.State<Bool>?
+    var binding: Ultra.State<Bool>?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
     
-    public init(_ state: UIKitPlus.State<Bool>) {
+    public init(_ state: Ultra.State<Bool>) {
         binding = state
         super.init(frame: .zero)
         setup()
@@ -112,7 +112,7 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func onTint(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func onTint(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.onTint($0) }
             .hold(in: stateBindingHolder)
 
@@ -120,7 +120,7 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func onTint(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func onTint(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.onTint($0) }
             .hold(in: stateBindingHolder)
 
@@ -140,7 +140,7 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func thumbTint(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func thumbTint(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.thumbTint($0) }
             .hold(in: stateBindingHolder)
 
@@ -148,7 +148,7 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func thumbTint(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func thumbTint(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.thumbTint($0) }
             .hold(in: stateBindingHolder)
 
@@ -162,7 +162,7 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func onImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
+    public func onImage(_ binding: Ultra.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.onImage($0) }
             .hold(in: stateBindingHolder)
 
@@ -176,7 +176,7 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func offImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
+    public func offImage(_ binding: Ultra.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.offImage($0) }
             .hold(in: stateBindingHolder)
 

@@ -8,7 +8,7 @@ public protocol ArrowPositionable: AnyObject {
     func arrowPosition(_ value: NSPopUpButton.ArrowPosition) -> Self
     
     @discardableResult
-    func arrowPosition(_ binding: UIKitPlus.State<NSPopUpButton.ArrowPosition>) -> Self
+    func arrowPosition(_ binding: Ultra.State<NSPopUpButton.ArrowPosition>) -> Self
 }
 
 @MainActor
@@ -18,7 +18,7 @@ protocol _ArrowPositionable: ArrowPositionable {
 
 extension ArrowPositionable {
     @discardableResult
-    public func arrowPosition(_ binding: UIKitPlus.State<NSPopUpButton.ArrowPosition>) -> Self {
+    public func arrowPosition(_ binding: Ultra.State<NSPopUpButton.ArrowPosition>) -> Self {
         binding.listen { [weak self] in
             self?.arrowPosition($0)
         }

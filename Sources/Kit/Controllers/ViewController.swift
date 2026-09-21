@@ -5,7 +5,7 @@ import AppKit
 #else
 import UIKit
 #endif
-import UIKitPlusCore
+import UltraCore
 
 #if os(macOS)
 public typealias BaseViewController = NSViewController
@@ -32,7 +32,7 @@ open class ViewController: BaseViewController {
     #if !os(tvOS)
     open override var preferredStatusBarStyle: UIStatusBarStyle { statusBarStyle.rawValue }
     #endif
-    /// UIKitPlus reimplementation of `preferredStatusBarStyle`
+    /// Ultra reimplementation of `preferredStatusBarStyle`
     open var statusBarStyle: StatusBarStyle { _statusBarStyle ?? .default }
     #endif
     

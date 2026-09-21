@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 #if !os(tvOS)
 
 open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
@@ -9,27 +9,27 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     public lazy var properties = Properties<UDatePicker>()
     lazy var _properties = PropertiesInternal()
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -84,7 +84,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func textColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func textColor(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in
             self?.textColor($0)
         }
@@ -93,7 +93,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func textColor(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func textColor(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.textColor($0) }
             .hold(in: stateBindingHolder)
         return textColor(binding.wrappedValue)
@@ -108,7 +108,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func mode(_ binding: UIKitPlus.State<UIDatePicker.Mode>) -> Self {
+    public func mode(_ binding: Ultra.State<UIDatePicker.Mode>) -> Self {
         binding.listen { [weak self] in self?.mode($0) }
             .hold(in: stateBindingHolder)
         return mode(binding.wrappedValue)
@@ -123,7 +123,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func locale(_ binding: UIKitPlus.State<Locale>) -> Self {
+    public func locale(_ binding: Ultra.State<Locale>) -> Self {
         binding.listen { [weak self] in self?.locale($0) }
             .hold(in: stateBindingHolder)
         return locale(binding.wrappedValue)
@@ -138,7 +138,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func calendar(_ binding: UIKitPlus.State<Calendar>) -> Self {
+    public func calendar(_ binding: Ultra.State<Calendar>) -> Self {
         binding.listen { [weak self] in self?.calendar($0) }
             .hold(in: stateBindingHolder)
         return calendar(binding.wrappedValue)
@@ -153,7 +153,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func timeZone(_ binding: UIKitPlus.State<TimeZone>) -> Self {
+    public func timeZone(_ binding: Ultra.State<TimeZone>) -> Self {
         binding.listen { [weak self] in self?.timeZone($0) }
             .hold(in: stateBindingHolder)
         return timeZone(binding.wrappedValue)
@@ -167,10 +167,10 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         return self
     }
     
-    var dateBinding: UIKitPlus.State<Date>?
+    var dateBinding: Ultra.State<Date>?
     
     @discardableResult
-    public func date(_ binding: UIKitPlus.State<Date>, animated: Bool = false) -> Self {
+    public func date(_ binding: Ultra.State<Date>, animated: Bool = false) -> Self {
         dateBinding = binding
         binding.listen { [weak self] in
             self?.date($0, animated: animated)
@@ -188,7 +188,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func minimumDate(_ binding: UIKitPlus.State<Date>) -> Self {
+    public func minimumDate(_ binding: Ultra.State<Date>) -> Self {
         binding.listen { [weak self] in
             self?.minimumDate($0)
         }
@@ -205,7 +205,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func maximumDate(_ binding: UIKitPlus.State<Date>) -> Self {
+    public func maximumDate(_ binding: Ultra.State<Date>) -> Self {
         binding.listen { [weak self] in
             self?.maximumDate($0)
         }
@@ -222,7 +222,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func countDownDuration(_ binding: UIKitPlus.State<TimeInterval>) -> Self {
+    public func countDownDuration(_ binding: Ultra.State<TimeInterval>) -> Self {
         binding.listen { [weak self] in self?.countDownDuration($0) }
             .hold(in: stateBindingHolder)
         return countDownDuration(binding.wrappedValue)
@@ -237,7 +237,7 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func minuteInterval(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func minuteInterval(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.minuteInterval($0) }
             .hold(in: stateBindingHolder)
         return minuteInterval(binding.wrappedValue)

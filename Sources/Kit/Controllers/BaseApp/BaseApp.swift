@@ -8,7 +8,7 @@
 
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 open class BaseApp: UIApplication, UIApplicationDelegate {
     public static override var shared: BaseApp { super.shared as! BaseApp }
@@ -326,8 +326,8 @@ open class BaseApp: UIApplication, UIApplicationDelegate {
         NSLog("options.notificationResponse: \(options.notificationResponse)")
         NSLog("options.shortcutItem: \(options.shortcutItem)")
         let config = UISceneConfiguration(name: nil, sessionRole: UISceneSession.Role.windowApplication)
-        config.delegateClass = UIKitPlus._SceneDelegate.self
-        config.sceneClass = UIKitPlus._Scene.self
+        config.delegateClass = Ultra._SceneDelegate.self
+        config.sceneClass = Ultra._Scene.self
         return config
     }
     

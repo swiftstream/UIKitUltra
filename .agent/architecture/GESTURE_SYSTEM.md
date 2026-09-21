@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define how UIKitPlus gesture APIs expose fluent wrappers, state tracking, and delegate composition without breaking chain semantics.
+Define how UIKitUltra gesture APIs expose fluent wrappers, state tracking, and delegate composition without breaking chain semantics.
 
 ## Invariants
 

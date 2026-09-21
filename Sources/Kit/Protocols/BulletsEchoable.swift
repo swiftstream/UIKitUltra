@@ -14,7 +14,7 @@ public protocol BulletsEchoable {
     func echosBullets(_ value: Bool) -> Self
     
     @discardableResult
-    func echosBullets(_ binding: UIKitPlus.State<Bool>) -> Self
+    func echosBullets(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -30,7 +30,7 @@ extension BulletsEchoable {
     }
     
     @discardableResult
-    public func echosBullets(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func echosBullets(_ binding: Ultra.State<Bool>) -> Self {
         if let owner = self as? _StateBindingOwner {
             binding.listen { [weak owner] in
                 (owner as? Self)?.echosBullets($0)

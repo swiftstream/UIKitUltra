@@ -8,7 +8,7 @@ public protocol Soundable: AnyObject {
     func sound(_ value: NSSound?) -> Self
     
     @discardableResult
-    func sound(_ binding: UIKitPlus.State<NSSound?>) -> Self
+    func sound(_ binding: Ultra.State<NSSound?>) -> Self
 }
 
 @MainActor
@@ -18,7 +18,7 @@ protocol _Soundable: Soundable {
 
 extension Soundable {
     @discardableResult
-    public func sound(_ binding: UIKitPlus.State<NSSound?>) -> Self {
+    public func sound(_ binding: Ultra.State<NSSound?>) -> Self {
         binding.listen { [weak self] in
             self?.sound($0)
         }

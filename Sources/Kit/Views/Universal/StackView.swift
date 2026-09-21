@@ -4,7 +4,7 @@ import AppKit
 #else
 import UIKit
 #endif
-import UIKitPlusCore
+import UltraCore
 
 @available(*, deprecated, renamed: "UStackView")
 public typealias StackView = UStackView

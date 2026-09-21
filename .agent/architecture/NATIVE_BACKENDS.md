@@ -1,261 +1,331 @@
 # Native Backends
 
+Focused architecture owner for UIKitUltra cross-backend UI rules.
+
+**Lazy-load rule:** do not read this file for ordinary Apple-only/state/navigation/layout work unless backend architecture is actually involved. Load it for GTK/Qt/Win/Android/TUI work, backend module/import boundaries, cross-backend semantic promotion, or support claims.
+
 ## Metadata
+
 - Layer: Platform / Cross-Layer
-- Depends On Layers: DSL, Runtime, Platform
-- Current Implemented UI Families: UIKit (iOS/tvOS), AppKit (macOS)
-- Accepted Future Native Families: GTK 4 + libadwaita, Qt 6 + selected KF6/Breeze integration, WinUI 3 + Windows App SDK
-- Status: G2 architecture accepted; M1 structural multi-backend foundation implemented and audited; non-Apple production UI backends are not implemented/support-claimed yet
-
-## Purpose
-
-Define the durable architecture for expanding UIKitPlus from its current UIKit/AppKit implementation to additional **real native** desktop backends without turning UIKitPlus into a custom renderer or forcing third-party Swift UI wrapper frameworks into the runtime dependency chain.
-
-This document is architecture authority, not a support claim. Until the corresponding production milestone passes implementation and independent audit, Linux/Windows backend APIs remain unimplemented/unreleased even though their architecture is accepted here.
+- Canonical product: `UIKitUltra`; `U*` means **Ultra**
+- Apple: UIKit/AppKit remain direct native implementations
+- Additional families: GTK 4/libadwaita, Qt 6/KF6, Win over WinUI 3/Windows App SDK, Android Views/Material, UIKitUltra-owned TUI
+- Current implementation/status belongs in `PROJECT_MEMORY.md` / `TASKS.md`; execution evidence belongs in `.artifacts/**`
 
 ## Invariants
 
-### NB1: One Public UIKitPlus Module Identity
+### NB1: One Clean Common Module
 
-Normal consumers use:
+Normal portable code uses:
 
 ```swift
-import UIKitPlus
+import Ultra
 ```
 
-on every supported backend.
+The common module exposes the universal `U*` DSL only. Backend-direct API is opt-in and must not pollute ordinary autocomplete through transitive superclass imports.
 
-Internal targets/modules `UIKitPlusCore`, `UIKitPlusGTK`, `UIKitPlusQt`, and `UIKitPlusWinUI` are implementation details and must not become required normal consumer imports. The UIKitPlus prefix is deliberate collision-avoidance for external Swift package graphs.
+Active source uses the final `UIKitUltra` brand and `Ultra` / `Ultra*` Swift identities. Historical/frozen evidence may retain `UIKitPlus` spellings where historically accurate; those spellings are not current API identity.
 
-### NB2: Real Native Objects Are Authoritative
+### NB2: One Authoritative Backend Object Model
 
-Every implemented backend uses the real host toolkit's controls, layout/container objects, lifecycle, input/focus, windowing, accessibility, appearance, and model/view facilities.
+For GUI backends, the real host-native object/hierarchy is authoritative. Do not introduce a competing renderer, shadow widget tree, UIKit emulator, cross-toolkit layout solver, or fake list virtualization when the host owns those facilities.
 
-UIKitPlus must not introduce:
+TUI is different because terminals have no native widget hierarchy: UIKitUltra's retained `TUI*` tree/render/focus/input runtime is the authoritative TUI backend, not a shadow of another toolkit. [NB18]
 
-- a custom cross-platform renderer;
-- a UIKit emulator;
-- a shadow visual tree that competes with the native hierarchy;
-- a parallel layout solver;
-- a parallel list virtualization/reuse engine.
+### NB3: UIKitUltra Owns Production Bridges
 
-Shared UIKitPlus semantics map to native toolkit primitives. Platform-specific APIs remain first-class when no honest shared semantic exists.
+No third-party Swift UI wrapper may sit between UIKitUltra and GTK/Qt/Win as a required production substrate. No third-party complete TUI framework may own the UIKitUltra TUI runtime.
 
-### NB3: UIKitPlus Owns Production Binding/Bridge Layers
+UIKitUltra owns its generated/mechanical bridge layers. Android retains the maintainer-owned JNIKit + shared Droid runtime direction. [NB17]
 
-No third-party Swift UI wrapper framework may sit between UIKitPlus and GTK/Qt/WinUI as a required production dependency.
+External projects/tools may be research/reference/validation inputs without becoming runtime dependencies.
 
-UIKitPlus owns the generated/mechanical binding or bridge layer used by each backend.
+### NB4: Backend Native Foundation Below the Common Module
 
-Community projects and tools may be used for research, comparison, compiler/tooling reference, or validation, but production runtime/source ownership stays with UIKitPlus unless the maintainer explicitly revises this architecture.
-
-### NB4: Hybrid Core + Backend Target Model
-
-Accepted internal SwiftPM target/module identities are:
+The accepted dependency direction is:
 
 ```text
-UIKitPlusCore
-UIKitPlusGTK
-UIKitPlusQt
-UIKitPlusWinUI
+native toolkit
+    ↑
+backend native foundation
+    ↑
+Ultra common module
+    ↑
+application
 ```
 
-`UIKitPlusCore` contains only code proven toolkit-independent. Its physical source directory may remain the concise `Sources/Core/**`; directory names are not module identities. The public `UIKitPlus` target likewise uses the concise physical root `Sources/Kit/**`. Existing Apple implementation may remain in that public target while structural work evolves; an `AppleBackend` target is not required merely for symmetry.
+The selected backend foundation owns the minimum native superclass/object/runtime machinery used by `U*`. `Ultra` owns shared UIKitUltra semantics, builders, State/fluent conveniences, and cross-platform application semantics above that foundation.
 
-The first pre-authorized portable nucleus is limited to the independently proven State/listener files. Additional source enters `UIKitPlusCore` only after file-level portability evidence and review.
-
-### NB5: Generate Mechanical Breadth, Curate UIKitPlus Semantics
-
-Native breadth should be generated from authoritative native metadata/headers using UIKitPlus-owned deterministic tooling:
+For GTK, the accepted production identity is one external source-control package/product/module:
 
 ```text
-authoritative metadata / headers
--> UIKitPlus-owned deterministic importer
--> generator-only normalized Native IR
--> backend-private generated bindings / bridge source
--> curated UIKitPlus semantic adapters
+GTK / GObject
+    ↑
+UltraGTK
+    ↑
+Ultra
+    ↑
+application
 ```
 
-The Native IR is a build-time generator schema, not a runtime UI abstraction.
+There is no production `UltraGTKRuntime` / `UltraGTKCore` split in the accepted H3 target architecture. Those names are transitional pre-cutover source/history identities.
 
-Generated source should be source-controlled, reproducible, hash/provenance-manifested, and never manually patched. Hand-authored exceptions belong in explicit importer/override/curation inputs.
+Ordinary portable source still imports only `Ultra`. Explicit native/backend work may additionally `import UltraGTK`. Do not place implementation-only runtime/signal helpers on inherited GTK wrapper classes merely to make them reachable from `Ultra`; default Swift member visibility would leak them through `U*`. Prefer curated top-level backend types for such cross-package support. Do not rely on every client enabling Swift `MemberImportVisibility`.
 
-### NB6: Backend Dependency Closure Is Physically Isolated
-
-Apple consumers must not resolve/build/link/require GTK/libadwaita, Qt/KF6, Windows App SDK/NuGet/MSBuild/XAML build tooling, or foreign backend generators.
-
-Likewise:
-
-- a GTK build must not pull Qt/KF6 or Windows tooling;
-- a Qt build must not pull GTK/libadwaita or Windows tooling;
-- a Windows build must not pull GTK/Qt dependencies.
-
-Dependency isolation must be executable evidence, not just manifest intent.
-
-### NB7: Linux Backend Selection Is Explicit and Implementation-Gated
-
-Because `os(Linux)` does not identify GNOME vs KDE, the accepted package-selection traits are namespaced to avoid collisions:
+Current other backend identities remain independently governed until their own architecture/migration gates:
 
 ```text
-UIKitPlusGTK
-UIKitPlusQt
+UltraQt
+UltraWin
+UltraAndroid
+UltraTUI
 ```
 
-Required semantics:
+SwiftStream local-development topology is sibling-based:
 
 ```text
-GTK only -> GTK closure
-Qt only  -> Qt closure
-both     -> deliberate diagnostic failure
-neither  -> deliberate diagnostic requiring explicit selection
+/Users/imike/Development/SwiftStream/
+├── UIKitUltra/
+├── UltraGTK/
+└── UltraDemoApp/
 ```
 
-SwiftPM traits are additive and must never be described as manifest-enforced mutually exclusive features.
+UIKitUltra's manifest carries `let isLocalDevelopment = false` as a committed safety switch. When a child backend package dependency is wired:
 
-If real consumer dependency graphs make trait union operationally unsuitable, explicit product/target/package selection is the accepted fallback. Do not silently default GTK on Linux.
+- `false` is the only commit/release-safe value and resolves the dependency from its canonical `https://github.com/swiftstream/<Repo>.git` source-control repository;
+- `true` is local-working-tree-only and selects a relative sibling path such as `../UltraGTK`;
+- the local override must not use `/Users/...`, `/media/psf/...`, or any other machine-specific absolute path;
+- backend selection/isolation rules still apply: local-development mode must not become an excuse to resolve unrelated backend packages;
+- every staging/commit/release gate must reject `isLocalDevelopment = true`.
 
-### NB8: Native Markup Is Private Infrastructure, Not the Consumer UI Language
+The historical Wave B disposable patch used an absolute evidence path for UltraGTK. That path remains historical evidence only and is not canonical manifest policy after the SwiftStream workspace relocation.
 
-UIKitPlus's declarative Swift/body-builder/fluent API remains the application UI authoring layer.
+### NB5: Generate Breadth, Curate Semantics
 
-The framework may own or generate private native infrastructure required by a toolkit/build system, including for example:
-
-- WinUI `App.xaml`, generated `.g.*`, XBF/PRI/resource metadata;
-- a narrowly justified GtkBuilder/template resource;
-- Qt/KDE generated metadata/resources where native tooling requires it.
-
-But the primary UIKitPlus body/control tree must not be serialized into XAML, GtkBuilder XML, QML, Qt Designer `.ui`, or another markup language merely because the toolkit supports one.
-
-Consumer-authored control trees stay Swift-first unless a future explicit architecture revision says otherwise.
-
-### NB9: Layout and Lists Stay Toolkit-Native
-
-Apple `PreConstraint` / `NSLayoutConstraint` behavior remains Apple Auto Layout runtime and is not generalized into a cross-toolkit constraint solver.
-
-Only honest shared layout intent may map to native GTK/Qt/WinUI layout/container primitives.
-
-Likewise `ForEach` may share identity/diff intent, but each backend delegates virtualization/reuse/model-view ownership to its native list/model system. A stack of row views is not acceptable production list support.
-
-### NB10: Accepted Backend Sequencing
-
-The accepted implementation sequence is:
+Where native API breadth is generated:
 
 ```text
-M1 structural multi-backend foundation, Apple-preserving
--> M2 GTK owned generator + primitive native slice
--> M3 GTK/libadwaita desktop + native list/model foundation
--> M4 freeze/revalidate shared backend contract + Native IR from real implementation evidence
--> M5 WinUI production backend
--> M6 Qt/KDE production backend
+authoritative metadata/headers
+→ UIKitUltra-owned deterministic importer
+→ generator-only normalized IR
+→ backend-private generated bindings/bridge source
+→ curated UIKitUltra semantic layer
 ```
 
-GTK is intentionally first because GIR/GObject is the simplest binding-oriented metadata boundary. GTK implementation details must not be promoted into universal contracts before M4 revalidation.
+Generated source is reproducible/provenanced and not manually patched. The IR is build-time tooling, not a runtime universal widget model.
 
-### NB11: Windows Production Boundary Is Owned C++/WinRT + Narrow C ABI Unless Revised by Evidence
+### NB6: Backend Dependency Closure Is Isolated
 
-The accepted Windows production hypothesis is:
+A consumer/build must not resolve unrelated backend toolchains or dependencies.
+
+Examples:
+
+- Apple must not pull GTK/Qt/Win/Android/TUI dependencies;
+- GTK must not pull Qt/Win/Android/TUI;
+- Qt must not pull GTK/Win/Android/TUI;
+- Win must not pull GTK/Qt/Android/TUI;
+- Android must not pull GTK/Qt/Win/TUI;
+- TUI must not pull GUI backends unless an explicit integration product requires them.
+
+Prove isolation executablely; manifest intent alone is insufficient.
+
+### NB7: Backend Selection Is Explicit Where OS Is Ambiguous
+
+Linux does not identify GTK vs Qt. Selection must be explicit; both/neither cases require deliberate behavior rather than silent GTK defaulting.
+
+Active SwiftPM traits are `UltraGTK` / `UltraQt`; historical M1 evidence may still show `UIKitPlusGTK` / `UIKitPlusQt`. The explicit-selection contract is unchanged by the identity migration.
+
+### NB8: Consumer UI Remains Swift-First
+
+Native markup/resources may exist as private build/runtime infrastructure, including XAML, GtkBuilder resources, Qt metadata, Android resources/Manifest/Gradle metadata, etc.
+
+Do not serialize the primary consumer-authored `U*` control tree into XAML/GtkBuilder/QML/Qt `.ui`/Android XML/Compose as the normal authoring model.
+
+### NB9: Layout and Lists Use Honest Backend Mechanisms
+
+Apple Auto Layout remains Apple runtime, not a hidden universal solver.
+
+Shared layout expresses semantic intent and lowers to each backend's honest mechanism: GTK/Qt/Win native layout, Android parent-owned `LayoutParams`/ViewGroup mechanisms, and UIKitUltra-owned cell layout for TUI.
+
+Android and TUI are mandatory inputs to Unified Layout research.
+
+GUI list/collection virtualization uses the host's native model/view/reuse facility when one exists. TUI may own virtualization because the terminal provides none.
+
+### NB10: Backend Production May Proceed in Parallel Lanes
+
+After shared architecture gates are accepted, substantial GTK/Qt/Win/Android/TUI implementation may run in isolated linked worktrees under `PARALLEL_DEVELOPMENT.md`.
+
+Exact committed bases are mandatory. Shared/common contracts remain primary-owned. Use `PRIMARY_SYNC_REQUIRED` / `CROSS_LANE_INTEGRATION_REQUIRED` rather than silent copying/merging. [NB20]
+
+### NB11: Win Means UIKitUltra Win; Native Toolkit Remains WinUI
+
+UIKitUltra-owned names use `Win`:
 
 ```text
-UIKitPlus Swift semantic adapter
--> UIKitPlus-owned generated Swift/C ABI boundary
--> UIKitPlus-owned C++/WinRT bridge
--> WinUI 3 / Windows App SDK
+UltraWin
+WinView
+WinButton
+...
 ```
 
-Direct `swift-winrt` projection remains optional/reference tooling rather than a required production dependency.
+Microsoft's toolkit remains correctly named **WinUI 3 / Windows App SDK**.
 
-The research corpus executably proved Windows ARM64 runtime feasibility, including real bidirectional native/Swift behavior and external UI Automation event provenance.
+Accepted production boundary remains UIKitUltra-owned Swift/C ABI + C++/WinRT bridge over native WinUI unless new evidence explicitly revises it. Direct `swift-winrt` is optional/reference tooling, not a required production substrate.
 
-M1 Task07 executably selected the source-first Windows orchestration shape:
+Historical evidence using `UIKitPlusWinUI` keeps its historical spelling.
+
+### NB12: Support Claims Require Implemented + Audited Evidence
+
+Architecture/research acceptance is not a support claim.
+
+Each backend requires the appropriate build/runtime, lifecycle, interaction, appearance/accessibility, dependency/license, complex-fixture, and independent audit evidence before public support claims.
+
+Evidence on one architecture/host does not automatically certify another.
+
+### NB13: `U*` Inheritance Preserves Native Identity
+
+Apple compatibility anchors remain native:
 
 ```text
-package-owned Windows prepare/build workflow
--> NuGet restore in owned scratch
--> supported ARM64 VS/MSBuild C++/WinRT build
--> UIKitPlusWinUI C ABI loader
--> normal consumer import UIKitPlus
+iOS/tvOS UView   → UIView
+macOS    UView   → NSView
+iOS/tvOS UButton → UIButton
+macOS    UButton → NSButton
 ```
 
-The proof reached a real WinUI projected metadata boundary and an exact native
-runtime canary through `import UIKitPlus`. Raw PE bytes may differ because of
-timestamp/debug metadata while code/interface/provenance remain deterministic.
-The exact durable production command/product wiring still belongs to the future
-WinUI production milestone; M1 does not add or ship a production native bridge.
-Opaque prebuilt native binaries remain disallowed without a separate maintainer
-architecture decision.
+Foreign GUI backends use UIKitUltra-owned Swift wrappers around exactly one authoritative native object:
 
-### NB12: Support Claims Follow Implemented + Audited Milestones
+```text
+UButton → GTKButton     → GtkButton*
+UButton → QtButton      → Qt native control
+UButton → WinButton     → WinUI control
+UButton → AndroidButton → Android/Material control
+```
 
-Architecture acceptance does not itself mean a backend is supported.
+The Swift wrapper need not literally subclass the underlying C/C++/WinRT/Java class.
 
-Before public support claims, each backend must pass its roadmap's native build/runtime, lifecycle, interaction, appearance/accessibility as claimed, dependency/license, complex-fixture, and independent audit gates.
+TUI analogously uses `UButton → TUIButton`, with `TUIButton` itself authoritative under NB2.
 
-Linux x86_64 and Windows x64 require their own implementation validation before public claims; ARM64 research evidence does not automatically certify them.
+`BaseView` keeps the same semantic role but must map to an honest generic child-containing view/container. Android plain `View` is therefore insufficient for `UView`; exact container ownership belongs to Unified Layout research.
 
-## Current M1 Structural Policy
+### NB14: Universal DSL Is a Semantic Superset
 
-M1 structural foundation is implemented and audited. Durable current facts are:
+Do not reduce UIKitUltra to the lowest common denominator.
 
-- the public product/module identity remains `UIKitPlus`;
-- `UIKitPlusCore`, `UIKitPlusGTK`, `UIKitPlusQt`, and `UIKitPlusWinUI` exist as internal SwiftPM targets;
-- `UIKitPlusCore` contains exactly the initial proven portable State nucleus:
-  `ExpressableState.swift`, `OrderedRegistrations.swift`, `State.swift`,
-  `StateListener.swift`, and `StatesHolder.swift`;
-- the three non-Apple backend targets remain behavior-empty compile skeletons;
-- Linux exposes additive SwiftPM traits `UIKitPlusGTK` and `UIKitPlusQt` and
-  requires explicit selection: both and neither deliberately diagnose;
-- Windows attaches `UIKitPlusWinUI` through a platform-conditional dependency;
-- ordinary consumers remain `import UIKitPlus` only;
-- legacy UIKit/AppKit implementation remains Apple-scoped; `BaseView` is
-  explicitly compiled only for macOS/iOS/tvOS;
-- Task07 selected and executable-proved the package-owned source-first
-  Windows NuGet/MSBuild/C++/WinRT integration mechanism described in NB11;
-- no GTK/Qt/WinUI production controls, generated bindings, or public support
-  claim are implemented by M1.
+Promote valuable UIKit/AppKit/GTK/Qt/WinUI/Android/TUI capabilities into common `U*` API when an honest semantic exists. If one backend lacks a stock widget, a high-quality custom native/backend control is allowed.
 
-M1 intentionally did not invent a universal native-view protocol, cross-toolkit
-renderer, layout engine, or list virtualization layer.
+Do not universalize OS/backend plumbing that lacks an honest common semantic; keep it backend-direct instead.
+
+### NB15: Backend-Direct API Is Clean and Opt-In
+
+Backend wrappers use natural method names without redundant prefixes:
+
+```text
+GTKButton.hasFrame(...)
+```
+
+not `gtkHasFrame`.
+
+Explicit backend modules expose top-level backend wrapper types and rare direct escapes on the same authoritative object path:
+
+```swift
+.gtk { ... }
+.qt { ... }
+.win { ... }
+.android { ... }
+.tui { ... }
+```
+
+No proxy/copy control is created for an escape.
+
+### NB16: UIKit Mental Model Is the Common UX Reference
+
+Product rule:
+
+> If you know UIKit then you already know everything in UIKitUltra.
+
+Existing Apple/UIKitUltra DSL is the primary compatibility/naming reference. A major release may improve awkward APIs when justified, but avoid gratuitous breakage.
+
+UIKit-like semantics such as control states/title/image/background should receive real behavior on other backends when feasible.
+
+**Magic is acceptable in lowering, never in semantics.** Do not expose silent fake/no-op parity APIs.
+
+### NB17: Android = JNIKit + Shared Droid Runtime + Modern Material Views
+
+Android goes directly to the intended production architecture:
+
+- JNIKit remains the canonical Java/JNI foundation;
+- extract/formalize shared low-level Droid runtime used directly by SwifDroid and UIKitUltra;
+- do not make official/third-party Java interop a migration target;
+- use Android Views, not Jetpack Compose, as the UIKitUltra object model;
+- prefer the current appropriate Material control for each common semantic;
+- alternate classic/AppCompat/widget families remain SwifDroid territory;
+- explicit direct module is `UltraAndroid`;
+- Android participates in Unified Layout before broad parity implementation.
+
+### NB18: TUI = Owned Runtime + Narrow Terminal Driver
+
+Accepted class:
+
+`HYBRID_OWN_RUNTIME_EXTERNAL_TERMINAL_LAYER`
+
+UIKitUltra owns retained `TUI*` objects, State binding, layout, focus/responder routing, normalized input, semantics, cell raster/diff renderer, frame scheduling, image policy, and headless test representation. A narrow replaceable terminal/OS protocol driver sits below it.
+
+Production TUI must support native-feeling pointer interaction where capabilities permit: hover, click/focus, drag/selection, wheel/trackpad scrolling, correct hit testing, high-frequency scroll coalescing/acceleration, and granular mouse capture/fallthrough. Keyboard operation remains complete without pointer capability.
+
+True multi-touch is not a portable common TUI guarantee.
+
+### NB19: State Has One Shared Package Authority
+
+The maintainer-owned standalone `State` repository is the accepted long-term State authority for UIKitUltra, SwifDroid/Droid, and compatible frameworks:
+
+`https://github.com/MihaelIsaev/State`
+
+Backends bind that shared State to native/runtime objects rather than creating permanent parallel reactive systems. Extraction/convergence requires its own reviewed/audited implementation wave.
+
+### NB20: Shared Contracts Remain Primary-Owned
+
+Backend lanes own backend implementation/evidence. Primary owns Apple behavior, universal `U*` semantics, common values, shared State integration, Unified Layout, package-wide contracts, governance, and final integration.
+
+A backend lane may propose/prove shared changes but does not make them canonical unilaterally.
+
+## Implementation-State Routing
+
+Do not turn this architecture owner into a milestone diary.
+
+Use:
+
+- `PROJECT_MEMORY.md` for concise durable current implementation facts;
+- `TASKS.md` for current active gates;
+- `TASKS_ARCHIVE.md` only for compact completed-task history worth retaining;
+- `.artifacts/**` for research reports, exact hashes/counts, runtime evidence, audit reports, migration handoffs, and lane status.
 
 ## Forbidden Patterns
 
-- Required consumer imports of backend modules for ordinary UIKitPlus use.
-- Runtime backend guessing on Linux instead of explicit build selection.
-- Third-party Swift UI wrapper as required production substrate.
-- Custom cross-platform renderer or native-control emulation.
-- Runtime Native IR / generic widget metadata tree.
-- Cross-toolkit Auto Layout clone.
-- Stack-based fake production list virtualization.
-- Consumer control trees generated into XAML/GtkBuilder/QML/.ui by default.
-- Manual edits to generated native binding source.
-- Foreign backend tooling/dependencies leaking into Apple builds.
-- Opaque binary bridge distribution introduced without explicit maintainer review.
-- Public Linux/Windows support claims before corresponding implementation/audit gates.
+- backend import required for ordinary common DSL;
+- backend-only members leaking into ordinary common autocomplete by design;
+- third-party GUI/TUI runtime substrate replacing owned backend architecture;
+- external Java interop replacing JNIKit without explicit architecture revision;
+- Compose as the common Android runtime;
+- fake cross-toolkit renderer/layout/list engine for GUI backends;
+- silent no-op APIs sold as parity;
+- redundant backend prefixes on backend-wrapper methods;
+- unrelated backend dependencies leaking into a build;
+- backend lane unilaterally changing shared contracts;
+- public support claim without matching implementation/audit evidence.
 
-## Integration Rules
+## Audit Checklist
 
-For any native-backend task:
+For a backend change, answer only the relevant questions:
 
-1. Load `LAYER_MODEL.md` plus this owner and only the relevant domain owner(s).
-2. Preserve NB1–NB12 unless a written architecture revision is explicitly accepted by the maintainer.
-3. Inspect analogous existing UIKitPlus native-wrapper behavior before adding semantic conveniences.
-4. Keep generated native breadth backend-private and curated public UIKitPlus semantics separate.
-5. Prove dependency closure on every affected host family.
-6. Use real native runtime/interaction evidence before claiming GUI behavior.
-7. Keep platform-only capabilities platform-scoped instead of forcing fake parity.
-8. Any shared contract change influenced by one backend must be revalidated against the other accepted backend families before it becomes durable universal architecture.
-
-## Audit Implications
-
-Native-backend changes must explicitly answer:
-
-- Does normal consumer import remain `UIKitPlus`?
-- Are real native objects still authoritative?
-- Did any third-party wrapper become a required production dependency?
-- Is `UIKitPlusCore` limited to proven portable semantics?
-- Are backend dependency closures isolated?
-- Is generated source deterministic and backend-private?
-- Did layout/list behavior remain native-owned?
-- Did private markup stay infrastructure rather than consumer control-tree authoring?
-- Are platform-specific APIs allowed where honest?
-- Is the claimed support level backed by actual host/runtime evidence?
-- Did current work accidentally promote an implementation-specific GTK/Qt/WinUI detail into a universal contract?
+- Does ordinary portable code remain `import Ultra` only after migration?
+- Is backend-direct surface available only through the explicit backend module?
+- Is the correct authoritative native/TUI object model preserved?
+- Did a foreign runtime/wrapper dependency become required?
+- Are backend dependencies isolated?
+- Does layout/list behavior use the honest backend mechanism?
+- Does a promoted common API have real semantics everywhere claimed?
+- Does Android preserve JNIKit/Droid/Views/Material policy when relevant?
+- Does TUI preserve the owned-runtime/terminal-driver boundary when relevant?
+- Did a parallel lane bypass primary ownership for shared behavior?
+- Is the claimed support level backed by appropriate runtime/audit evidence?

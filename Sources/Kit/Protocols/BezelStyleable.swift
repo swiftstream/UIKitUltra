@@ -8,7 +8,7 @@ public protocol BezelStyleable: AnyObject {
     func style(_ value: NSButton.BezelStyle) -> Self
     
     @discardableResult
-    func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self
+    func style(_ binding: Ultra.State<NSButton.BezelStyle>) -> Self
 }
 
 @MainActor
@@ -22,7 +22,7 @@ protocol _BezelStyleable: BezelStyleable {
 @MainActor
 extension BezelStyleable {
     @discardableResult
-    public func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self {
+    public func style(_ binding: Ultra.State<NSButton.BezelStyle>) -> Self {
         guard let s = self as? _BezelStyleable else { return self }
         s._bezelStyleState = binding
         s._setBezelStyle(binding.wrappedValue)
@@ -46,7 +46,7 @@ extension BezelStyleable {
 @MainActor
 extension _BezelStyleable {
     @discardableResult
-    public func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self {
+    public func style(_ binding: Ultra.State<NSButton.BezelStyle>) -> Self {
         _bezelStyleState = binding
         _setBezelStyle(binding.wrappedValue)
         binding.listen { [weak self] in

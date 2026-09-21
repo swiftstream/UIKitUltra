@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 @available(*, deprecated, renamed: "UActivityIndicator")
 public typealias ActivityIndicator = UActivityIndicator
@@ -124,7 +124,7 @@ open class UActivityIndicator: NSProgressIndicator, AnyDeclarativeProtocol, Decl
 }
 #else
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 public typealias UActivityIndicator = ActivityIndicator
 open class ActivityIndicator: UIActivityIndicatorView, AnyDeclarativeProtocol, DeclarativeProtocolInternal {

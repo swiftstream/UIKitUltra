@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 @available(*, deprecated, renamed: "UTextView")
 public typealias TextView = UTextView
@@ -16,27 +16,27 @@ open class UTextView: NSScrollView,
     public lazy var properties = P()
     lazy var _properties = PropertiesInternal()
 
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
 
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
 
     private lazy var _tag: Int = -1
     public override var tag: Int {
@@ -96,7 +96,7 @@ open class UTextView: NSScrollView,
 
     // MARK: - Focus
 
-    @UIKitPlus.State public var isFirstResponder = false
+    @Ultra.State public var isFirstResponder = false
     private var _tintColor: NSColor?
 
     // MARK: - Layout State
@@ -138,7 +138,7 @@ open class UTextView: NSScrollView,
         text(localized)
     }
 
-    public init<A: AnyString>(_ state: UIKitPlus.State<A>) {
+    public init<A: AnyString>(_ state: Ultra.State<A>) {
         let textView = NSTextView(frame: .zero)
         self.textView = textView
         super.init(frame: .zero)
@@ -976,7 +976,7 @@ extension UTextView: _Cleanupable {
 }
 
 extension UTextView: _Colorable {
-    var _colorState: UIKitPlus.State<UColor> { properties.textColorState }
+    var _colorState: Ultra.State<UColor> { properties.textColorState }
 
     func _setColor(_ v: NSColor?) {
         textView.textColor = v
@@ -991,7 +991,7 @@ extension UTextView: _TextAligmentable {
 }
 
 extension UTextView: _TextBindable {
-    func _setTextBind<A: AnyString>(_ binding: UIKitPlus.State<A>?) {
+    func _setTextBind<A: AnyString>(_ binding: Ultra.State<A>?) {
         _properties.textChangeListeners.append { new in
             binding?.wrappedValue = A.make(new)
         }
@@ -1016,7 +1016,7 @@ extension UTextView: _Typeable {
         _properties.typingInterval = v
     }
 
-    func _observeTypingState(_ v: UIKitPlus.State<Bool>) {
+    func _observeTypingState(_ v: Ultra.State<Bool>) {
         _properties.isTypingState.listen { [weak v] in
             guard let v else { return }
             guard v.wrappedValue != $0 else { return }
@@ -1030,7 +1030,7 @@ extension UTextView: _Typeable {
 }
 
 extension UTextView: _Tintable {
-    var _tintState: UIKitPlus.State<UColor> { properties.tintState }
+    var _tintState: Ultra.State<UColor> { properties.tintState }
 
     func _setTint(_ v: NSColor?) {
         _tintColor = v

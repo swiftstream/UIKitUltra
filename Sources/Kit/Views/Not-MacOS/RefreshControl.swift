@@ -72,7 +72,7 @@ open class URefreshControl: UIRefreshControl {
     
     // MARK: Tint Color
     
-    @UIKitPlus.State var tint: UIColor = .clear
+    @Ultra.State var tint: UIColor = .clear
     
     @discardableResult
     public func tint(_ color: UIColor) -> Self {
@@ -87,7 +87,7 @@ open class URefreshControl: UIRefreshControl {
     }
     
     @discardableResult
-    public func tint(_ state: UIKitPlus.State<UIColor>) -> Self {
+    public func tint(_ state: Ultra.State<UIColor>) -> Self {
         tintColor = state.wrappedValue
         tint = state.wrappedValue
         state.listen { [weak self] new in

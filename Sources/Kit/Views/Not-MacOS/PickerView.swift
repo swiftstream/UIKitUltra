@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 #if !os(tvOS)
 
 @available(*, deprecated, renamed: "UPickerView")
@@ -109,7 +109,7 @@ open class UPickerView: UIPickerView, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func textColor(_ binding: UIKitPlus.State<UIColor>) -> Self {
+    public func textColor(_ binding: Ultra.State<UIColor>) -> Self {
         binding.listen { [weak self] in self?.textColor($0) }
             .hold(in: stateBindingHolder)
 
@@ -117,7 +117,7 @@ open class UPickerView: UIPickerView, AnyDeclarativeProtocol, DeclarativeProtoco
     }
 
     @discardableResult
-    public func textColor(_ binding: UIKitPlus.State<Int>) -> Self {
+    public func textColor(_ binding: Ultra.State<Int>) -> Self {
         binding.listen { [weak self] in self?.textColor($0) }
             .hold(in: stateBindingHolder)
 

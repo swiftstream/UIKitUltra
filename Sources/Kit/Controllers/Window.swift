@@ -43,6 +43,12 @@ public class Window: AppBuilderContent {
     }
 
     @MainActor
+    public convenience init(@BodyBuilder block: BodyBuilder.SingleView) {
+        self.init()
+        window.contentView?.body { block() }
+    }
+
+    @MainActor
     init(existing window: NSWindow) {
         self.window = window
     }
@@ -169,13 +175,13 @@ public class Window: AppBuilderContent {
     /// window buttons, which also covers the native tab strip when AppKit
     /// groups project windows into one tabbed window.
     ///
-    /// UIKitPlus uses a best-effort heuristic over AppKit's titlebar view
+    /// Ultra uses a best-effort heuristic over AppKit's titlebar view
     /// hierarchy because AppKit does not expose a public titlebar-background
     /// setter. That hierarchy is not a stable API contract: use this modifier
     /// with caution and verify it on every supported macOS release. If the
     /// color no longer reaches the intended native chrome, please report it at
     /// https://github.com/MihaelIsaev/UIKitPlus/issues.
-    /// When the process is not hosted by a UIKitPlus `App`, dynamic colors
+    /// When the process is not hosted by a Ultra `App`, dynamic colors
     /// resolve to their light variant rather than force-casting `NSApp`.
     /// - Parameter value: The color to use for the native title/tab chrome.
     @discardableResult

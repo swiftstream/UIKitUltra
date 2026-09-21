@@ -14,7 +14,7 @@ public protocol TextAttributesEditingAllowable: AnyObject {
     func allowEditingTextAttributes(_ value: Bool) -> Self
     
     @discardableResult
-    func allowEditingTextAttributes(_ binding: UIKitPlus.State<Bool>) -> Self
+    func allowEditingTextAttributes(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -29,7 +29,7 @@ extension TextAttributesEditingAllowable {
     }
     
     @discardableResult
-    public func allowEditingTextAttributes(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func allowEditingTextAttributes(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.allowEditingTextAttributes($0)
         }

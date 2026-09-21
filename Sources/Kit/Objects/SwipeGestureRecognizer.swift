@@ -147,7 +147,7 @@ final public class SwipeGestureRecognizer: USwipeGestureRecognizer, _GestureTrac
     }
     
     @discardableResult
-    public func numberOfTouchesRequired(_ state: UIKitPlus.State<Int>) -> Self {
+    public func numberOfTouchesRequired(_ state: Ultra.State<Int>) -> Self {
         state.listen { [weak self] in
             self?.numberOfTouchesRequired = $0
         }
@@ -162,7 +162,7 @@ final public class SwipeGestureRecognizer: USwipeGestureRecognizer, _GestureTrac
     }
     
     @discardableResult
-    public func direction(_ state: UIKitPlus.State<USwipeGestureRecognizer.Direction>) -> Self {
+    public func direction(_ state: Ultra.State<USwipeGestureRecognizer.Direction>) -> Self {
         state.listen { [weak self] in
             self?.direction = $0
         }

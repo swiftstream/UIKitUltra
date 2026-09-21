@@ -1,11 +1,13 @@
 # Architecture Index
 
-Authoritative routing and architecture-ID ownership index for UIKitPlus. Keep context minimal and layer-aware.
+Authoritative routing and architecture-ID ownership index for UIKitUltra. Keep context minimal and layer-aware. This is a router: load only the owner needed for the current task.
 
 Operational development authorities are routed separately from technical architecture:
 
+- canonical repository/package/module/backend naming: `PRODUCT_IDENTITY.md`;
 - workflow: `WORKFLOW.md`;
 - coordinator/executor roles and independent review gates: `DEVELOPMENT_ORCHESTRATION.md`;
+- linked-worktree/parallel-lane hierarchy and integration ownership: `PARALLEL_DEVELOPMENT.md`;
 - transient research/plan/task/report/handoff mechanics: `ARTIFACTS_WORKFLOW.md`;
 - Git/staging/commit safety: `COMMIT_RULES.md`;
 - progressive loading: `CONTEXT_LOADING_RULES.md`;
@@ -16,11 +18,10 @@ Operational workflow/artifact/public-content owners do not consume architecture-
 
 ## Loading Protocol
 
-1. Identify task type and impacted layer(s).
-2. Load `.agent/architecture/LAYER_MODEL.md`.
-3. Load one domain architecture doc.
-4. Load one contract doc (`FLUENT_CHAIN_CONTRACT`, `STATE_SYSTEM`, `EXTENSION_SYSTEM`, `RUNTIME_MODEL`, or `MUTATION_MODEL`).
-5. Stop at decision-complete context.
+1. Identify the task type and select **one primary architecture owner** below.
+2. Load that owner.
+3. Add up to two supporting architecture docs only if the task actually crosses their boundaries; `LAYER_MODEL.md` is normally a support doc for cross-layer work, not an automatic read.
+4. Stop at decision-complete context.
 
 Default max active architecture docs: `3`.
 
@@ -48,9 +49,9 @@ Default max active architecture docs: `3`.
 
 - Platform layer:
   - `.agent/architecture/PLATFORM_ABSTRACTION.md`
-  - `.agent/architecture/NATIVE_BACKENDS.md` for implemented M1 backend target/selection boundaries plus accepted Linux/Windows native-backend topology, owned bindings/generator architecture, backend dependency isolation, markup posture, and support-gating rules
+  - `.agent/architecture/NATIVE_BACKENDS.md` for UIKitUltra GTK/Qt/Win/Android/TUI backend topology, explicit module/import boundaries, owned bridge/runtime architecture, dependency isolation, semantic promotion, and support-gating rules
 
-- UIKitPlus application architecture:
+- UIKitUltra application architecture:
   - `.agent/architecture/APPLICATION_STATE_OWNERSHIP.md`
 
 - macOS native window tabs, lazy content, native detach/reattach, topology
@@ -62,65 +63,58 @@ Default max active architecture docs: `3`.
 
 ## Domain Routing
 
-- Declarative protocol and chain API changes:
-  - `DECLARATIVE_PROTOCOL.md`
-  - `FLUENT_CHAIN_CONTRACT.md`
-  - `EXTENSION_SYSTEM.md`
+- Product/package/module/trait/backend naming:
+  - Primary: `.agent/PRODUCT_IDENTITY.md`.
+  - Add `NATIVE_BACKENDS.md` only when backend architecture/support/inheritance is also in scope.
 
-- Body/ForEach/view composition changes:
-  - `VIEW_COMPOSITION.md`
-  - `RUNTIME_MODEL.md`
-  - `MUTATION_MODEL.md`
+- Declarative protocol / chain API:
+  - Primary: `DECLARATIVE_PROTOCOL.md` or `FLUENT_CHAIN_CONTRACT.md`, depending on which contract changes.
+  - Support only when needed: `EXTENSION_SYSTEM.md` or the other contract.
 
-- State/binding/listener changes and State-companion assessment for new or
-  materially changed fluent value setters:
-  - `STATE_SYSTEM.md`
-  - `FLUENT_CHAIN_CONTRACT.md`
-  - add `MUTATION_MODEL.md` only through documented context-budget escalation
-    when bidirectional, re-entrant, or multi-state mutation is in scope
+- Body / `ForEach` / view composition:
+  - Primary: `VIEW_COMPOSITION.md`.
+  - Support only when needed: `RUNTIME_MODEL.md` for lifecycle/diffs or `MUTATION_MODEL.md` for callback/re-entrancy behavior.
 
-- UIKitPlus application state placement, View/ViewController ownership, child dependency contracts, app-wide environment, runtime/domain owner decisions, ViewModel/PresentationModel evaluation, and fixture ownership:
-  - `APPLICATION_STATE_OWNERSHIP.md`
-  - `STATE_SYSTEM.md`
-  - `VIEW_COMPOSITION.md`
+- State / binding / listener changes:
+  - Primary: `STATE_SYSTEM.md`.
+  - Support only when needed: `FLUENT_CHAIN_CONTRACT.md` for public setter shape, `MUTATION_MODEL.md` for bidirectional/re-entrant flows, or `RUNTIME_MODEL.md` for lifecycle/deferred behavior.
+
+- Application state placement / View/ViewController ownership / child dependency contracts / app-wide environment:
+  - Primary: `APPLICATION_STATE_OWNERSHIP.md`.
+  - Support only when needed: `STATE_SYSTEM.md` or `VIEW_COMPOSITION.md`.
 
 - Constraint/layout changes:
-  - `LAYOUT_SYSTEM.md`
-  - `RUNTIME_MODEL.md`
-  - `MUTATION_MODEL.md`
+  - Primary: `LAYOUT_SYSTEM.md`.
+  - Support only when needed: `RUNTIME_MODEL.md` or `MUTATION_MODEL.md`.
 
-- macOS `UList` / `NSTableView`, visible-cell hosting, self-sizing rows,
-  recycling, scrolling, automatic row heights, or live resize:
-  - `MACOS_ULIST_NSTABLEVIEW.md`
-  - add only one supporting contract when required:
-    `RUNTIME_MODEL.md` for lifecycle/diffs, `LAYOUT_SYSTEM.md` for constraints,
-    or `MUTATION_MODEL.md` for callbacks
+- macOS `UList` / `NSTableView` hosting, sizing, recycling, scrolling, live resize:
+  - Primary: `MACOS_ULIST_NSTABLEVIEW.md`.
+  - Support only when needed: `RUNTIME_MODEL.md`, `LAYOUT_SYSTEM.md`, or `MUTATION_MODEL.md`.
 
-- macOS `UList` rows backed by persistent TextKit 2 objects:
-  - `MACOS_ULIST_NSTABLEVIEW.md`
-  - `MACOS_ULIST_TEXTKIT2.md`
-  - with mandatory `LAYER_MODEL.md`, this fills the default three-document
-    budget; load another contract only through documented escalation
+- Persistent TextKit 2 `UList` rows:
+  - Primary: `MACOS_ULIST_TEXTKIT2.md`.
+  - Add `MACOS_ULIST_NSTABLEVIEW.md` when table-host integration matters; add another contract only through normal budget escalation.
 
-- Gesture wrapper/delegation changes:
-  - `GESTURE_SYSTEM.md`
-  - `EXTENSION_SYSTEM.md`
-  - `MUTATION_MODEL.md`
+- Gesture wrapper/delegation:
+  - Primary: `GESTURE_SYSTEM.md`.
+  - Support only when needed: `EXTENSION_SYSTEM.md`, `MUTATION_MODEL.md`, or `PLATFORM_ABSTRACTION.md`.
 
-- Navigation behavior changes:
-  - `NAVIGATION_SYSTEM.md`
-  - `RUNTIME_MODEL.md`
-  - `PLATFORM_ABSTRACTION.md`
+- Navigation behavior:
+  - Primary: `NAVIGATION_SYSTEM.md`.
+  - Support only when needed: `RUNTIME_MODEL.md` or `PLATFORM_ABSTRACTION.md`.
 
-- UIKit/AppKit bridge changes:
-  - `PLATFORM_ABSTRACTION.md`
-  - `LAYER_MODEL.md`
-  - impacted domain doc(s)
+- UIKit/AppKit bridge behavior:
+  - Primary: `PLATFORM_ABSTRACTION.md`.
+  - Add `LAYER_MODEL.md` or the impacted domain owner only when that boundary is actually in scope.
 
-- Native Linux/Windows backend topology, implemented `UIKitPlusCore`/backend package boundaries, backend selection, owned binding/generator work, native-markup posture, or backend dependency isolation:
-  - `NATIVE_BACKENDS.md`
-  - `LAYER_MODEL.md`
-  - add `PLATFORM_ABSTRACTION.md` or the impacted domain owner only when the task changes those contracts
+- Native backend topology/import boundaries/selection/owned bridges/dependency isolation, GTK/Qt/Win/Android/TUI architecture, or cross-backend semantic promotion:
+  - Primary: `NATIVE_BACKENDS.md`; prefer section/ID reads for backend-specific work rather than full-file preload.
+  - Common module/import/autocomplete: `NB1`, `NB4`, `NB15`.
+  - Native authority/inheritance: `NB2`, `NB13`.
+  - Layout/list lowering: `NB9` + `LAYOUT_SYSTEM.md` only when layout is actually in scope.
+  - Win: `NB11`; Android: `NB17` (+ `NB19` only for shared-State questions); TUI: `NB18`.
+  - Parallel-lane ownership: `NB10`, `NB20` + `PARALLEL_DEVELOPMENT.md` only when linked worktrees are actually in scope.
+  - Add `PLATFORM_ABSTRACTION.md` or `LAYER_MODEL.md` only when that specific boundary is actually in scope.
 
 ## Governance and Debt Routing
 
@@ -130,6 +124,7 @@ Default max active architecture docs: `3`.
 
 - Model-independent LLM/coding-agent orchestration:
   - `.agent/DEVELOPMENT_ORCHESTRATION.md`
+  - `.agent/PARALLEL_DEVELOPMENT.md` when linked worktrees/parallel lanes are in scope
   - `.agent/ARTIFACTS_WORKFLOW.md`
 
 - Source ownership and navigation:
@@ -151,7 +146,7 @@ Default max active architecture docs: `3`.
 - Task archive (completed milestones):
   - `.agent/TASKS_ARCHIVE.md`
 
-- State vNext planning (deferred):
+- Shared State-package convergence/migration planning:
   - `.agent/STATE_VNEXT_PLAN.md`
 
 ## ID Namespace Map

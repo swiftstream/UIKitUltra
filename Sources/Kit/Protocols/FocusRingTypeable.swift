@@ -8,7 +8,7 @@ public protocol FocusRingTypeable: AnyObject {
     func focusRingType(_ value: NSFocusRingType) -> Self
     
     @discardableResult
-    func focusRingType(_ binding: UIKitPlus.State<NSFocusRingType>) -> Self
+    func focusRingType(_ binding: Ultra.State<NSFocusRingType>) -> Self
 }
 
 @MainActor
@@ -18,7 +18,7 @@ protocol _FocusRingTypeable: FocusRingTypeable {
 
 extension FocusRingTypeable {
     @discardableResult
-    public func focusRingType(_ binding: UIKitPlus.State<NSFocusRingType>) -> Self {
+    public func focusRingType(_ binding: Ultra.State<NSFocusRingType>) -> Self {
         binding.listen { [weak self] in
             self?.focusRingType($0)
         }

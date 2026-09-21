@@ -14,7 +14,7 @@ public protocol Bezeledable: AnyObject {
     func bezeled(_ value: Bool) -> Self
     
     @discardableResult
-    func bezeled(_ binding: UIKitPlus.State<Bool>) -> Self
+    func bezeled(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -29,7 +29,7 @@ extension Bezeledable {
     }
     
     @discardableResult
-    public func bezeled(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func bezeled(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.bezeled($0)
         }

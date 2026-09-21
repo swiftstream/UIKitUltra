@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 @available(macOS 26.0, *)
 open class UGlassEffectView: NSGlassEffectView, AnyDeclarativeProtocol, DeclarativeProtocolInternal {

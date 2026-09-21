@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define how UIKitPlus applies configuration over object lifecycle, including deferred behavior and update propagation.
+Define how UIKitUltra applies configuration over object lifecycle, including deferred behavior and update propagation.
 
 ## Invariants
 
@@ -24,7 +24,7 @@ Representative runtime lifecycle patterns:
 - macOS multiline `UText`: configuration preserves native intrinsic sizing and
   delegates width resolution to Auto Layout constraints. Callers can lower
   horizontal compression resistance through the existing declarative modifier
-  when text should wrap within constrained space. UIKitPlus does not persist
+  when text should wrap within constrained space. UIKitUltra does not persist
   provisional width, read a superview width, or run a parallel measurement
   lifecycle. Text-style mutations invalidate intrinsic sizing.
   [RT1][PA1][PA3][FC5]
@@ -51,7 +51,7 @@ Views with trait handlers route trait changes to registered handlers; behavior d
 
 ### RT7: Native Menu Retains Declarative Action Owners
 
-UIKitPlus-created macOS menus use a private `_NSMenu: NSMenu` whose Swift
+UIKitUltra-created macOS menus use a private `_NSMenu: NSMenu` whose Swift
 storage strongly retains the declarative `MenuItem` wrappers for the lifetime
 of the native menu. This preserves closure targets when AppKit retains only the
 native `NSMenu`, including main menus, submenus, status-item menus, contextual

@@ -1,12 +1,17 @@
 # Project Memory
 
-This file stores stable governance memory for UIKitPlus agent work.
+This file stores lazy durable current-state memory for UIKitUltra agent work. Do not load it at startup unless the current task needs these facts.
 
 ## Repository Identity
 
-- UIKitPlus is currently implemented as a declarative UIKit/AppKit DSL framework; G2 accepted future real-native GTK/libadwaita, Qt/KF6, and WinUI backend architecture under `architecture/NATIVE_BACKENDS.md`, and M1 has now implemented/audited the structural multi-backend package foundation without claiming non-Apple production UI support.
-- Core contract root remains `DeclarativeProtocol` with reference semantics. The SwiftPM `UIKitPlusCore` target is a physical portability boundary for the initial proven State nucleus, not a universal native-view hierarchy or new conceptual architecture layer.
-- Public API growth is extension-driven.
+- Canonical local workspace root is `/Users/imike/Development/SwiftStream`; canonical local project path is `/Users/imike/Development/SwiftStream/UIKitUltra`.
+- Canonical GitHub organization is `swiftstream`; UIKitUltra lives at `https://github.com/swiftstream/UIKitUltra`. New UIKitUltra-family `Ultra*` repositories belong in the same organization unless explicitly decided otherwise.
+- UIKitUltra, `UltraGTK`, and `UltraDemoApp` are independent sibling repositories under the SwiftStream workspace, not subdirectories of one shared Git repository.
+- `Package.swift` permanently carries `let isLocalDevelopment = false`; `true` is a local-only uncommitted override for relative sibling package paths and is forbidden in any commit/tag/release/push.
+- Canonical project/framework identity is **UIKitUltra**; canonical public Swift module/product identity is **Ultra**; `U*` means **Ultra**. Active source uses the final identity scheme; one-time rename mechanics and historical evidence stay in `.artifacts/migrations/**`.
+- Golden developer-experience rule: `If you know UIKit then you already know everything in UIKitUltra.`
+- Apple remains directly UIKit/AppKit-native. Additional backend families and exact public backend/module naming are owned by `architecture/NATIVE_BACKENDS.md`.
+- Core contract root remains `DeclarativeProtocol` with reference semantics. Public API growth is extension-driven.
 
 ## Current State
 
@@ -16,23 +21,22 @@ This file stores stable governance memory for UIKitPlus agent work.
 - Push is locked.
 - Stable development orchestration is model-independent and routed through `DEVELOPMENT_ORCHESTRATION.md` plus `ARTIFACTS_WORKFLOW.md` for non-trivial iterative work.
 - `.artifacts/**` is transient, Git-ignored working memory and is reconstructable from stable docs + Git + actual source when missing.
-- State vNext is deferred until after Swift 6 migration.
-- M1 structural native-backend foundation is implemented/audited: one public
-  `UIKitPlus` product; internal `UIKitPlusCore`, `UIKitPlusGTK`, `UIKitPlusQt`,
-  and `UIKitPlusWinUI` targets; explicit Linux UIKitPlusGTK/UIKitPlusQt trait selection; conditional
-  Windows backend attachment; Apple-scoped legacy UI source; no non-Apple
-  production controls/support claim yet.
-- `UIKitPlusCore` currently contains exactly `ExpressableState.swift`,
+- Parallel linked-worktree work is governed lazily by `.agent/PARALLEL_DEVELOPMENT.md`; concrete lane paths/base SHAs/status remain transient `.artifacts/**` state.
+- The standalone maintainer-owned `State` repository (`https://github.com/MihaelIsaev/State`) is the accepted canonical destination for shared State used by UIKitUltra/SwifDroid/compatible frameworks; extraction/migration remains implementation-gated.
+- `IDENTITY-ULTRA-001` is final-CLEAN after Correction 01. The original independent final rename audit found only `IRFA-001-STABLE-NB4-PUBLIC-MODULE-IDENTITY-STALE`; PRIMARY corrected the two stale NB4 module/product facts and the focused independent re-audit closed `IRFA-001` with `A11` and `A18` PASS. Identity migration is no longer a blocker for Unified Layout research or future lane planning; linked-worktree lanes still require an exact committed base.
+- Current Git integration task is `INTEGRATION-001`. Correction 01 is PRIMARY-accepted after a CLEAN focused independent re-audit (18 PASS / 0 FAIL; GIPA-001/002/003 CLOSED). Index Transition 01 is complete and accepted: the historical 296-record staged checkpoint was retired through the independently verified 377-literal restore authority while the working tree remained byte-identical. PRIMARY froze the complete 315-leaf post-transition partition: 287 exact paths belong to coherent product+architecture release-base Commit R and 28 to later governance/orchestration Commit G. Commit R may be created only after its exact staged candidate passes the required independent audit and PRIMARY acceptance; Commit G remains separately reviewed and committed afterward. Tag/push stay blocked until the post-integration release-block audit. Stable `.agent/**` documentation remains PRIMARY-owned.
+- M1 structural native-backend foundation is implemented/audited and the active package exposes public module/product `Ultra`. H3 Wave C production UltraGTK extraction/migration is PRIMARY FINAL CLOSED after corrected C05 acceptance, post-C05 durable agent-doc synchronization, and a CLEAN final independent Sol audit (60 PASS / 0 FAIL, no findings). GTK native-foundation ownership is external and singular: sibling repository/package/product/module/import `UltraGTK` sits below `Ultra`; the former root-owned `UltraGTKRuntime` / `UltraGTKCore` production split and old GTK ownership roots are absent. Linux selection remains explicit through `UltraGTK` / `UltraQt` traits; Qt/Win retain their current runtime identities until their own migration gates. Canonical UIKitUltra keeps `isLocalDevelopment = false`; Linux `UltraGTK` resolves exact `swiftstream/UltraGTK@3.0.0-alpha.5`, while uncommitted local development may use sibling `../UltraGTK`. UltraGTK publication is PRIMARY-accepted at root commit `894f4a545e21cc2f1363a231f4f00f69ba2fdb75`, tree `7eb36dc1f16b7f077469195a98414184825d80b4`, and annotated tag `3.0.0-alpha.5` (tag object `a23eacf57ca033f30d42e625de124e9c5846c89e`, peeled target equal to the root commit). Historical UIKitUltra-root SwiftPM planner overbuild remains recorded; C05 accepts backend isolation from the direct selected-target plus external-consumer actual compile/link/runtime oracle, not from root-product planning. No production source/package/stable-agent correction is required by Wave C final closure, and no broad non-Apple support claim follows from H3 acceptance. UIKitUltra Git integration remains a separate explicit gate.
+- `UltraCore` currently contains exactly `ExpressableState.swift`,
   `OrderedRegistrations.swift`, `State.swift`, `StateListener.swift`, and
   `StatesHolder.swift`, with Foundation-only direct imports.
-- Physical backend source directories intentionally stay concise as
-  `Sources/Core`, `Sources/GTK`, `Sources/Qt`, and `Sources/WinUI`; collision
-  resistance is provided by the namespaced SwiftPM module names above.
-- The public `UIKitPlus` target has been moved out of the legacy pre-M1
-  `Classes/**` root into `Sources/Kit/**`. `Kit` is intentionally only a concise
-  physical directory name; the public module/target remains `UIKitPlus`, and
-  no semantic/API change is implied by the move.
-- CocoaPods distribution is no longer supported by UIKitPlus. The repository's
+- Physical UIKitUltra backend source directories stay concise: `Sources/Core`,
+  `Sources/QtRuntime`, `Sources/Qt`, `Sources/WinRuntime`, and `Sources/Win`.
+  GTK native-foundation source/bridge/generator ownership lives in sibling
+  `UltraGTK`; UIKitUltra retains its public Linux façade under `Sources/Kit/**`.
+  Legacy UIKitUltra-owned `Sources/WinUI/**` and old GTK ownership roots are
+  absent from the active tree; SwiftPM module identity is `Ultra*`.
+- The public `Ultra` target lives under `Sources/Kit/**`. `Kit` is intentionally only a concise physical directory name; package/repository identity remains `UIKitUltra`, while consumer Swift code imports `Ultra`.
+- CocoaPods distribution is no longer supported by UIKitUltra. The repository's
   legacy `UIKit-Plus.podspec` was removed and public installation guidance now
   uses Swift Package Manager only. The release that first ships this removal
   must include an explicit migration note: CocoaPods installation is no longer
@@ -43,7 +47,7 @@ This file stores stable governance memory for UIKitPlus agent work.
   offline before that actually occurs.
 - M1 Task07 selected and executable-proved a package-owned source-first Windows
   ARM64 NuGet/MSBuild/C++/WinRT bridge workflow consumed through only
-  `import UIKitPlus`. Production WinUI controls and durable native bridge
+  `import Ultra`. Production WinUI controls and durable native bridge
   source remain future implementation work.
 
 ## Baselines
@@ -85,8 +89,8 @@ macOS UText synchronizes native line-mode flags immediately and preserves the
 native `preferredMaxLayoutWidth` default. Multiline layout is resolved by the
 caller's constraint graph and native AppKit intrinsic sizing. When a multiline
 text field must wrap within a constrained horizontal space, the caller can use
-UIKitPlus's existing public compression-resistance modifier to allow horizontal
-compression instead of changing measurement properties during layout. UIKitPlus
+UIKitUltra's existing public compression-resistance modifier to allow horizontal
+compression instead of changing measurement properties during layout. UIKitUltra
 does not infer a width from a superview, persist provisional geometry, or run a
 parallel measurement lifecycle. Text, font, alignment, line-break, and
 line-count mutations invalidate intrinsic size, while `.lines(1)` restores
@@ -119,7 +123,7 @@ native single-line flags. [PA1][PA3][RT1][FC5]
 
 ## macOS Menu Ownership Facts
 
-- UIKitPlus-created macOS menus use private `_NSMenu: NSMenu` storage that
+- UIKitUltra-created macOS menus use private `_NSMenu: NSMenu` storage that
   retains declarative `MenuItem` wrappers for the lifetime of the native menu. [RT7][PA1][PA3]
 - This keeps closure-based actions and key equivalents functional when AppKit
   retains only `NSMenu`. [RT7][PA1][PA3]
@@ -132,8 +136,8 @@ native single-line flags. [PA1][PA3][RT1][FC5]
 - macOS 26+ uses the native AppKit `UGlassEffectView: NSGlassEffectView` view.
 - iOS/iPadOS/tvOS 26+ use native UIKit effect objects, with Glass effects hosted by the existing `UVisualEffectView`.
 - The generic corner-configuration modifier assigns native `UIView.cornerConfiguration` and preserves declarative view identity.
-- UIKitPlus has no synthetic UIKit Glass view or wrapper effect.
-- Native `UIVisualEffectView` installation may copy supplied effects. UIKitPlus validates the installed native type and public configuration rather than supplied-object identity.
+- UIKitUltra has no synthetic UIKit Glass view or wrapper effect.
+- Native `UIVisualEffectView` installation may copy supplied effects. UIKitUltra validates the installed native type and public configuration rather than supplied-object identity.
 - `UIKitPlus-iPhone-26-2` (iPhone 17 Pro-equivalent) and `UIKitPlus-iPad-26-2` (iPad Pro 11-inch-equivalent) iOS 26.2 runtime probes passed; native diagnostics observed copied effect identities while configured public values survived installation.
 - The focused tvOS 26.2 Glass runtime probe passed. The complete tvOS package build remains blocked by unrelated pre-existing unavailable UIKit APIs and is not claimed tvOS-clean.
 - Catalyst follows the iOS source branch, but current macabi validation was not performed successfully because the compiler failed before loading UIKit.
@@ -145,7 +149,10 @@ native single-line flags. [PA1][PA3][RT1][FC5]
 2. Fluent APIs are `Self`-returning in-place mutations.
 3. State engine is reference-based (`State`, `InnerState`) with synchronous listener dispatch.
 4. Constraint system uses deferred pre-constraint queues plus activation on superview availability.
-5. Platform abstraction is explicit and compile-time scoped. Current production uses UIKit/AppKit; accepted future GTK/Qt/WinUI topology, owned binding generation, dependency isolation, native-markup posture, and support gates are owned by `architecture/NATIVE_BACKENDS.md`. Runtime backend guessing and a synthetic universal renderer are forbidden.
+5. Platform abstraction is explicit and compile-time scoped. GUI backends use real native toolkit objects; TUI owns its retained terminal object/render runtime because no native terminal widget hierarchy exists. GTK/Qt/Win/Android/TUI topology, owned bridge/runtime policy, dependency isolation, native-markup posture, universal-superset semantics, backend escape modules, and support gates are owned by `architecture/NATIVE_BACKENDS.md`.
+6. Android production uses owned JNIKit + shared low-level Droid runtime + Android Views with modern Material-first controls; Compose and external Java interop are not UIKitUltra runtime dependencies.
+7. Backend-specific direct APIs are opt-in through explicit modules and `.gtk/.qt/.win/.android/.tui` escapes; ordinary `import Ultra` remains the clean universal DSL.
+8. Substantial backend implementation may proceed in isolated linked worktrees after the shared architecture gate; shared/common contract authority stays with the primary line.
 
 ## Workflow Memory
 

@@ -8,7 +8,7 @@
 
 #if os(macOS)
 import Cocoa
-import UIKitPlusCore
+import UltraCore
 
 open class App: NSApplication, NSApplicationDelegate {
     public static override var shared: App { super.shared as! App }

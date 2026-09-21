@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if os(macOS)
 import AppKit
-import UIKitPlusCore
+import UltraCore
 
 open class UScrollView: NSScrollView, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UScrollView { self }
@@ -255,7 +255,7 @@ extension UScrollView {
 //    }
 //
 //    @discardableResult
-//    public func scrollPosition(_ binding: UIKitPlus.State<CGPoint>) -> Self {
+//    public func scrollPosition(_ binding: Ultra.State<CGPoint>) -> Self {
 //        scrollPosition = binding
 //        return self
 //    }

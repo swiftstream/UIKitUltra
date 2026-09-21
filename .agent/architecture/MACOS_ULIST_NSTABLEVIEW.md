@@ -16,7 +16,7 @@ Ownership is intentionally split:
 
 - AppKit owns native scrolling, clipping, reuse, column width, row frames,
   automatic heights, and live window resize;
-- UIKitPlus owns section/diff composition and one edge-constrained declarative
+- UIKitUltra owns section/diff composition and one edge-constrained declarative
   root per visible cell;
 - the application row owns content-specific measurement and reflow.
 
@@ -49,7 +49,7 @@ framework defect.
 ### UL4 — Builders return complete rows
 
 The row builder must return a complete hierarchy with valid constraints and a
-deterministic intrinsic or explicit height. UIKitPlus does not finish or
+deterministic intrinsic or explicit height. UIKitUltra does not finish or
 measure application content after construction.
 
 ### UL5 — Recycling is not resize

@@ -2,7 +2,7 @@
 #if !os(macOS)
 import Foundation
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 open class UTextField: UITextField, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UTextField { self }
@@ -10,27 +10,27 @@ open class UTextField: UITextField, AnyDeclarativeProtocol, DeclarativeProtocolI
     public lazy var properties = P()
     lazy var _properties = PropertiesInternal()
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
     fileprivate weak var outsideDelegate: TextFieldDelegate?
     
@@ -58,7 +58,7 @@ open class UTextField: UITextField, AnyDeclarativeProtocol, DeclarativeProtocolI
         text(localized)
     }
     
-    public init<A: AnyString>(_ state: UIKitPlus.State<A>) {
+    public init<A: AnyString>(_ state: Ultra.State<A>) {
         super.init(frame: .zero)
         _setup()
         text(state)
@@ -377,7 +377,7 @@ extension UTextField: _Cleanupable {
 }
 
 extension UTextField: _Colorable {
-    var _colorState: UIKitPlus.State<UIColor> { properties.textColorState }
+    var _colorState: Ultra.State<UIColor> { properties.textColorState }
     
     func _setColor(_ v: UIColor?) {
         textColor = v
@@ -398,7 +398,7 @@ extension UTextField: _Secureable {
 }
 
 extension UTextField: _TextBindable {
-    func _setTextBind<A: AnyString>(_ binding: UIKitPlus.State<A>?) {
+    func _setTextBind<A: AnyString>(_ binding: Ultra.State<A>?) {
         _properties.textChangeListeners.append({ new in
             binding?.wrappedValue = A.make(new)
         })
@@ -429,7 +429,7 @@ extension UTextField: _Typeable {
         _properties.typingInterval = v
     }
     
-    func _observeTypingState(_ v: UIKitPlus.State<Bool>) {
+    func _observeTypingState(_ v: Ultra.State<Bool>) {
         _properties.isTypingState.listen { [weak v] in
             guard let v = v else { return }
             guard v.wrappedValue != $0 else { return }

@@ -1,44 +1,44 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UButton { self }
     public lazy var properties = Properties<UButton>()
     lazy var _properties = PropertiesInternal()
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
     // MARK: States
     
-    var titleNormal: UIKitPlus.State<NSAttributedString>?
-    var titleHighlighted: UIKitPlus.State<NSAttributedString>?
-    var titleDisabled: UIKitPlus.State<NSAttributedString>?
-    var titleSelected: UIKitPlus.State<NSAttributedString>?
-    var titleFocused: UIKitPlus.State<NSAttributedString>?
-    var titleApplication: UIKitPlus.State<NSAttributedString>?
-    var titleReserved: UIKitPlus.State<NSAttributedString>?
+    var titleNormal: Ultra.State<NSAttributedString>?
+    var titleHighlighted: Ultra.State<NSAttributedString>?
+    var titleDisabled: Ultra.State<NSAttributedString>?
+    var titleSelected: Ultra.State<NSAttributedString>?
+    var titleFocused: Ultra.State<NSAttributedString>?
+    var titleApplication: Ultra.State<NSAttributedString>?
+    var titleReserved: Ultra.State<NSAttributedString>?
     
     private var titleChangeTransition: UIView.AnimationOptions?
     
@@ -94,7 +94,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         title(localized)
     }
     
-    public convenience init<A: AnyString>(_ state: UIKitPlus.State<A>) {
+    public convenience init<A: AnyString>(_ state: Ultra.State<A>) {
         self.init(type: .custom)
         _setup()
         title(state)
@@ -198,9 +198,9 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func title<A: AnyString>(_ bind: UIKitPlus.State<A>, _ state: UIControl.State = .normal) -> Self {
+    public func title<A: AnyString>(_ bind: Ultra.State<A>, _ state: UIControl.State = .normal) -> Self {
         setAttributedTitle(bind.wrappedValue.attributedString, for: state)
-        let st: UIKitPlus.State<NSAttributedString>
+        let st: Ultra.State<NSAttributedString>
         switch state {
         case .application:
             st = titleApplication ?? .init(wrappedValue: bind.wrappedValue.attributedString)
@@ -247,7 +247,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func color(_ binding: UIKitPlus.State<UIColor>, _ state: UIControl.State = .normal) -> Self {
+    public func color(_ binding: Ultra.State<UIColor>, _ state: UIControl.State = .normal) -> Self {
         binding.listen { [weak self] in
             self?.color($0, state)
         }
@@ -256,7 +256,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func color(_ binding: UIKitPlus.State<Int>, _ state: UIControl.State = .normal) -> Self {
+    public func color(_ binding: Ultra.State<Int>, _ state: UIControl.State = .normal) -> Self {
         binding.listen { [weak self] in
             self?.color($0, state)
         }
@@ -278,7 +278,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func image(_ binding: UIKitPlus.State<UIImage>, _ state: UIControl.State = .normal) -> Self {
+    public func image(_ binding: Ultra.State<UIImage>, _ state: UIControl.State = .normal) -> Self {
         binding.listen { [weak self] in
             self?.image($0, state)
         }
@@ -300,7 +300,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func backgroundImage(_ binding: UIKitPlus.State<UIImage>, _ state: UIControl.State = .normal) -> Self {
+    public func backgroundImage(_ binding: Ultra.State<UIImage>, _ state: UIControl.State = .normal) -> Self {
         binding.listen { [weak self] in
             self?.backgroundImage($0, state)
         }

@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 @available(*, deprecated, renamed: "UCollectionView")
 public typealias CollectionView = UCollectionView
@@ -205,7 +205,7 @@ extension CollectionView: UIScrollViewDelegate {
     }
     
     @discardableResult
-    public func scrollPosition(_ binding: UIKitPlus.State<CGPoint>) -> Self {
+    public func scrollPosition(_ binding: Ultra.State<CGPoint>) -> Self {
         scrollPosition = binding
         return self
     }

@@ -36,7 +36,7 @@ The current Swift 6 line uses main-actor isolation for its public UI DSL protoco
 
 Legacy iOS 9 support belongs to pre-Swift-6 tags and branches. It is not a supported deployment target for the current main branch.
 
-Application targets own their entry point explicitly: annotate the `BaseApp` or `UIKitPlus.App` subclass with `@main`. The bundled templates already do this.
+Application targets own their entry point explicitly: annotate the `BaseApp` or `Ultra.App` subclass with `@main`. The bundled templates already do this.
 
 ## Installation
 
@@ -45,10 +45,10 @@ Application targets own their entry point explicitly: annotate the `BaseApp` or 
 In Xcode 26+, choose `File -> Add Package Dependencies` and enter:
 
 ```text
-https://github.com/MihaelIsaev/UIKitPlus
+https://github.com/swiftstream/UIKitUltra
 ```
 
-Swift Package Manager is the supported dependency-manager installation path for the current UIKitPlus release line.
+Swift Package Manager is the supported dependency-manager installation path for the current UIKitUltra release line. Application source imports the `Ultra` module.
 
 SwiftUI-backed previews are availability-gated. Xcode 26 weak-links later-availability system frameworks automatically, so current projects do not need a manual `-weak_framework SwiftUI` linker flag.
 
@@ -56,9 +56,9 @@ SwiftUI-backed previews are availability-gated. Xcode 26 weak-links later-availa
 
 The repository includes three Xcode project templates:
 
-- `UIKitPlus App`: iOS/iPadOS application, iOS 12+
-- `UIKitPlus macOS App`: macOS application, macOS 10.15+
-- `UIKitPlus Multiplatform App`: one iOS/iPadOS/macOS target with platform-specific entry points and shared UI code
+- `UIKitUltra App`: iOS/iPadOS application, iOS 12+
+- `UIKitUltra macOS App`: macOS application, macOS 10.15+
+- `UIKitUltra Multiplatform App`: one iOS/iPadOS/macOS target with platform-specific entry points and shared UI code
 
 Install them from a repository checkout:
 
@@ -67,14 +67,14 @@ mkdir -p ~/Library/Developer/Xcode/Templates
 cp -R "Templates/Project Templates" ~/Library/Developer/Xcode/Templates/
 ```
 
-Restart Xcode, choose `File -> New -> Project`, and select the required UIKitPlus template. Add UIKitPlus to the generated target with Swift Package Manager.
+Restart Xcode, choose `File -> New -> Project`, and select the required UIKitUltra template. Add UIKitUltra to the generated target with Swift Package Manager.
 
-The templates do not embed a package reference because Xcode project-template metadata cannot reliably declare an external local or remote Swift package dependency. To add UIKitPlus with Swift Package Manager:
+The templates do not embed a package reference because Xcode project-template metadata cannot reliably declare an external local or remote Swift package dependency. To add UIKitUltra with Swift Package Manager:
 
 1. Select `File -> Add Package Dependencies`.
-2. For a published dependency, enter `https://github.com/MihaelIsaev/UIKitPlus.git`.
-3. For framework development, choose `Add Local...` and select the UIKitPlus repository checkout.
-4. Add the `UIKitPlus` library product to the generated app target. The multiplatform template has one target, so link the product once.
+2. For a published dependency, enter `https://github.com/swiftstream/UIKitUltra.git`.
+3. For framework development, choose `Add Local...` and select the UIKitUltra repository checkout.
+4. Add the `Ultra` library product to the generated app target. The multiplatform template has one target, so link the product once.
 
 ## Features
 
@@ -165,7 +165,7 @@ Custom trait collections.
 
 Live preview provided by SwiftUI (available only since macOS Catalina).
 
-> The only problem we have is that since names of views are the same in `UIKitPlus` and `SwiftUI` we should use aliases like `UButton` for `Button` or `UView` for `View`, so everything with `U` prefix. It is only necessary if you want to use live previews, otherwise there is no need to import `SwiftUI`, so no name conflicts.
+> The only problem we have is that since names of views are the same in `UIKitUltra` and `SwiftUI` we should use aliases like `UButton` for `Button` or `UView` for `View`, so everything with `U` prefix. It is only necessary if you want to use live previews, otherwise there is no need to import `SwiftUI`, so no name conflicts.
 
 #### Preview single item
 
@@ -265,7 +265,7 @@ struct MyPreviewGroup_Preview: PreviewProvider, DeclarativePreviewGroup {
 ## Usage
 
 ```swift
-import UIKitPlus
+import Ultra
 ```
 
 Even no need to import `UIKit` at all!
@@ -788,7 +788,7 @@ UView().body {
 
 `// implemented. to be described more`
 
-This is really bonus view! :D Almost every app now uses verification codes for login and now you can easily implement that code view with UIKitPlus! :)
+This is really bonus view! :D Almost every app now uses verification codes for login and now you can easily implement that code view with UIKitUltra! :)
 ```swift
 VerificationCodeField().digitWidth(64)
                        .digitsMargin(25)
@@ -1052,7 +1052,7 @@ UIColor.white.alpha(0.5)
 
 Declare custom colors like this
 ```swift
-import UIKitPlus
+import Ultra
 
 extension UIColor {
     static var mainBlack: UIColor { return .black  }
@@ -1077,7 +1077,7 @@ UIFont.printAll()
 
 Add your custom fonts to the project and then declare them like this
 ```swift
-import UIKitPlus
+import Ultra
 
 extension FontIdentifier {
     public static var sfProBold = FontIdentifier("SFProDisplay-Bold")
@@ -1214,7 +1214,7 @@ UButton("Tap me").onTapGesture(tapped)
 
 Declare custom buttons like this
 ```swift
-import UIKitPlus
+import Ultra
 
 extension UButton {
     static var bigBottomWhite: Button {
@@ -1387,7 +1387,7 @@ UView()
 
 Declare asset images like this
 ```swift
-import UIKitPlus
+import Ultra
 
 extension Image {
     static var welcomeBackground: UImage { return UImage("WelcomeBackground") }
@@ -1597,7 +1597,7 @@ UText("hello\nworld").multiline()
 
 Declare custom attributed labels like this
 ```swift
-import UIKitPlus
+import Ultra
 
 extension UText {
     static var welcomeLogo: UText {
@@ -1821,7 +1821,7 @@ UView().shake(-20, 20, -20, 20, -10, 10, -5, 5, 0,
 ```
 or even create an extension
 ```swift
-import UIKitPlus
+import Ultra
 
 extension DeclarativeProtocol {
   func myShake() {
@@ -1867,7 +1867,7 @@ UView().tint($boolState.map { $0 ? .red : .green })
 
 ## Example 1
 ```swift
-import UIKitPlus
+import Ultra
 
 class MyViewController: ViewController {
     lazy var view1 = UView()
@@ -1883,7 +1883,7 @@ class MyViewController: ViewController {
 ```
 ## Example 2
 ```swift
-import UIKitPlus
+import Ultra
 
 // Just feel how easy you could build & declare your views
 // with all needed constraints, properties and actions

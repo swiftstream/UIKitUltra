@@ -14,7 +14,7 @@ public protocol MixedStateAllowable: AnyObject {
     func allowMixedState(_ value: Bool) -> Self
     
     @discardableResult
-    func allowMixedState(_ binding: UIKitPlus.State<Bool>) -> Self
+    func allowMixedState(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -31,7 +31,7 @@ extension MixedStateAllowable {
     }
     
     @discardableResult
-    public func allowMixedState(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func allowMixedState(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.allowMixedState($0)
         }

@@ -2,7 +2,7 @@
 #if os(macOS)
 import AppKit
 
-/// A declarative wrapper around `NSAlert` for UIKitPlus-first macOS flows.
+/// A declarative wrapper around `NSAlert` for Ultra-first macOS flows.
 @MainActor
 public final class Alert {
     /// The native alert owned by this wrapper.
@@ -80,7 +80,7 @@ public final class Alert {
     /// Sets the weak delegate used for native help-button handling.
     ///
     /// Delegates are lifecycle/configuration objects rather than value state;
-    /// UIKitPlus therefore preserves AppKit's scalar weak delegate property
+    /// Ultra therefore preserves AppKit's scalar weak delegate property
     /// instead of inventing a state overload.
     @discardableResult
     public func delegate(_ value: (any NSAlertDelegate)?) -> Self {

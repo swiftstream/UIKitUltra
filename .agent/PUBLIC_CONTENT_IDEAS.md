@@ -1,18 +1,18 @@
 # Public Content Ideas
 
-Stable low-context workflow owner for preserving high-value user-facing examples, capabilities, documentation angles, README material, website-documentation ideas, release/migration stories, and publication/post concepts discovered during UIKitPlus development.
+Stable low-context workflow owner for preserving high-value user-facing examples, capabilities, documentation angles, README material, website-documentation ideas, release/migration stories, and publication/post concepts discovered during UIKitUltra development.
 
 This is an **idea bank, not normal implementation context**. Detailed entries live in focused shards under `.agent/public-content-ideas/` so ordinary development does not pay their context cost.
 
 ## Why this exists
 
-Architecture, implementation, native validation, audits, and corrections often reveal examples that explain UIKitPlus better than a later documentation pass could reconstruct from memory.
+Architecture, implementation, native validation, audits, and corrections often reveal examples that explain UIKitUltra better than a later documentation pass could reconstruct from memory.
 
 Useful material may include:
 
 - a clean declarative API example;
 - a before/after native UIKit/AppKit wrapper story;
-- a feature that demonstrates UIKitPlus's native-first design advantage;
+- a feature that demonstrates UIKitUltra's native-first design advantage;
 - a non-obvious compatibility or lifecycle guarantee;
 - a migration example for a changed public API;
 - a rendered/native validation result that increases user trust;
@@ -143,10 +143,10 @@ Capture only material with real future communication value.
 
 Good candidates answer at least one:
 
-- "This makes UIKitPlus noticeably easier/cleaner/safer for users."
+- "This makes UIKitUltra noticeably easier/cleaner/safer for users."
 - "This example explains an important capability in a few lines."
 - "This native integration choice is a strong engineering story."
-- "Users upgrading or extending UIKitPlus will benefit from knowing this."
+- "Users upgrading or extending UIKitUltra will benefit from knowing this."
 - "This native/rendered validation result meaningfully increases trust."
 
 Do not fill the bank with routine refactors, generic praise, task bookkeeping, or test counts without a meaningful user/engineering story.

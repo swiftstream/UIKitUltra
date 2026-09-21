@@ -14,7 +14,7 @@ public protocol TextAdjustsFontSizeable: AnyObject {
     func adjustsFontSizeToFitWidth(_ value: Bool) -> Self
     
     @discardableResult
-    func adjustsFontSizeToFitWidth(_ binding: UIKitPlus.State<Bool>) -> Self
+    func adjustsFontSizeToFitWidth(_ binding: Ultra.State<Bool>) -> Self
 }
 
 protocol _TextAdjustsFontSizeable: TextAdjustsFontSizeable {
@@ -28,7 +28,7 @@ extension TextAdjustsFontSizeable {
     }
     
     @discardableResult
-    public func adjustsFontSizeToFitWidth(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func adjustsFontSizeToFitWidth(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.adjustsFontSizeToFitWidth($0)
         }

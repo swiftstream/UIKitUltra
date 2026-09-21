@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Define UIKitPlus navigation wrappers and their platform-specific behaviors.
+Define UIKitUltra navigation wrappers and their platform-specific behaviors.
 
 ## Invariants
 

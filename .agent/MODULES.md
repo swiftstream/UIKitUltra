@@ -1,6 +1,6 @@
 # Modules
 
-Framework-oriented module map for UIKitPlus.
+Framework-oriented module map for UIKitUltra.
 
 ## Controllers
 

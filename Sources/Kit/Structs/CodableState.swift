@@ -1,6 +1,6 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 import Foundation
-import UIKitPlusCore
+import UltraCore
 
 @propertyWrapper
 public class CodableState<Value>: Stateable, Codable, Equatable, Hashable where Value: Codable, Value: Hashable {

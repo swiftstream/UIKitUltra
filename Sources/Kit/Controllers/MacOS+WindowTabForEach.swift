@@ -13,7 +13,7 @@ public final class WindowTabForEach<Item: Identable>: AnyWindowTabCollection, Wi
 
     /// Applies repeatable direct metadata updates to an existing tab.
     ///
-    /// UIKitPlus calls this after initial configuration and after each source
+    /// Ultra calls this after initial configuration and after each source
     /// state assignment. Keep this closure to scalar setters; state bindings
     /// belong in `ConfigureHandler`, which runs once per stable identity.
     public typealias UpdateHandler = (Item, WindowTab<Item.ID>) -> Void

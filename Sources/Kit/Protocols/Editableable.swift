@@ -14,7 +14,7 @@ public protocol Editableable: AnyObject {
     func editable(_ value: Bool) -> Self
     
     @discardableResult
-    func editable(_ binding: UIKitPlus.State<Bool>) -> Self
+    func editable(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -29,7 +29,7 @@ extension Editableable {
     }
     
     @discardableResult
-    public func editable(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func editable(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.editable($0)
         }

@@ -8,7 +8,7 @@ import UIKit
 @MainActor
 public protocol TextBindable {
     @discardableResult
-    func bind<A: AnyString>(_ to: UIKitPlus.State<A>) -> Self
+    func bind<A: AnyString>(_ to: Ultra.State<A>) -> Self
 }
 
 @MainActor

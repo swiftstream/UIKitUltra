@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 #if !os(tvOS)
 
 open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
@@ -9,27 +9,27 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     public lazy var properties = Properties<UStepper>()
     lazy var _properties = PropertiesInternal()
     
-    @UIKitPlus.State public var height: CGFloat = 0
-    @UIKitPlus.State public var width: CGFloat = 0
-    @UIKitPlus.State public var top: CGFloat = 0
-    @UIKitPlus.State public var leading: CGFloat = 0
-    @UIKitPlus.State public var left: CGFloat = 0
-    @UIKitPlus.State public var trailing: CGFloat = 0
-    @UIKitPlus.State public var right: CGFloat = 0
-    @UIKitPlus.State public var bottom: CGFloat = 0
-    @UIKitPlus.State public var centerX: CGFloat = 0
-    @UIKitPlus.State public var centerY: CGFloat = 0
+    @Ultra.State public var height: CGFloat = 0
+    @Ultra.State public var width: CGFloat = 0
+    @Ultra.State public var top: CGFloat = 0
+    @Ultra.State public var leading: CGFloat = 0
+    @Ultra.State public var left: CGFloat = 0
+    @Ultra.State public var trailing: CGFloat = 0
+    @Ultra.State public var right: CGFloat = 0
+    @Ultra.State public var bottom: CGFloat = 0
+    @Ultra.State public var centerX: CGFloat = 0
+    @Ultra.State public var centerY: CGFloat = 0
     
-    var __height: UIKitPlus.State<CGFloat> { $height }
-    var __width: UIKitPlus.State<CGFloat> { $width }
-    var __top: UIKitPlus.State<CGFloat> { $top }
-    var __leading: UIKitPlus.State<CGFloat> { $leading }
-    var __left: UIKitPlus.State<CGFloat> { $left }
-    var __trailing: UIKitPlus.State<CGFloat> { $trailing }
-    var __right: UIKitPlus.State<CGFloat> { $right }
-    var __bottom: UIKitPlus.State<CGFloat> { $bottom }
-    var __centerX: UIKitPlus.State<CGFloat> { $centerX }
-    var __centerY: UIKitPlus.State<CGFloat> { $centerY }
+    var __height: Ultra.State<CGFloat> { $height }
+    var __width: Ultra.State<CGFloat> { $width }
+    var __top: Ultra.State<CGFloat> { $top }
+    var __leading: Ultra.State<CGFloat> { $leading }
+    var __left: Ultra.State<CGFloat> { $left }
+    var __trailing: Ultra.State<CGFloat> { $trailing }
+    var __right: Ultra.State<CGFloat> { $right }
+    var __bottom: Ultra.State<CGFloat> { $bottom }
+    var __centerX: Ultra.State<CGFloat> { $centerX }
+    var __centerY: Ultra.State<CGFloat> { $centerY }
     
     public init(_ value: Double) {
         super.init(frame: .zero)
@@ -37,7 +37,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
         setup()
     }
     
-    public init(_ state: UIKitPlus.State<Double>) {
+    public init(_ state: Ultra.State<Double>) {
         super.init(frame: .zero)
         valueBinding = state
         self.value = state.wrappedValue
@@ -83,13 +83,13 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
         movedToSuperview()
     }
     
-    private var isContinuousBinding: UIKitPlus.State<Bool>?
-    private var autorepeatBinding: UIKitPlus.State<Bool>?
-    private var wrapsBinding: UIKitPlus.State<Bool>?
-    private var valueBinding: UIKitPlus.State<Double>?
-    private var minValueBinding: UIKitPlus.State<Double>?
-    private var maxValueBinding: UIKitPlus.State<Double>?
-    private var stepValueBinding: UIKitPlus.State<Double>?
+    private var isContinuousBinding: Ultra.State<Bool>?
+    private var autorepeatBinding: Ultra.State<Bool>?
+    private var wrapsBinding: Ultra.State<Bool>?
+    private var valueBinding: Ultra.State<Double>?
+    private var minValueBinding: Ultra.State<Double>?
+    private var maxValueBinding: Ultra.State<Double>?
+    private var stepValueBinding: Ultra.State<Double>?
     
     public typealias ChangedClosure = (Double) -> Void
     private var _valueChanged: ChangedClosure?
@@ -115,7 +115,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func isContinuous(_ state: UIKitPlus.State<Bool>) -> Self {
+    public func isContinuous(_ state: Ultra.State<Bool>) -> Self {
         isContinuousBinding = state
         isContinuous = state.wrappedValue
         return self
@@ -130,7 +130,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func autorepeat(_ state: UIKitPlus.State<Bool>) -> Self {
+    public func autorepeat(_ state: Ultra.State<Bool>) -> Self {
         autorepeatBinding = state
         autorepeat = state.wrappedValue
         return self
@@ -145,7 +145,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func wraps(_ state: UIKitPlus.State<Bool>) -> Self {
+    public func wraps(_ state: Ultra.State<Bool>) -> Self {
         wrapsBinding = state
         wraps = state.wrappedValue
         return self
@@ -160,7 +160,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func value(_ state: UIKitPlus.State<Double>) -> Self {
+    public func value(_ state: Ultra.State<Double>) -> Self {
         valueBinding = state
         value = state.wrappedValue
         return self
@@ -175,7 +175,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func minimumValue(_ state: UIKitPlus.State<Double>) -> Self {
+    public func minimumValue(_ state: Ultra.State<Double>) -> Self {
         minValueBinding = state
         minimumValue = state.wrappedValue
         return self
@@ -190,7 +190,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func maximumValue(_ state: UIKitPlus.State<Double>) -> Self {
+    public func maximumValue(_ state: Ultra.State<Double>) -> Self {
         maxValueBinding = state
         maximumValue = state.wrappedValue
         return self
@@ -205,7 +205,7 @@ open class UStepper: UIStepper, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func stepValue(_ state: UIKitPlus.State<Double>) -> Self {
+    public func stepValue(_ state: Ultra.State<Double>) -> Self {
         stepValueBinding = state
         stepValue = state.wrappedValue
         return self

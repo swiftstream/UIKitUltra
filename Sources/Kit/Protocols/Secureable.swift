@@ -14,7 +14,7 @@ public protocol Secureable: AnyObject {
     func secure(_ value: Bool) -> Self
     
     @discardableResult
-    func secure(_ binding: UIKitPlus.State<Bool>) -> Self
+    func secure(_ binding: Ultra.State<Bool>) -> Self
 }
 
 protocol _Secureable: Secureable {
@@ -28,7 +28,7 @@ extension Secureable {
     }
     
     @discardableResult
-    public func secure(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func secure(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.secure($0)
         }

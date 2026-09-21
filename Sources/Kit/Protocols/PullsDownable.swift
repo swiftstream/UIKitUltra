@@ -14,7 +14,7 @@ public protocol PullsDownable: AnyObject {
     func pullsDown(_ value: Bool) -> Self
     
     @discardableResult
-    func pullsDown(_ binding: UIKitPlus.State<Bool>) -> Self
+    func pullsDown(_ binding: Ultra.State<Bool>) -> Self
 }
 
 @MainActor
@@ -29,7 +29,7 @@ extension PullsDownable {
     }
     
     @discardableResult
-    public func pullsDown(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func pullsDown(_ binding: Ultra.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.pullsDown($0)
         }

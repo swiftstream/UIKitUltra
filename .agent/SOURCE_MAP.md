@@ -4,6 +4,12 @@ Living source ownership/navigation map for humans and LLM agents.
 
 This document is source navigation guidance. It is not architecture authority, task log, or governance authority.
 
+## UIKitUltra Identity
+
+The canonical project/framework identity is `UIKitUltra`, while the canonical public Swift module/product is `Ultra`. Active source uses the final `Ultra*` module/runtime/backend identities. Historical/frozen evidence retains historical spellings where required; final backend/module naming is owned by `architecture/NATIVE_BACKENDS.md`.
+
+Keep this map aligned with physical source as each migration slice lands. Historical frozen evidence keeps its historical spelling and must not be mechanically rewritten.
+
 ## Update Rule
 
 MUST update this file when:
@@ -15,13 +21,19 @@ Do not add transient commit logs here. Keep this map focused on stable source ow
 
 ## Entry Points
 
-- `Package.swift` — SwiftPM package manifest. M1 now keeps the single public
-  `UIKitPlus` library product while defining collision-resistant internal
-  `UIKitPlusCore`, `UIKitPlusGTK`, `UIKitPlusQt`, and `UIKitPlusWinUI` targets.
-  Linux selection uses additive `UIKitPlusGTK` / `UIKitPlusQt` traits plus
-  explicit diagnostics in the public facade; Windows attaches
-  `UIKitPlusWinUI` conditionally. These are structural
-  boundaries only, not Linux/Windows UI support claims. [NB1][NB4][NB6][NB7][NB12]
+- `Package.swift` — SwiftPM package manifest. The package/repository name remains
+  `UIKitUltra`, while the primary public library/module is `Ultra`. Internal
+  runtime targets are `UltraCore`, `UltraQtRuntime`, and `UltraWinRuntime`.
+  Explicit root-owned backend products are `UltraQt` and `UltraWin`. On Linux,
+  trait `UltraGTK` conditionally attaches the external sibling package/product
+  `UltraGTK` to target `Ultra`; trait `UltraQt` conditionally attaches
+  `UltraQtRuntime`. Local development uses `../UltraGTK` only when the
+  commit-forbidden switch `isLocalDevelopment` is manually set to `true`;
+  canonical committed state is `false` and resolves exact
+  `swiftstream/UltraGTK@3.0.0-alpha.5`. Windows attaches `UltraWinRuntime`
+  conditionally. Qt/Win still lack broad production UI control implementations
+  at this milestone. These are not broad Linux support claims.
+  [NB1][NB4][NB6][NB7][NB12]
 
 ## Source Layout
 
@@ -36,41 +48,74 @@ M1 portable runtime nucleus. The target currently contains exactly:
 - `StatesHolder.swift`
 
 These files are toolkit-independent and directly import only Foundation.
-The physical SwiftPM target/module is `UIKitPlusCore`; the shorter `Core`
+The physical SwiftPM target/module is `UltraCore`; the shorter `Core`
 directory name is only source-layout organization, not a public module name.
-`UIKitPlusCore` is not a new conceptual architecture layer.
+`UltraCore` is not a new conceptual architecture layer.
 [NB4]
 
-### Sources/GTK/**
+### External sibling: ../UltraGTK/Sources/**
 
-- `BackendMarker.swift` — behavior-empty M1 GTK backend compile marker.
+The H3 Wave C cutover moved the GTK native foundation out of UIKitUltra.
+There are no live UIKitUltra-owned files under `Sources/GTK/**`,
+`Sources/GTKCore/**`, `Sources/CUltraGTK/**`, or `Sources/GTKBridge/**`.
+Those paths are historical provenance only.
 
-GTK/libadwaita production controls, bindings, generator output, and runtime
-support are not implemented in M1. [NB4][NB10][NB12]
+The independent sibling repository `../UltraGTK` now owns the accepted GTK
+native foundation:
 
-### Sources/Qt/**
+- `Sources/UltraGTK/GTKLayout.swift` — GTK layout primitives.
+- `Sources/UltraGTK/GTKNativeHierarchy.swift` — native view hierarchy foundation.
+- `Sources/UltraGTK/GTKObject.swift` — GTK object ownership wrapper.
+- `Sources/UltraGTK/Generated/M2NativeCalls.swift` — deterministic generated C-call surface.
+- `Sources/UltraGTK/Generated/M2NativeHandles.swift` — deterministic generated handle types.
+- `Sources/UltraGTK/Generated/M2NativeTypes.swift` — deterministic generated native type surface.
+- `Sources/UltraGTK/Runtime/GTKMainActorRuntime.swift` — main-actor runtime coordination.
+- `Sources/UltraGTK/Runtime/GTKOwnedOperation.swift` — owned native operation helpers.
+- `Sources/UltraGTK/Runtime/GTKRuntimeGeneration.swift` — generated/runtime glue.
+- `Sources/UltraGTK/Runtime/GTKSignalConnection.swift` — native signal lifecycle.
+- `Sources/UltraCGTK/**` — GTK system-library/module-map boundary.
+- `Sources/UltraGTKBridge/**` — owned C bridge sources and public headers.
 
-- `BackendMarker.swift` — behavior-empty M1 Qt backend compile marker.
+The dependency direction is:
+
+`GTK/GObject -> UltraGTK -> Ultra -> application`
+
+There is no production `UltraGTK -> Ultra` reverse dependency and no
+production `UltraGTKRuntime` / `UltraGTKCore` split. [NB3][NB4][NB5][NB6]
+
+### Sources/Kit/Views/Linux/**
+
+- `LinuxPrimitives.swift` — public Linux GTK primitive façade, including the
+  audited parameterless `UVStack`/`UHStack` `centerInSuperview()` native
+  equivalence slice (same GtkBox `halign=center` + `valign=center`). Not a
+  broad constraint-family or Linux support claim. [NB2][NB9][NB12]
+
+### Sources/QtRuntime/** and Sources/Qt/**
+
+- `Sources/QtRuntime/BackendMarker.swift` — behavior-empty Qt runtime compile marker for `UltraQtRuntime`.
+- `Sources/Qt/BackendOverlayMarker.swift` — explicit `UltraQt` overlay boundary.
 
 Qt/KF6 production controls, bindings, generator output, and runtime support are
-not implemented in M1. [NB4][NB10][NB12]
+not implemented at this milestone. [NB4][NB10][NB12]
 
-### Sources/WinUI/**
+### Sources/WinRuntime/** and Sources/Win/**
 
-- `BackendMarker.swift` — behavior-empty M1 WinUI backend compile marker.
+- `Sources/WinRuntime/BackendMarker.swift` — behavior-empty Windows runtime compile marker for `UltraWinRuntime`.
+- `Sources/Win/BackendOverlayMarker.swift` — explicit `UltraWin` overlay boundary.
 
 M1 Task07 separately proved an owned source-first Windows ARM64
-SwiftPM-to-NuGet/MSBuild/C++/WinRT integration mechanism, but no production
-WinUI control implementation or native bridge source is added here yet.
+SwiftPM-to-NuGet/MSBuild/C++/WinRT integration mechanism, but no broad production
+WinUI 3 control implementation or native bridge source is added here yet.
+The legacy UIKitUltra-owned `Sources/WinUI/**` path is absent from the active physical source tree; `WinUI` remains only as the name of Microsoft's native WinUI 3 technology.
 [NB4][NB11][NB12]
 
 ### Sources/Kit/Exports/**
 
-- `BackendSelection.swift` — M1 public-facade backend selection boundary.
-  Linux requires explicit `UIKitPlusGTK` or `UIKitPlusQt` trait selection and emits
-  deliberate diagnostics for both/neither; Windows publicly re-exports the
-  internal `UIKitPlusWinUI` dependency while ordinary consumers continue to use
-  only `import UIKitPlus`. [NB1][NB7]
+- `BackendSelection.swift` — public-facade backend selection boundary.
+  Linux requires explicit `UltraGTK` or `UltraQt` trait selection and emits
+  deliberate diagnostics for both/neither; Windows imports the internal
+  `UltraWinRuntime` dependency while ordinary consumers continue to use only
+  `import Ultra`. [NB1][NB7]
 
 ### Legacy Apple ownership
 
@@ -82,14 +127,14 @@ widget hierarchy. [PA6][NB2][NB4]
 
 `Classes/**` was the legacy pre-M1 physical source root. It has now been retired
 in favor of `Sources/Kit/**`. The shorter `Kit` directory name is an internal
-physical-layout choice; the public Swift module/target remains `UIKitPlus`.
-CocoaPods distribution itself is no longer a supported UIKitPlus installation
+physical-layout choice; the public Swift module/target is `Ultra`.
+CocoaPods distribution itself is no longer a supported UIKitUltra installation
 surface; the former root `UIKit-Plus.podspec` has been removed and Swift Package
 Manager is the maintained package-distribution path.
 
 ### Sources/Kit/Controllers/**
 
-- `Menu.swift` — macOS `NSMenu` wrapper; UIKitPlus-created menus use private
+- `Menu.swift` — macOS `NSMenu` wrapper; UIKitUltra-created menus use private
   `_NSMenu` storage to retain declarative `MenuItem` action owners for the
   native AppKit menu lifetime. [RT7][PA1][PA3]
 - `ViewController.swift` — cross-platform controller wrapper; macOS window
@@ -125,6 +170,8 @@ Manager is the maintained package-distribution path.
 - `StatusItem.swift` — macOS status item controller with state binding support.
 - `MenuItem.swift` — macOS menu item with state bindings, closure actions, and
   cycle-free helper ownership. [RT7][PA1][PA3]
+- `LinuxApp.swift` — public Linux application façade owned by the M2 GTK slice.
+- `LinuxWindow.swift` — public Linux window façade owned by the M2 GTK slice.
 
 ### Sources/Kit/Views/Universal/**
 
@@ -188,7 +235,7 @@ Extension-driven feature composition (the `DeclarativeProtocol+Feature.swift` pa
 - `DeclarativeProtocol+CornerConfiguration.swift` — generic iOS/tvOS 26+ declarative `UIView.cornerConfiguration` modifier.
 - `UIColor+Dynamic.swift` — macOS dynamic-color theme listener; safely skips
   theme wiring and returns the light variant when `NSApplication` is not a
-  UIKitPlus `App`.
+  `Ultra.App`.
 - `AttrStr+Joined.swift` — attributed string joined composition.
 - `Array+Diff.swift` — collision-safe identity and duplicate matching diff helpers.
 
@@ -207,7 +254,7 @@ Protocol-oriented abstractions:
 ### Sources/Kit/Structs/**
 
 Apple-side and public-facade-adjacent data structures that remain outside the
-portable `UIKitPlusCore` target. The State engine itself moved to `Sources/Core/**` in
+portable `UltraCore` target. The State engine itself moved to `Sources/Core/**` in
 M1 and must not be routed back through this section.
 
 State-adjacent files that still live here include:
@@ -215,8 +262,22 @@ State-adjacent files that still live here include:
 - `InnerState.swift` — parent projection listener.
 - `CodableState.swift` — projected value forwarding.
 - `StateStringBuilder.swift` — State-aware string builder support.
-- `StateValuable.swift` — UIKitPlus-side State value protocol/extensions that
+- `StateValuable.swift` — UIKitUltra-side State value protocol/extensions that
   remain part of the public source-compatibility surface.
+- `LinuxAppBuilder.swift` — public Linux application builder façade for the M2 GTK slice.
+- `LinuxBodyBuilder.swift` — public Linux body-builder façade for the M2 GTK slice.
+
+### External sibling: ../UltraGTK/Tools/GTKGenerator/**
+
+The deterministic GIR generator, M2 configuration/provenance corpora, CLI, and
+generator tests moved with GTK ownership into the external `UltraGTK` sibling.
+UIKitUltra no longer has a live `Tools/GTKGenerator/**` tree.
+
+Generated output remains deterministic, source-controlled, and backend-private;
+hand-authored corrections belong in the external generator/configuration inputs,
+not by patching installed generated source. Historical UIKitUltra-local frozen
+generator artifacts remain historical evidence and must not be rewritten.
+[NB3][NB5][NB12]
 
 ### Sources/Kit/Objects/**
 
@@ -224,7 +285,7 @@ State-adjacent files that still live here include:
 - `PreConstraint.swift` — deferred layout constraint with self-owned `StateListener`.
 - `ForEach.swift` — `ForEach` scoped subscriptions.
 
-### Tests/UIKitPlusTests/**
+### Tests/UltraTests/**
 
 - `MenuItemLifecycleTests.swift` — verifies cycle-free menu item teardown,
   native-menu ownership of closure targets after wrapper release, submenu
@@ -249,6 +310,15 @@ State-adjacent files that still live here include:
 - `MacOSControlContentInsetsTests.swift` — focused native construction,
   geometry, fluent mapping, State ownership, and supplied-cell compatibility
   coverage for macOS controls. [LC1][LC3][PA1][PA3][PA5][FC1][FC2][FC5][FC6][FC11][FC12][ST6][ST8]
+- `GTKPublicPrimitiveTests.swift` / `GTKPublicPrimitiveIntegrationTests.swift` —
+  retained UIKitUltra public-facade GTK primitive coverage. Native-foundation
+  runtime/layout/signal tests now belong to the external `UltraGTKTests`
+  target in the sibling repository.
+
+The retained UIKitUltra GTK tests validate the `Ultra` public façade against
+the external native foundation. Full native-foundation ownership/testing is no
+longer duplicated in this repository. This remains not a broad Linux support
+certification. [NB12]
 
 ### Glass Effect Ownership and Validation
 
@@ -263,7 +333,7 @@ State-adjacent files that still live here include:
 
 - `Sources/Core/State.swift`, `Sources/Core/StateListener.swift`, and
   `Sources/Core/StatesHolder.swift` own the portable core State engine;
-  `Sources/Kit/Protocols/StateBindingOwner.swift` remains the UIKitPlus-side
+  `Sources/Kit/Protocols/StateBindingOwner.swift` remains the UIKitUltra-side
   listener-ownership bridge.
 - `PreConstraint.swift` — self-owned `StateListener` pattern (completed in milestone 6).
 - `Identable.swift` — identity conformance for diff.

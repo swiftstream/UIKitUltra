@@ -1,7 +1,7 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 #if !os(macOS)
 import UIKit
-import UIKitPlusCore
+import UltraCore
 
 open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     public var declarativeView: UImage { self }

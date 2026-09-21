@@ -11,13 +11,10 @@
 Load this document only when a macOS `UList` row uses TextKit 2, such as a
 chat message containing paragraphs, lists, links, and code blocks.
 
-Default architecture slice: `LAYER_MODEL.md`,
-`MACOS_ULIST_NSTABLEVIEW.md`, and this document. This fills the normal
-three-document budget; load another architecture contract only through the
-documented escalation rule.
+For TextKit 2 row work, this document is the primary owner and `MACOS_ULIST_NSTABLEVIEW.md` is its required generic-list dependency. Do not load `LAYER_MODEL.md` by default; add one further supporting contract only when the task genuinely crosses that boundary.
 
 Generic `UList` remains content-agnostic. AppKit owns native table behavior,
-UIKitPlus owns generic list composition and cell hosting, and the application
+UIKitUltra owns generic list composition and cell hosting, and the application
 row owns its TextKit 2 objects, measurement, reflow, and height callback.
 
 Reference shape:

@@ -22,7 +22,7 @@ final public class PinchGestureRecognizer: UIPinchGestureRecognizer, _GestureTra
     }
     
     @discardableResult
-    public func scale(_ state: UIKitPlus.State<CGFloat>) -> Self {
+    public func scale(_ state: Ultra.State<CGFloat>) -> Self {
         state.listen { [weak self] in
             self?.scale = $0
         }

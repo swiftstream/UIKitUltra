@@ -7,9 +7,9 @@ Good for: release notes | migration guide | README
 
 ### Why users should care
 
-UIKitPlus no longer supports CocoaPods in the current release line. The legacy
+UIKitUltra no longer supports CocoaPods in the current release line. The legacy
 `UIKit-Plus.podspec` has been removed and public installation guidance now
-points to Swift Package Manager only. Users still depending on UIKitPlus through
+points to Swift Package Manager only. Users still depending on UIKitUltra through
 CocoaPods need an explicit migration notice rather than discovering the change
 from a missing Podspec.
 
@@ -18,7 +18,7 @@ from a missing Podspec.
 The release that first ships this change must explicitly state all of the
 following:
 
-- CocoaPods installation is no longer supported by UIKitPlus;
+- CocoaPods installation is no longer supported by UIKitUltra;
 - Swift Package Manager is the supported dependency-manager path;
 - users of the old CocoaPods integration should migrate to SwiftPM;
 - the rationale is the CocoaPods project's maintenance-mode direction and the
