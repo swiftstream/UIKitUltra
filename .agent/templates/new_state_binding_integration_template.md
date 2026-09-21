@@ -4,13 +4,16 @@ Use this template for APIs that bind runtime or DSL behavior to `State` or `Inne
 
 ## Pre-Checks
 
-1. `LAYER_MODEL.md`
-2. `STATE_SYSTEM.md`
-3. `FLUENT_CHAIN_CONTRACT.md`
+Use `STATE_SYSTEM.md` as the primary owner.
 
-Load `MUTATION_MODEL.md` for bidirectional/re-entrant mutation,
-`RUNTIME_MODEL.md` for lifecycle/deferred behavior, or another domain doc only
-through documented context-budget escalation.
+Add only what the binding needs:
+
+- `FLUENT_CHAIN_CONTRACT.md` for public fluent setter shape;
+- `MUTATION_MODEL.md` for bidirectional/re-entrant mutation;
+- `RUNTIME_MODEL.md` for lifecycle/deferred behavior;
+- `LAYER_MODEL.md` only if the layer boundary itself is changing.
+
+Stay within the normal three-architecture-doc budget unless documented escalation is genuinely required.
 
 ## Binding Stub
 

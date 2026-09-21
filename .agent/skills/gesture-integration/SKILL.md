@@ -1,22 +1,22 @@
 ---
 name: gesture-integration
-description: Change or review UIKitPlus gesture recognizer wrappers and gesture DSL internals inside the UIKitPlus source repository. Use for recognizer attachment, delegate fallback, State-driven callbacks, extension overloads, and platform-specific gesture behavior; not for ordinary downstream gesture usage.
+description: Change or review UIKitUltra gesture recognizer wrappers and gesture DSL internals inside the UIKitUltra source repository. Use for recognizer attachment, delegate fallback, State-driven callbacks, extension overloads, and platform-specific gesture behavior; not for ordinary downstream gesture usage.
 ---
 
-# Maintain UIKitPlus Gesture Integration
+# Maintain UIKitUltra Gesture Integration
 
 Use this LOCAL contributor skill for built-in gesture-wrapper and gesture-DSL source work.
 
 ## Load the smallest decision-complete context
 
-1. Start from UIKitPlus `AGENTS.md` and [`SKILL_INDEX.md`](../../SKILL_INDEX.md).
+1. Assume root/architecture/skill routing already selected this skill and `GESTURE_SYSTEM.md`; do not re-read `AGENTS.md`/`SKILL_INDEX.md` unless that context is genuinely missing or stale.
 2. Use [`GESTURE_SYSTEM.md`](../../architecture/GESTURE_SYSTEM.md) as the primary owner.
 3. Add only what the change needs:
    - [`MUTATION_MODEL.md`](../../architecture/MUTATION_MODEL.md) for callback mutation/re-entrancy;
    - [`EXTENSION_SYSTEM.md`](../../architecture/EXTENSION_SYSTEM.md) for extension surfaces/collisions;
    - [`PLATFORM_ABSTRACTION.md`](../../architecture/PLATFORM_ABSTRACTION.md) for UIKit/AppKit exposure;
    - [`FLUENT_CHAIN_CONTRACT.md`](../../architecture/FLUENT_CHAIN_CONTRACT.md) for changed public chain APIs.
-4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) before broad source discovery.
+4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) only if the affected source location/ownership is not already known.
 
 ## Plan checklist
 

@@ -1,20 +1,20 @@
 ---
 name: state-binding
-description: Change or review UIKitPlus State/InnerState internals and built-in State-backed fluent APIs inside the UIKitPlus source repository. Use for mapped/merged state, listener ownership, ST8 setter classification, FC11/FC12 API contracts, and synchronization behavior; not for ordinary downstream State usage.
+description: Change or review UIKitUltra State/InnerState internals and built-in State-backed fluent APIs inside the UIKitUltra source repository. Use for mapped/merged state, listener ownership, ST8 setter classification, FC11/FC12 API contracts, and synchronization behavior; not for ordinary downstream State usage.
 ---
 
-# Maintain UIKitPlus State Binding
+# Maintain UIKitUltra State Binding
 
-Use this LOCAL contributor skill for changes to `State`, `InnerState`, mapped/merged state behavior, and built-in fluent setters that bind UIKitPlus UI/runtime properties to State.
+Use this LOCAL contributor skill for changes to `State`, `InnerState`, mapped/merged state behavior, and built-in fluent setters that bind UIKitUltra UI/runtime properties to State.
 
 ## Load the smallest decision-complete context
 
-1. Start from UIKitPlus `AGENTS.md` and [`SKILL_INDEX.md`](../../SKILL_INDEX.md).
+1. Assume root/architecture/skill routing already selected this skill and `STATE_SYSTEM.md`; do not re-read `AGENTS.md`/`SKILL_INDEX.md` unless that context is genuinely missing or stale.
 2. Use [`STATE_SYSTEM.md`](../../architecture/STATE_SYSTEM.md) as the primary owner.
 3. Load [`FLUENT_CHAIN_CONTRACT.md`](../../architecture/FLUENT_CHAIN_CONTRACT.md) when a public fluent setter is added or materially changed.
 4. Add [`MUTATION_MODEL.md`](../../architecture/MUTATION_MODEL.md) only for bidirectional/re-entrant/multi-state mutation.
 5. Add [`RUNTIME_MODEL.md`](../../architecture/RUNTIME_MODEL.md) only for lifecycle/deferred ownership.
-6. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) before broad source discovery.
+6. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) only if the affected source location/ownership is not already known.
 
 Record any architecture-budget escalation rather than bulk-loading mutation/runtime contracts by default.
 

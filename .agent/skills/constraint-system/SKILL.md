@@ -1,22 +1,22 @@
 ---
 name: constraint-system
-description: Change or review UIKitPlus constraint DSL and activation behavior inside the UIKitPlus source repository. Use for PreConstraint, solo/super/relative constraints, deferred activation, State-backed constants, and tag-based relative resolution; not for ordinary downstream layout usage.
+description: Change or review UIKitUltra constraint DSL and activation behavior inside the UIKitUltra source repository. Use for PreConstraint, solo/super/relative constraints, deferred activation, State-backed constants, and tag-based relative resolution; not for ordinary downstream layout usage.
 ---
 
-# Maintain the UIKitPlus Constraint System
+# Maintain the UIKitUltra Constraint System
 
-Use this LOCAL contributor skill when changing UIKitPlus constraint implementation or built-in constraint DSL behavior.
+Use this LOCAL contributor skill when changing UIKitUltra constraint implementation or built-in constraint DSL behavior.
 
 ## Load the smallest decision-complete context
 
-1. Start from UIKitPlus `AGENTS.md` and [`SKILL_INDEX.md`](../../SKILL_INDEX.md).
+1. Assume root/architecture/skill routing already selected this skill and `LAYOUT_SYSTEM.md`; do not re-read `AGENTS.md`/`SKILL_INDEX.md` unless that context is genuinely missing or stale.
 2. Use [`LAYOUT_SYSTEM.md`](../../architecture/LAYOUT_SYSTEM.md) as the primary architecture owner.
 3. Add only the supporting contract needed by the change:
    - [`RUNTIME_MODEL.md`](../../architecture/RUNTIME_MODEL.md) for deferred activation/lifecycle;
    - [`STATE_SYSTEM.md`](../../architecture/STATE_SYSTEM.md) for State-backed constants;
    - [`MUTATION_MODEL.md`](../../architecture/MUTATION_MODEL.md) for re-entrant/update flows;
    - [`FLUENT_CHAIN_CONTRACT.md`](../../architecture/FLUENT_CHAIN_CONTRACT.md) for public fluent API changes.
-4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) before broad source discovery.
+4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) only if the affected source location/ownership is not already known.
 
 Do not bulk-load every supporting owner merely because constraints can touch them.
 

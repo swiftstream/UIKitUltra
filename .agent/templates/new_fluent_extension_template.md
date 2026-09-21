@@ -4,13 +4,15 @@ Use this template for `DeclarativeProtocol+Feature.swift` additions.
 
 ## Pre-Checks
 
-1. `LAYER_MODEL.md`
-2. `FLUENT_CHAIN_CONTRACT.md`
-3. `EXTENSION_SYSTEM.md`
+Use `FLUENT_CHAIN_CONTRACT.md` as the primary owner.
 
-Load `STATE_SYSTEM.md` plus `.agent/skills/state-binding/SKILL.md` for a bindable value setter
-and any other domain/mutation contract only through documented context-budget
-escalation.
+Add only what the feature needs:
+
+- `EXTENSION_SYSTEM.md` for extension placement/collision behavior;
+- `STATE_SYSTEM.md` plus `.agent/skills/state-binding/SKILL.md` for a bindable value setter;
+- `LAYER_MODEL.md` only if the change genuinely crosses/changes layer boundaries.
+
+Load any additional domain/mutation owner only through normal context-budget escalation.
 
 ## Extension Stub
 

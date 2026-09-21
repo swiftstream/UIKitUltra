@@ -1,21 +1,21 @@
 ---
 name: navigation-flow
-description: Change or review UIKitPlus navigation wrappers and navigation DSL internals inside the UIKitPlus source repository. Use for push/pop behavior, transition helpers, swipe-back configuration, lifecycle effects, and platform-specific navigation implementation; not for ordinary downstream navigation usage.
+description: Change or review UIKitUltra navigation wrappers and navigation DSL internals inside the UIKitUltra source repository. Use for push/pop behavior, transition helpers, swipe-back configuration, lifecycle effects, and platform-specific navigation implementation; not for ordinary downstream navigation usage.
 ---
 
-# Maintain UIKitPlus Navigation Flow
+# Maintain UIKitUltra Navigation Flow
 
-Use this LOCAL contributor skill for built-in UIKitPlus navigation source work.
+Use this LOCAL contributor skill for built-in UIKitUltra navigation source work.
 
 ## Load the smallest decision-complete context
 
-1. Start from UIKitPlus `AGENTS.md` and [`SKILL_INDEX.md`](../../SKILL_INDEX.md).
+1. Assume root/architecture/skill routing already selected this skill and `NAVIGATION_SYSTEM.md`; do not re-read `AGENTS.md`/`SKILL_INDEX.md` unless that context is genuinely missing or stale.
 2. Use [`NAVIGATION_SYSTEM.md`](../../architecture/NAVIGATION_SYSTEM.md) as the primary owner.
 3. Add only what the change needs:
    - [`RUNTIME_MODEL.md`](../../architecture/RUNTIME_MODEL.md) for lifecycle/deferred transitions;
    - [`PLATFORM_ABSTRACTION.md`](../../architecture/PLATFORM_ABSTRACTION.md) for iOS/tvOS/macOS separation;
    - [`FLUENT_CHAIN_CONTRACT.md`](../../architecture/FLUENT_CHAIN_CONTRACT.md) for changed public configuration APIs.
-4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) before broad source discovery.
+4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) only if the affected source location/ownership is not already known.
 
 ## Plan checklist
 

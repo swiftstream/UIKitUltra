@@ -1,6 +1,6 @@
 # Workflow
 
-Mandatory development workflow for UIKitPlus.
+Mandatory development workflow for UIKitUltra. Active source uses the final `UIKitUltra` brand with `Ultra` / `Ultra*` Swift identities; historical/frozen evidence may retain legacy `UIKitPlus` spellings where historically accurate.
 
 ## PLAN -> IMPLEMENT -> AUDIT
 
@@ -12,21 +12,23 @@ Every non-trivial task follows:
 
 Small typo/format-only work may skip a formal artifact plan but still requires scope/result verification.
 
-UIKitPlus-specific PLAN/IMPLEMENT/AUDIT mechanics are in `DEVELOPMENT_PHASES.md`. Model-independent coordinator/executor roles and review gates are in `DEVELOPMENT_ORCHESTRATION.md`. Detailed transient task/report mechanics are in `ARTIFACTS_WORKFLOW.md`.
+UIKitUltra-specific PLAN/IMPLEMENT/AUDIT mechanics are in `DEVELOPMENT_PHASES.md`. Model-independent coordinator/executor roles and review gates are in `DEVELOPMENT_ORCHESTRATION.md`. Detailed transient task/report mechanics are in `ARTIFACTS_WORKFLOW.md`. Load `PARALLEL_DEVELOPMENT.md` only when linked-worktree/parallel-lane work is actually in scope. The one-time UIKitPlus -> UIKitUltra rename is migration history, not permanent workflow authority.
 
-Commit and push are **not** automatic workflow phases. They are separate explicit Git gates governed by `COMMIT_RULES.md` and maintainer authorization.
+Git cadence is governed by `COMMIT_RULES.md`: prefer small completed validated logical units, but staging/commit/tag/push still require the explicit authorization that covers each exact Git operation/scope. Tag + push are eligible only at an accepted release-block boundary. Do not duplicate the detailed cadence here.
 
-## UIKitPlus Development Shape
+## UIKitUltra Development Shape
 
-For new native-backed functionality, preserve the established project rule:
+For new native/backend-backed functionality, preserve the established two-stage rule:
 
 ```text
-inspect analogous UIKitPlus implementation
--> Stage 1: thin declarative UIKit/AppKit wrapper preserving native semantics
--> Stage 2: UIKitPlus conveniences using established library mechanisms
+inspect analogous current UIKitUltra implementation; use legacy UIKitPlus history only when relevant
+-> Stage 1: thin truthful native/backend wrapper preserving authoritative backend semantics
+-> Stage 2: UIKitUltra conveniences/common DSL using established mechanisms
 -> focused validation
 -> independent architecture/source audit
 ```
+
+Apple Stage 1 remains direct UIKit/AppKit. GTK/Qt/Win/Android/TUI backend work follows the focused rules in `NATIVE_BACKENDS.md`.
 
 Do not introduce a replacement lifecycle/layout/state/coordination model merely because it seems cleaner in isolation. New engineering approaches require the explicit review/approval owned by `SYSTEM_RULES.md` and relevant architecture owners.
 
@@ -51,4 +53,4 @@ After meaningful research/design/implementation/correction/audit, perform the la
 
 ## Git Safety
 
-Follow `COMMIT_RULES.md`. Preserve unrelated user work. Never stage, commit, or push merely because PLAN/IMPLEMENT/AUDIT passed.
+Follow `COMMIT_RULES.md`. Preserve unrelated user work. PLAN/IMPLEMENT/AUDIT completion does not waive scope, validation, protected-index, local-development, release-block, or remote-safety gates.

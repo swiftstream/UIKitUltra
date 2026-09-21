@@ -16,7 +16,7 @@
 
 ## Repository Terminology
 
-Use canonical UIKitPlus terms:
+Use canonical UIKitUltra terms:
 - `DeclarativeProtocol`
 - `State` / `InnerState`
 - `PreConstraint`

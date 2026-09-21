@@ -1,6 +1,6 @@
 # Validation Rules
 
-UIKitPlus-specific validation rules for agent work.
+UIKitUltra-specific validation rules for agent work.
 
 ## 1. General Hygiene
 
@@ -45,6 +45,7 @@ Also audit:
 - no model/vendor-specific implementation-orchestration wording in stable workflow owners;
 - root `AGENTS.md` remains routing-focused rather than duplicating focused owners;
 - operational workflow docs do not inflate the architecture context budget;
+- indexes/skills/templates do not reintroduce mandatory `LAYER_MODEL`, unconditional `SOURCE_MAP`, or fixed multi-owner preload bundles contrary to `CONTEXT_LOADING_RULES.md`;
 - public-content shards remain lazy and are not normal development context;
 - stable architecture IDs/owners and project-specific rules were not accidentally rewritten.
 
@@ -62,7 +63,7 @@ swift test --filter <focused-test>
 Platform-specific rules:
 - use `xcodebuild` only when relevant and available;
 - do not claim iOS/tvOS/macOS rendered/native validation unless actually run/observed;
-- when rendered presence, clipping, viewport reach, native ownership, resize behavior, or actual visual boundaries are ambiguous on any UI surface, use `.agent/skills/uikitplus-visual-ui-diagnostics/SKILL.md` to obtain objective screenshot/recording plus native/runtime geometry evidence rather than extending log-only inference;
+- when rendered presence, clipping, viewport reach, native ownership, resize behavior, or actual visual boundaries are ambiguous on any UI surface, use `.agent/skills/uikitultra-visual-ui-diagnostics/SKILL.md` to obtain objective screenshot/recording plus native/runtime geometry evidence rather than extending log-only inference;
 - changed public fluent APIs must be audited against the relevant `FC*`/`ST*`/other architecture IDs selected by `ARCH_INDEX.md`;
 - macOS native window-tab patches require the focused window-tab contract validation and full package validation appropriate to current source;
 - macOS `UList`/`NSTableView` changes must satisfy the rendered recycling/live-resize gate owned by `MACOS_ULIST_NSTABLEVIEW.md` when that contract requires it.
@@ -73,7 +74,7 @@ Green tests/builds are evidence, not architecture proof. Independent source/diff
 
 If the coordinator/reviewer cannot directly run a required command or rendered/native check, use the focused read-only verification delegation defined by `DEVELOPMENT_ORCHESTRATION.md` and `ARTIFACTS_WORKFLOW.md`.
 
-For delegated rendered-UI diagnosis, use `.agent/skills/uikitplus-visual-ui-diagnostics/SKILL.md` as the operational skill for that verification step and keep temporary instrumentation out of the real tracked repository whenever the task is read-only.
+For delegated rendered-UI diagnosis, use `.agent/skills/uikitultra-visual-ui-diagnostics/SKILL.md` as the operational skill for that verification step and keep temporary instrumentation out of the real tracked repository whenever the task is read-only.
 
 Do not silently downgrade required evidence because the current tool surface lacks the capability.
 
@@ -89,4 +90,4 @@ Validation success does not authorize staging, commit, or push.
 
 - staging/commit require explicit maintainer authorization and follow `COMMIT_RULES.md`;
 - `.artifacts/**` never enters the staged snapshot;
-- UIKitPlus push remains locked until its current project-specific audit/migration prerequisites are satisfied and the maintainer explicitly authorizes push.
+- UIKitUltra push remains locked until its current project-specific audit/migration prerequisites are satisfied and the maintainer explicitly authorizes push.

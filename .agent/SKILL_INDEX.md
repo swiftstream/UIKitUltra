@@ -4,42 +4,38 @@ Use this index to route implementation tasks to the minimum required architectur
 
 ## Load Policy
 
-1. Load `AGENTS.md`.
-2. Load `.agent/ARCH_INDEX.md`.
-3. Load `.agent/architecture/LAYER_MODEL.md`.
-4. Load one domain doc and one contract doc.
-5. Load one skill doc.
+1. Start from `AGENTS.md` and `.agent/ARCH_INDEX.md` routing.
+2. Keep the already selected primary architecture owner.
+3. Add supporting architecture docs only when the task actually needs them; default maximum remains `3` total.
+4. Load **one** skill only when a concrete operational procedure applies.
 
-Default maximum active architecture docs: `3`.
+This index is a router, not a preload checklist. Do not load every architecture file mentioned under a task family.
 
 ## Task Routing
 
 - View composition and builder integration:
-  - Architecture: `VIEW_COMPOSITION.md`, `RUNTIME_MODEL.md`, `MUTATION_MODEL.md`
-  - Contract: `FLUENT_CHAIN_CONTRACT.md`
+  - Primary: `VIEW_COMPOSITION.md`
+  - Support only when needed: `RUNTIME_MODEL.md` for lifecycle/diff behavior, `MUTATION_MODEL.md` for callback/re-entrancy, `FLUENT_CHAIN_CONTRACT.md` for public chain surface
   - Skill: `.agent/skills/view-composition/SKILL.md`
 
 - Constraint and layout DSL updates:
-  - Architecture: `LAYOUT_SYSTEM.md`, `RUNTIME_MODEL.md`, `MUTATION_MODEL.md`
-  - Contract: `STATE_SYSTEM.md` when state-backed constants are involved
+  - Primary: `LAYOUT_SYSTEM.md`
+  - Support only when needed: `RUNTIME_MODEL.md`, `MUTATION_MODEL.md`, or `STATE_SYSTEM.md` for state-backed constants
   - Skill: `.agent/skills/constraint-system/SKILL.md`
 
-- State and binding updates, including State-surface classification for every
-  new or materially changed fluent value setter:
-  - Architecture: `STATE_SYSTEM.md`
-  - Contract: `FLUENT_CHAIN_CONTRACT.md`
-  - Escalate selectively to `MUTATION_MODEL.md` for bidirectional/re-entrant
-    mutation or `RUNTIME_MODEL.md` for lifecycle/deferred behavior
+- State and binding updates, including State-surface classification for new/materially changed fluent value setters:
+  - Primary: `STATE_SYSTEM.md`
+  - Support only when needed: `FLUENT_CHAIN_CONTRACT.md`, `MUTATION_MODEL.md` for bidirectional/re-entrant mutation, or `RUNTIME_MODEL.md` for lifecycle/deferred behavior
   - Skill: `.agent/skills/state-binding/SKILL.md`
 
 - Gesture wrapper/integration updates:
-  - Architecture: `GESTURE_SYSTEM.md`, `MUTATION_MODEL.md`, `PLATFORM_ABSTRACTION.md`
-  - Contract: `EXTENSION_SYSTEM.md` and `FLUENT_CHAIN_CONTRACT.md`
+  - Primary: `GESTURE_SYSTEM.md`
+  - Support only when needed: `MUTATION_MODEL.md`, `PLATFORM_ABSTRACTION.md`, `EXTENSION_SYSTEM.md`, or `FLUENT_CHAIN_CONTRACT.md`
   - Skill: `.agent/skills/gesture-integration/SKILL.md`
 
 - Navigation flow updates:
-  - Architecture: `NAVIGATION_SYSTEM.md`, `RUNTIME_MODEL.md`, `PLATFORM_ABSTRACTION.md`
-  - Contract: `FLUENT_CHAIN_CONTRACT.md`
+  - Primary: `NAVIGATION_SYSTEM.md`
+  - Support only when needed: `RUNTIME_MODEL.md`, `PLATFORM_ABSTRACTION.md`, or `FLUENT_CHAIN_CONTRACT.md`
   - Skill: `.agent/skills/navigation-flow/SKILL.md`
 
 - macOS `UList` / `NSTableView`, row hosting, self-sizing, recycling,
@@ -51,12 +47,12 @@ Default maximum active architecture docs: `3`.
     `LAYOUT_SYSTEM.md`, or `MUTATION_MODEL.md`, selected by the task
   - Skill: `.agent/skills/macos-ulist/SKILL.md`
 
-- General rendered UIKit/AppKit/UIKitPlus diagnosis when visibility, clipping,
+- General rendered UIKit/AppKit/UIKitUltra diagnosis when visibility, clipping,
   native ownership, viewport reach, resize behavior, or actual rendered
   boundaries are ambiguous from source/logs/geometry alone:
   - Architecture: keep the primary owner already selected for the defect;
     add at most one supporting contract only when needed to interpret evidence
-  - Skill: `.agent/skills/uikitplus-visual-ui-diagnostics/SKILL.md`
+  - Skill: `.agent/skills/uikitultra-visual-ui-diagnostics/SKILL.md`
   - Use this as a dedicated diagnostic/verification-step skill. It replaces the
     implementation skill for that step rather than being loaded as a second
     operational skill.
@@ -75,10 +71,14 @@ Default maximum active architecture docs: `3`.
 - Validation rules:
   - `.agent/VALIDATION_RULES.md`
 
-## State/Layout-Sensitive Minimum Contracts
+## State/Layout-Sensitive Routing
 
-For any task that changes state propagation, layout activation, or binding flows, always include:
-- `STATE_SYSTEM.md`
-- `FLUENT_CHAIN_CONTRACT.md`
-- `RUNTIME_MODEL.md`
-- `MUTATION_MODEL.md`
+Do not load a fixed four-document bundle.
+
+- State semantics -> `STATE_SYSTEM.md` primary.
+- Layout semantics -> `LAYOUT_SYSTEM.md` primary.
+- Add `FLUENT_CHAIN_CONTRACT.md` only when public fluent shape changes.
+- Add `RUNTIME_MODEL.md` only for lifecycle/deferred execution questions.
+- Add `MUTATION_MODEL.md` only for bidirectional/re-entrant/multi-state mutation.
+
+Stay within the default three-architecture-doc budget unless a documented escalation is genuinely required.

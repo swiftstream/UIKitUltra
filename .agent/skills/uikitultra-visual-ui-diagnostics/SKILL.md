@@ -1,14 +1,14 @@
 ---
-name: uikitplus-visual-ui-diagnostics
-description: Diagnose rendered UIKitPlus UI defects using objective screenshots/recordings, temporary non-layout-affecting visual markers, and native UIKit/AppKit geometry. Use when visibility, clipping, viewport reach, hierarchy ownership, scrolling, resize, or actual rendered boundaries are ambiguous from source/logs/tests alone.
+name: uikitultra-visual-ui-diagnostics
+description: Diagnose rendered UIKitUltra UI defects using objective screenshots/recordings, temporary non-layout-affecting visual markers, and native UIKit/AppKit geometry. Use when visibility, clipping, viewport reach, hierarchy ownership, scrolling, resize, or actual rendered boundaries are ambiguous from source/logs/tests alone.
 license: LICENSE.txt
 ---
 
-# Diagnose Rendered UIKitPlus UI
+# Diagnose Rendered UIKitUltra UI
 
-Use this skill when a UIKitPlus interface behaves visually differently from what source, logs, tests, or expected geometry suggest.
+Use this skill when a UIKitUltra interface behaves visually differently from what source, logs, tests, or expected geometry suggest.
 
-This skill owns **diagnostic procedure only**. It does not define UIKitPlus architecture and does not authorize framework mutation by itself.
+This skill owns **diagnostic procedure only**. It does not define UIKitUltra architecture and does not authorize framework mutation by itself.
 
 ## Use it for questions such as
 
@@ -19,7 +19,7 @@ This skill owns **diagnostic procedure only**. It does not define UIKitPlus arch
 - Which UIKit/AppKit/native container owns the visible geometry?
 - Does rendered output disagree with `frame`, `bounds`, constraints, or logged state?
 - Does resize, reuse, scrolling, tab/window movement, or State propagation produce a transient defect?
-- Does the problem belong to the consuming app, UIKitPlus, the native framework, or the interaction between them?
+- Does the problem belong to the consuming app, UIKitUltra, the native framework, or the interaction between them?
 
 Do not instrument visually when source/native state already proves the issue conclusively. Do not use instrumentation as a substitute for a focused reproduction.
 
@@ -41,7 +41,7 @@ Use both when possible.
 
 ```text
 define one objective visual question
-→ identify the exact UIKitPlus/native target
+→ identify the exact UIKitUltra/native target
 → choose non-layout-affecting instrumentation
 → assign a unique marker/color and record its meaning
 → reproduce under controlled conditions
@@ -136,7 +136,7 @@ Useful evidence may include:
 - scroll offset/content extent/insets;
 - constraints relevant to one disputed axis;
 - lifecycle/reuse state;
-- UIKitPlus State/listener value when the visual question depends on it.
+- UIKitUltra State/listener value when the visual question depends on it.
 
 Avoid giant hierarchy/log dumps without a specific question. A small set of values paired with the rendered marker is usually stronger evidence.
 
@@ -161,18 +161,18 @@ A maintainer-provided screenshot or recording is valid rendered evidence for wha
 
 ## Classify the real owner before proposing a fix
 
-A problem visible through UIKitPlus does not automatically belong in the UIKitPlus framework.
+A problem visible through UIKitUltra does not automatically belong in the UIKitUltra framework.
 
 Classify the failing owner as one of:
 
 - consuming application composition/content;
-- UIKitPlus wrapper/modifier/state/layout behavior;
+- UIKitUltra wrapper/modifier/state/layout behavior;
 - native UIKit/AppKit behavior;
 - interaction between those layers.
 
-For application-specific symptoms, instrument the smallest application/native boundary first. Modify generic UIKitPlus only after evidence shows that the reusable framework contract is actually wrong or missing and the relevant project governance allows that change.
+For application-specific symptoms, instrument the smallest application/native boundary first. Modify generic UIKitUltra only after evidence shows that the reusable framework contract is actually wrong or missing and the relevant project governance allows that change.
 
-When working inside a UIKitPlus source checkout, obey that checkout's current architecture/governance and domain-specific implementation rules before changing framework source. This public diagnostic skill does not replace those local owners.
+When working inside a UIKitUltra source checkout, obey that checkout's current architecture/governance and domain-specific implementation rules before changing framework source. This public diagnostic skill does not replace those local owners.
 
 ## High-value diagnostic patterns
 

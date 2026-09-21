@@ -1,6 +1,6 @@
 # Development Phases
 
-UIKitPlus-specific mechanics for the mandatory `PLAN -> IMPLEMENT -> AUDIT` cycle.
+UIKitUltra-specific mechanics for the mandatory `PLAN -> IMPLEMENT -> AUDIT` cycle.
 
 High-level workflow authority lives in `WORKFLOW.md`; coordinator/executor roles and independent review gates live in `DEVELOPMENT_ORCHESTRATION.md`; non-trivial iterative research/plans/tasks/reports are externalized according to `ARTIFACTS_WORKFLOW.md`.
 
@@ -12,9 +12,9 @@ Required outputs:
 - exact files to edit,
 - architecture IDs and docs in scope,
 - layer impact (`DSL`, `Runtime`, `Platform`, `Cross-Layer`),
-- analogous existing UIKitPlus classes and the concrete engineering patterns to reuse,
+- analogous existing UIKitUltra classes and the concrete engineering patterns to reuse,
 - an explicit Stage 1 plan for the simple native UIKit/AppKit declarative wrapper,
-- an explicit Stage 2 plan for UIKitPlus conveniences built from established library mechanisms,
+- an explicit Stage 2 plan for UIKitUltra conveniences built from established library mechanisms,
 - mutation-flow impact,
 - extension collision risk,
 - fluent chain risk,
@@ -29,8 +29,8 @@ Blocking conditions:
 - missing architecture contract,
 - unresolved contract conflict,
 - undocumented cross-layer change,
-- no analogous UIKitPlus implementation review,
-- native-wrapper and UIKitPlus-convenience stages are not separated,
+- no analogous UIKitUltra implementation review,
+- native-wrapper and UIKitUltra-convenience stages are not separated,
 - a new engineering approach is proposed without explicit author approval,
 - an edge case is handled by hidden heuristics when a public declarative control is appropriate,
 - planning output without architecture-ID grounding.
@@ -39,8 +39,8 @@ Blocking conditions:
 
 Rules:
 - implement approved scope only,
-- implement the simple native declarative wrapper before adding UIKitPlus conveniences,
-- build conveniences only from established UIKitPlus patterns identified during planning,
+- implement the simple native declarative wrapper before adding UIKitUltra conveniences,
+- build conveniences only from established UIKitUltra patterns identified during planning,
 - preserve existing architecture contracts,
 - do not introduce undocumented runtime behavior,
 - do not perform hidden contract changes,
@@ -76,10 +76,10 @@ Mandatory checks before closure:
 5. Platform Boundary Safety:
 - `PLATFORM_ABSTRACTION.md` compliance.
 
-6. UIKitPlus Engineering Conformance:
+6. UIKitUltra Engineering Conformance:
 - analogous existing classes were identified and their established patterns were followed,
 - Stage 1 remains a clear native UIKit/AppKit declarative wrapper,
-- Stage 2 conveniences are layered through existing UIKitPlus mechanisms,
+- Stage 2 conveniences are layered through existing UIKitUltra mechanisms,
 - no unapproved engineering approach or hidden compensating subsystem was introduced,
 - edge cases use explicit public opt-in declarative controls where custom caller behavior is required.
 

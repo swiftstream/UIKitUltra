@@ -1,6 +1,6 @@
 # Artifacts Workflow
 
-Stable operational authority for how UIKitPlus uses transient `.artifacts/**` working memory during research, planning, implementation, correction, audit, verification, and chat handoff.
+Stable operational authority for how UIKitUltra uses transient `.artifacts/**` working memory during research, planning, implementation, correction, audit, verification, and chat handoff.
 
 This file defines the **workflow around artifacts**. Artifact contents never outrank root `AGENTS.md` or stable `.agent/**` authority.
 
@@ -23,6 +23,10 @@ Therefore:
 - build products, dependency checkouts, disposable package/source clones, compiler workspaces, native build trees, CMake/MSBuild intermediates, index stores, caches, generated dependency trees, and other reproducible machine output are **temporary execution material**, not archival evidence;
 - before closing a research/implementation/correction/verification/audit lineage, preserve only the smallest evidence needed to prove its conclusions, then remove reproducible heavy machine output owned by that lineage;
 - do not copy an existing `.artifacts/**` tree into a disposable build workspace. Copy only the exact source/configuration inputs required by the probe.
+
+## Parallel-Lane Artifact Authority
+
+Only for linked-worktree work, load `PARALLEL_DEVELOPMENT.md`. Lane coordination artifacts live under the primary checkout's `.artifacts/parallel/<lane-slug>/**`; a linked worktree must not establish a competing coordination-artifact authority. Concrete paths/branches/base SHAs/status remain transient there.
 
 ## Mandatory End-of-Prompt Build / Temp Cleanup
 
@@ -101,7 +105,7 @@ Do not move prompt-local build output into the repository merely to avoid cleanu
 
 Cleanup must happen on the host where the prompt created the material.
 
-For multi-host UIKitPlus work, each local executor is responsible for its own host-local scratch before completion. In particular, Unix-like `/tmp` work and Windows `%TEMP%` work must not be left for a later coordinator session merely because canonical reports live in the shared `.artifacts/**` tree.
+For multi-host UIKitUltra work, each local executor is responsible for its own host-local scratch before completion. In particular, Unix-like `/tmp` work and Windows `%TEMP%` work must not be left for a later coordinator session merely because canonical reports live in the shared `.artifacts/**` tree.
 
 Shared `.artifacts/**` should contain evidence, prompts, reports, and compact retained inputs — not persistent host build caches. If a probe must temporarily build beneath `.artifacts/**`, extract the required evidence and remove the heavy build residue immediately after the probe.
 
@@ -233,7 +237,7 @@ Stores verified evidence needed to design the work, for example:
 - current Git/source state;
 - relevant public APIs/types/ownership boundaries;
 - architecture IDs and owning stable docs;
-- analogous UIKitPlus implementations/patterns;
+- analogous UIKitUltra implementations/patterns;
 - dependency/native-platform behavior;
 - current external API documentation when time-sensitive;
 - known constraints and unknowns;
@@ -248,7 +252,7 @@ Contains the reviewed implementation design:
 - exact goal/scope and non-goals;
 - architecture owners/IDs;
 - public API/DSL effects;
-- native-wrapper vs UIKitPlus-convenience layering when applicable;
+- native-wrapper vs UIKitUltra-convenience layering when applicable;
 - ownership/lifecycle/mutation mechanics;
 - source topology;
 - fluent/state/extension/platform implications;
@@ -345,7 +349,7 @@ Recommended shape:
 
 The verification task is read-only unless the maintainer explicitly authorizes otherwise. It states exact commands/actions, required observations, environment assumptions, report format, and Git-mutation prohibitions.
 
-For rendered UIKit/AppKit/UIKitPlus diagnostics on any UI surface, use `.agent/skills/uikitplus-visual-ui-diagnostics/SKILL.md` when temporary high-contrast markers can objectively prove the target's actual rendered presence, boundary, viewport relationship, clipping, or native ownership. Keep the real repository read-only for read-only verification and place any instrumented source/build in a disposable `/tmp` copy or another explicitly disposable verification-only copy. Save screenshots/recordings plus the relevant geometry/runtime evidence under the verification artifact directory and record a marker legend explaining exactly what each diagnostic color/boundary represented. Diagnostic instrumentation must never become a production change merely because it made the bug observable.
+For rendered UIKit/AppKit/UIKitUltra diagnostics on any UI surface, use `.agent/skills/uikitultra-visual-ui-diagnostics/SKILL.md` when temporary high-contrast markers can objectively prove the target's actual rendered presence, boundary, viewport relationship, clipping, or native ownership. Keep the real repository read-only for read-only verification and place any instrumented source/build in a disposable `/tmp` copy or another explicitly disposable verification-only copy. Save screenshots/recordings plus the relevant geometry/runtime evidence under the verification artifact directory and record a marker legend explaining exactly what each diagnostic color/boundary represented. Diagnostic instrumentation must never become a production change merely because it made the bug observable.
 
 The delegated agent writes the report from actual execution. The coordinator/reviewer then checks the report plus every repository fact available through its own tools. Delegated evidence fills an execution-capability gap; it does not replace independent source/Git review.
 

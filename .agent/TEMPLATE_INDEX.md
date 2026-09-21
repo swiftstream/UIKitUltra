@@ -22,10 +22,11 @@ Templates are governance scaffolds. They are used to draft safe changes before t
     setter classification; consult the fluent-extension template only when
     extension-specific collision analysis is required.
 
-## Required Contract Checks Before Using Any Template
+## Context Rule Before Using a Template
 
-1. `LAYER_MODEL.md` for layer impact.
-2. One task-specific domain doc.
-3. One task-specific contract doc.
-4. Any additional architecture doc only through documented context-budget
-   escalation.
+Template use does not reset architecture routing.
+
+1. Keep the primary owner already selected through `ARCH_INDEX.md`.
+2. Add only the supporting contract(s) the concrete template/task needs, staying within the normal three-architecture-doc budget.
+3. Load `LAYER_MODEL.md` only when the layer boundary itself is unclear or changing.
+4. Escalate beyond the default budget only when genuinely necessary and documented.

@@ -1,24 +1,24 @@
 ---
 name: macos-ulist
-description: Change or review UIKitPlus macOS UList/NSTableView source behavior inside the UIKitPlus repository. Use for row hosting, self-sizing, recycling, scrolling, automatic heights, live resize, and TextKit 2 row interactions under the UL/UTK architecture contracts; not as a general downstream table-view guide.
+description: Change or review UIKitUltra macOS UList/NSTableView source behavior inside the UIKitUltra repository. Use for row hosting, self-sizing, recycling, scrolling, automatic heights, live resize, and TextKit 2 row interactions under the UL/UTK architecture contracts; not as a general downstream table-view guide.
 ---
 
 # Maintain macOS UList / NSTableView
 
-Use this LOCAL contributor skill for UIKitPlus's built-in macOS `UList` implementation.
+Use this LOCAL contributor skill for UIKitUltra's built-in macOS `UList` implementation.
 
 Architecture authority remains [`MACOS_ULIST_NSTABLEVIEW.md`](../../architecture/MACOS_ULIST_NSTABLEVIEW.md) (`UL1`–`UL10`). Load [`MACOS_ULIST_TEXTKIT2.md`](../../architecture/MACOS_ULIST_TEXTKIT2.md) (`UTK1`–`UTK8`) only when TextKit 2 application rows are involved.
 
 ## Load
 
-1. Start from UIKitPlus `AGENTS.md`, [`SKILL_INDEX.md`](../../SKILL_INDEX.md), and [`LAYER_MODEL.md`](../../architecture/LAYER_MODEL.md).
-2. Load `MACOS_ULIST_NSTABLEVIEW.md` as the primary domain owner.
+1. Assume root/architecture/skill routing already selected this skill and the relevant UList owner; do not re-read `AGENTS.md`/`SKILL_INDEX.md`/`LAYER_MODEL.md` unless that context is genuinely required and missing.
+2. Use `MACOS_ULIST_NSTABLEVIEW.md` as the primary domain owner for generic UList/NSTableView behavior.
 3. Choose one final supporting architecture document only when needed:
    - TextKit 2 row: `MACOS_ULIST_TEXTKIT2.md`;
    - lifecycle/reuse/diffs: [`RUNTIME_MODEL.md`](../../architecture/RUNTIME_MODEL.md);
    - constraints/height propagation: [`LAYOUT_SYSTEM.md`](../../architecture/LAYOUT_SYSTEM.md);
    - update callbacks: [`MUTATION_MODEL.md`](../../architecture/MUTATION_MODEL.md).
-4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) before broad source discovery.
+4. Use [`SOURCE_MAP.md`](../../SOURCE_MAP.md) only if the affected source location/ownership is not already known.
 
 Do not exceed the normal architecture budget without explicit escalation.
 

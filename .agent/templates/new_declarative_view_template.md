@@ -4,11 +4,14 @@ Use this template before implementing a new DSL view type.
 
 ## Pre-Checks
 
-1. Confirm layer impact in `LAYER_MODEL.md`.
-2. Confirm root contract requirements in `DECLARATIVE_PROTOCOL.md`.
-3. Confirm chain safety in `FLUENT_CHAIN_CONTRACT.md`.
-4. Confirm runtime lifecycle obligations in `RUNTIME_MODEL.md`.
-5. Confirm platform exposure in `PLATFORM_ABSTRACTION.md`.
+Use `DECLARATIVE_PROTOCOL.md` as the primary owner. Add only the support actually needed:
+
+- `PLATFORM_ABSTRACTION.md` for platform/native exposure;
+- `RUNTIME_MODEL.md` for lifecycle hooks;
+- `FLUENT_CHAIN_CONTRACT.md` when the new type also introduces/materially changes fluent API;
+- `LAYER_MODEL.md` only when the layer boundary itself is unclear or changing.
+
+Stay within the normal three-architecture-doc budget unless the task genuinely requires documented escalation.
 
 ## Design Stub
 
